@@ -54,10 +54,6 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset(
-              'assets/icon_orange.png',
-              width: 200,
-            ),
           ],
         ),
       ),
