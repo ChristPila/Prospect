@@ -1,32 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:prospect/utils/utilitaires.dart';
+import 'package:prospect/vue/storage.dart';
+import 'package:provider/provider.dart';
 
-void main() {
-  WidgetsFlutterBinding.ensureInitialized();
+import 'controller/ProspectController.dart';
+
+void main() async{
+  await GetStorage.init(Utilitaires.STOCKAGE_VERSION);
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  MyApp({Key? key}) : super(key: key);
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-          primarySwatch: Colors.orange,
-          primaryColor: Color.fromRGBO(255, 102, 0, 1),
-          scaffoldBackgroundColor: Colors.grey[50],
-          appBarTheme: AppBarTheme(
-            systemOverlayStyle: SystemUiOverlayStyle(
-              statusBarColor: Colors.transparent,
-              statusBarIconBrightness: Brightness.dark,
-              statusBarBrightness: Brightness.light,
-            ),
-          )),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+    return MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (context) => ProspectController()),
+        ],
+        child:MaterialApp(
+          title: 'ProspectAppl',
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+              primarySwatch: Colors.orange,
+              primaryColor: Color.fromRGBO(255, 102, 0, 1),
+              scaffoldBackgroundColor: Colors.grey[50],
+              appBarTheme: AppBarTheme(
+                systemOverlayStyle: SystemUiOverlayStyle(
+                  statusBarColor: Colors.transparent,
+                  statusBarIconBrightness: Brightness.dark,
+                  statusBarBrightness: Brightness.light,
+                ),
+              )),
+          home: ListeProspect(),
+    ),
     );
   }
 }
