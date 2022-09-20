@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:prospect/utils/utilitaires.dart';
-import 'package:prospect/vue/storage.dart';
+import 'package:prospect/vue/ListeProspect.dart';
 import 'package:provider/provider.dart';
 
 import 'controller/ProspectController.dart';
