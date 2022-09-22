@@ -19,7 +19,7 @@ class ProspectModel {
     this.companyAddress,
     this.companyType,
     this.companyPhone,
-    this.offre,
+    this.offres,
     this.state,
     this.piecesjointes,
     this.remoteId,
@@ -34,7 +34,7 @@ class ProspectModel {
   String? companyAddress;
   CompanyType? companyType;
   String? companyPhone;
-  Offre? offre;
+  List<Offre>? offres;
   String? state;
   Piecesjointes? piecesjointes;
   String? remoteId;
@@ -49,7 +49,7 @@ class ProspectModel {
     companyAddress: json["company_address"] == null ? null : json["company_address"],
     companyType: json["company_type"] == null ? null : CompanyType.fromJson(json["company_type"]),
     companyPhone: json["company_phone"] == null ? null : json["company_phone"],
-    offre: json["offre"] == null ? null : Offre.fromJson(json["offre"]),
+    offres: json["offres"] == null ? null : List<Offre>.from(json["offres"].map((x) => Offre.fromJson(x))),
     state: json["state"] == null ? null : json["state"],
     piecesjointes: json["piecesjointes"] == null ? null : Piecesjointes.fromJson(json["piecesjointes"]),
     remoteId: json["remote_id"] == null ? null : json["remote_id"],
@@ -65,7 +65,7 @@ class ProspectModel {
     "company_address": companyAddress == null ? null : companyAddress,
     "company_type": companyType == null ? null : companyType!.toJson(),
     "company_phone": companyPhone == null ? null : companyPhone,
-    "offre": offre == null ? null : offre!.toJson(),
+    "offres": offres == null ? null : List<dynamic>.from(offres!.map((x) => x.toJson())),
     "state": state == null ? null : state,
     "piecesjointes": piecesjointes == null ? null : piecesjointes!.toJson(),
     "remote_id": remoteId == null ? null : remoteId,
