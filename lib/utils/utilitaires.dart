@@ -8,7 +8,7 @@ class Utilitaires {
   // faire ipconfig (ifconfig sur Mac) pour recuperer votre IP de la machine
   // et mettre à jour
   static const String HOST_URL = "10.224.196.156";
-  static const String STOCKAGE_VERSION ="V5";
+  static const String STOCKAGE_VERSION ="V12";
 
   static String formatAmount(double valeurNumerique) {
     // cette methode peut etre etre remplacée par le package Intl
