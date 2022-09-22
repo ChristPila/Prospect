@@ -36,7 +36,7 @@ class ProspectController with ChangeNotifier {
     notifyListeners();
   }
 
-  /*Timer? timer;
+  Timer? timer;
   repetition(){
 
     if (timer == null){
@@ -44,7 +44,7 @@ class ProspectController with ChangeNotifier {
         print("test ${t.tick}");
       });
     }
-  }*/
+  }
 
   Future<List<ProspectModel>> lecturestockageLocale() async {
     var locale = stockage.read<String>('PROSPECT');
