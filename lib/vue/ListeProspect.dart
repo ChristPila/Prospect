@@ -15,12 +15,13 @@ class ListeProspect extends StatefulWidget {
 
 class _ProspectState extends State<ListeProspect> {
   EdgeInsets paddingVal = EdgeInsets.symmetric(horizontal: 20, vertical: 5);
-  List<String> listeTypesStatut_ = ["Tous", 'Atente', "Valider", "Rejeter"];
+  List<String> listeTypesStatut_ = ["Tous", 'Atente', "Valider", "Rejeter", "Brouillon"];
   Map<String, String> listeTypesStatut = {
     "Tous": "0",
     'En attente': '1',
     "Validé": "2",
-    "Rejeté": "3"
+    "Rejeté": "3",
+    "Brouillon": "4",
   };
   String typeStatutSelectionne = 'Tous';
   String typeStatutSelectionne_int = '0';
@@ -123,6 +124,40 @@ class _ProspectState extends State<ListeProspect> {
       },
     );
   }
+  listStatutBrouillon(BuildContext context, List listBrouillon) {
+    return ListView.builder(
+      itemCount: listBrouillon.length,
+      shrinkWrap: true,
+      itemBuilder: (BuildContext context, int index) {
+        return ListTile(
+          onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      DetailProspect(id: listBrouillon[index].id.toString()))),
+          leading: const Icon(
+            Icons.note,
+            color : Colors.yellow,
+            size: 35,
+          ),
+          title: Text(
+            'state : ${listBrouillon[index].state}',
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+          subtitle: Row(
+            children: [
+              Text(
+                'companyName: ${listBrouillon[index].companyName}      |       zone: ${listBrouillon[index].zone}',
+                style: const TextStyle(fontSize: 15, color: Colors.black87),
+              ),
+              const SizedBox(width: 20),
+              const InkWell(onTap: null, child: Icon(Icons.mode))
+            ],
+          ),
+        );
+      },
+    );
+  }
 
   listStatutRejeter(BuildContext context, List listRejeter) {
     return ListView.builder(
@@ -171,6 +206,10 @@ class _ProspectState extends State<ListeProspect> {
           case "3":
             icon = Icons.close;
             color = Colors.red;
+            break;
+            case "4":
+            icon = Icons.note;
+            color = Colors.yellow;
             break;
         }
 
