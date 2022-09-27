@@ -14,6 +14,7 @@ class ProspectController with ChangeNotifier {
   List<ProspectModel> listValider = [];
   List<ProspectModel> listRejeter = [];
   List<ProspectModel> listAtente = [];
+  List<ProspectModel> listBrouillon = [];
   final stockage = GetStorage(Utilitaires.STOCKAGE_VERSION);
 
   int randomInt() {
@@ -77,11 +78,16 @@ class ProspectController with ChangeNotifier {
     var resultat = data.where((e) => e.state == "atente").toList();
     listAtente = resultat;
   }
+  ajoutListBrouillon() {
+    var resultat = data.where((e) => e.state == "atente").toList();
+    listAtente = resultat;
+  }
 
   statut() {
     ajoutListValider();
     ajoutListRejeter();
     ajoutListAtente();
+    ajoutListBrouillon();
   }
 }
 
