@@ -36,7 +36,7 @@ class ProspectModel {
   String? companyPhone;
   List<Offre>? offres;
   String? state;
-  Piecesjointes? piecesjointes;
+  List<Piecesjointe>? piecesjointes;
   String? remoteId;
 
   factory ProspectModel.fromJson(Map<String, dynamic> json) => ProspectModel(
@@ -51,7 +51,7 @@ class ProspectModel {
     companyPhone: json["company_phone"] == null ? null : json["company_phone"],
     offres: json["offres"] == null ? null : List<Offre>.from(json["offres"].map((x) => Offre.fromJson(x))),
     state: json["state"] == null ? null : json["state"],
-    piecesjointes: json["piecesjointes"] == null ? null : Piecesjointes.fromJson(json["piecesjointes"]),
+    piecesjointes: json["piecesjointes"] == null ? null : List<Piecesjointe>.from(json["piecesjointes"].map((x) => Piecesjointe.fromJson(x))),
     remoteId: json["remote_id"] == null ? null : json["remote_id"],
   );
 
@@ -67,7 +67,7 @@ class ProspectModel {
     "company_phone": companyPhone == null ? null : companyPhone,
     "offres": offres == null ? null : List<dynamic>.from(offres!.map((x) => x.toJson())),
     "state": state == null ? null : state,
-    "piecesjointes": piecesjointes == null ? null : piecesjointes!.toJson(),
+    "piecesjointes": piecesjointes == null ? null : List<dynamic>.from(piecesjointes!.map((x) => x.toJson())),
     "remote_id": remoteId == null ? null : remoteId,
   };
 }
@@ -224,8 +224,8 @@ class Offre {
   };
 }
 
-class Piecesjointes {
-  Piecesjointes({
+class Piecesjointe {
+  Piecesjointe({
     this.id,
     this.path,
     this.type,
@@ -235,7 +235,7 @@ class Piecesjointes {
   String? path;
   String? type;
 
-  factory Piecesjointes.fromJson(Map<String, dynamic> json) => Piecesjointes(
+  factory Piecesjointe.fromJson(Map<String, dynamic> json) => Piecesjointe(
     id: json["id"] == null ? null : json["id"],
     path: json["path"] == null ? null : json["path"],
     type: json["type"] == null ? null : json["type"],
