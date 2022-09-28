@@ -1,18 +1,21 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import '../model/ProspectModel.dart';
+import 'PhotoView.dart';
 
 class Dossiers extends StatefulWidget {
   Dossiers({required this.clientrecup});
+
   ProspectModel clientrecup;
+
   @override
-  State<Dossiers> createState() => _DossiersState(clientrecup: clientrecup );
+  State<Dossiers> createState() => _DossiersState(clientrecup: clientrecup);
 }
 
 class _DossiersState extends State<Dossiers> {
-
   ProspectModel clientrecup;
-  _DossiersState({ required this.clientrecup});
+
+  _DossiersState({required this.clientrecup});
 
   @override
   Widget build(BuildContext context) {
@@ -25,13 +28,22 @@ class _DossiersState extends State<Dossiers> {
           backgroundColor: Colors.transparent,
           bottom: TabBar(
             tabs: [
-              Tab(child: Text("Images", style: TextStyle(color: Colors.black),),
+              Tab(
+                child: Text(
+                  "Images",
+                  style: TextStyle(color: Colors.black),
+                ),
                 icon: Icon(Icons.browse_gallery_outlined, color: Colors.black),
-                
               ),
               Tab(
-                child: Text("Documents", style: TextStyle(color: Colors.black),),
-                icon: Icon(Icons.document_scanner, color: Colors.black,),
+                child: Text(
+                  "Documents",
+                  style: TextStyle(color: Colors.black),
+                ),
+                icon: Icon(
+                  Icons.document_scanner,
+                  color: Colors.black,
+                ),
               ),
             ],
           ),
@@ -52,11 +64,12 @@ class _DossiersState extends State<Dossiers> {
           SizedBox(
             height: 20,
           ),
-          Expanded(child: listImagesVue(context,clientrecup)),
+          Expanded(child: listImagesVue(context, clientrecup)),
         ],
       ),
     );
   }
+
   tab2(clientrecup) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -66,12 +79,13 @@ class _DossiersState extends State<Dossiers> {
           SizedBox(
             height: 20,
           ),
-          Expanded(child: listDocumentsVue(context,clientrecup)),
+          Expanded(child: listDocumentsVue(context, clientrecup)),
         ],
       ),
     );
   }
-  listImagesVue(BuildContext context,clientrecup) {
+
+  listImagesVue(BuildContext context, clientrecup) {
     return RefreshIndicator(
       onRefresh: () async {
         // effectuer une action asynchrone
@@ -80,26 +94,36 @@ class _DossiersState extends State<Dossiers> {
 
         setState(() {});
       },
-      child:GridView.builder(
+      child: GridView.builder(
         itemCount: clientrecup.piecesjointes.length,
         itemBuilder: (BuildContext context, int index) {
           var img = clientrecup.piecesjointes[index].path;
-          return CachedNetworkImage(
-            imageUrl: "$img",width: 100, height: 50,
-            progressIndicatorBuilder: (context, url, downloadProgress) =>
-                CircularProgressIndicator(value: downloadProgress.progress),
-            errorWidget: (context, url, error) => Icon(Icons.error),
+          return InkWell(
+            onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => Photoview(
+                          position: index,
+                          listimage: clientrecup.piecesjointes,
+                        ))),
+            child: CachedNetworkImage(
+              imageUrl: "$img",
+              fit: BoxFit.cover,
+              progressIndicatorBuilder: (context, url, downloadProgress) =>
+                  CircularProgressIndicator(value: downloadProgress.progress),
+              errorWidget: (context, url, error) => Icon(Icons.error),
+            ),
           );
         },
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3, mainAxisSpacing: 10, crossAxisSpacing: 10),
+            crossAxisCount: 2, mainAxisSpacing: 10, crossAxisSpacing: 10),
         padding: const EdgeInsets.all(10),
         shrinkWrap: true,
       ),
     );
   }
 
-  listDocumentsVue(BuildContext context,clientrecup) {
+  listDocumentsVue(BuildContext context, clientrecup) {
     return RefreshIndicator(
       onRefresh: () async {
         // effectuer une action asynchrone
@@ -111,7 +135,7 @@ class _DossiersState extends State<Dossiers> {
       child: ListView.builder(
         itemCount: clientrecup.piecesjointes.length,
         itemBuilder: (BuildContext context, int index) {
-          var doc =clientrecup.piecesjointes[index];
+          var doc = clientrecup.piecesjointes[index];
           var completePath = doc.path;
           var fileName = (completePath.split('./').last);
           var fileExtension = (fileName.split("/").last);
@@ -124,29 +148,14 @@ class _DossiersState extends State<Dossiers> {
                     label: 'OK', onPressed: scaffold.hideCurrentSnackBar),
               ));
             },
-            title: Row(
-              children: [
-                  Container(
-                    child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              fileExtension,
-                              style: TextStyle(fontSize: 25, color: Colors.red),
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              fileName,
-                              style:
-                              TextStyle(fontSize: 10, color: Colors.black),
-                            ),
-                          ],
-                        )),
-                  ),
-              ],
+            leading: Text(
+              fileExtension,
+              style: TextStyle(fontSize: 20, color: Colors.red),
+            ),
+            title: Text(
+              fileName,
+              //overflow: TextOverflow.clip,
+              style: TextStyle(fontSize: 15, color: Colors.black),
             ),
           );
         },
