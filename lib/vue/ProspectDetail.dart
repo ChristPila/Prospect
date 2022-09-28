@@ -1,5 +1,3 @@
-import 'dart:io';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:prospect/controller/ProspectController.dart';
@@ -60,12 +58,18 @@ class _DetailProspectState extends State<DetailProspect> {
                           SizedBox(
                             height: 1,
                           ),
+                          //Icon(Icons.call_to_action_outlined),
+                          Text("Companie:",
+                              style: const TextStyle(
+                                  color: Colors.black87,
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.bold,
+                                  decoration: TextDecoration.none)),
                           Container(
                             padding: const EdgeInsets.all(10),
                             child: Row(
                               children: [
-                                Icon(Icons.call_to_action_outlined),
-                                Text("companyName :",
+                                Text("Nom:",
                                     style: const TextStyle(
                                         color: Colors.black87,
                                         fontSize: 15,
@@ -74,7 +78,8 @@ class _DetailProspectState extends State<DetailProspect> {
                                 Text("${clientrecup.companyName}",
                                     style: const TextStyle(
                                         color: Colors.black87,
-                                        fontSize: 15, fontWeight: FontWeight.bold,
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
                                         decoration: TextDecoration.none)),
                               ],
                             ),
@@ -86,7 +91,168 @@ class _DetailProspectState extends State<DetailProspect> {
                             height: 1,
                           ),
                           Container(
-                              padding: EdgeInsets.only(left: 10),
+                            padding: const EdgeInsets.all(10),
+                            child: Row(
+                              children: [
+                                //Icon(Icons.type_specimen_outlined),
+                                Text("Type:",
+                                    style: const TextStyle(
+                                        color: Colors.black87,
+                                        fontSize: 15,
+                                        decoration: TextDecoration.none)),
+                                Spacer(),
+                                Text("${clientrecup.companyType!.name}",
+                                    style: const TextStyle(
+                                        color: Colors.black87,
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
+                                        decoration: TextDecoration.none)),
+                              ],
+                            ),
+                          ),
+                          Divider(
+                            thickness: 1,
+                          ),
+                          SizedBox(height: 1),
+                          Container(
+                            padding: const EdgeInsets.all(10),
+                            child: Row(
+                              children: [
+                                Icon(Icons.house),
+                                Text("Adresse:",
+                                    style: const TextStyle(
+                                        color: Colors.black87,
+                                        fontSize: 15,
+                                        decoration: TextDecoration.none)),
+                                Spacer(),
+                                Text("${clientrecup.companyAddress!}",
+                                    style: const TextStyle(
+                                        color: Colors.black87,
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
+                                        decoration: TextDecoration.none)),
+                              ],
+                            ),
+                          ),
+                          Divider(
+                            thickness: 1,
+                          ),
+                          SizedBox(height: 1),
+                          Container(
+                            padding: const EdgeInsets.all(10),
+                            child: Row(
+                              children: [
+                                Icon(Icons.phone),
+                                Text("Telephone:",
+                                    style: const TextStyle(
+                                        color: Colors.black87,
+                                        fontSize: 15,
+                                        decoration: TextDecoration.none)),
+                                Spacer(),
+                                Text("${clientrecup.companyPhone}",
+                                    style: const TextStyle(
+                                        color: Colors.black87,
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
+                                        decoration: TextDecoration.none)),
+                              ],
+                            ),
+                          ),
+                          Divider(
+                            thickness: 1,
+                          ),
+                          SizedBox(height: 1),
+                          Container(
+                            padding: const EdgeInsets.all(10),
+                            child: Row(
+                              children: [
+                                Icon(Icons.offline_pin_outlined),
+                                Text("Offres:",
+                                    style: const TextStyle(
+                                        color: Colors.black87,
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
+                                        decoration: TextDecoration.none)),
+                                Spacer(),
+                              ],
+                            ),
+                          ),
+                          Wrap(
+                            children: clientrecup.offres!.map((e) {
+                              return Container(
+                                padding: const EdgeInsets.all(2.0),
+                                margin: const EdgeInsets.all(2),
+                                decoration: BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5)),
+                                  color: Colors.lightBlue,
+                                ),
+                                child: Text("${e.name}",
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
+                                        decoration: TextDecoration.none)),
+                              );
+                            }).toList(),
+                          ),
+                          Divider(
+                            thickness: 1,
+                          ),
+                          SizedBox(height: 1),
+                          Container(
+                            padding: const EdgeInsets.all(10),
+                            child: Row(
+                              children: [
+                                Icon(Icons.location_on),
+                                Text("Province :",
+                                    style: const TextStyle(
+                                        color: Colors.black87,
+                                        fontSize: 15,
+                                        decoration: TextDecoration.none)),
+                                Spacer(),
+                                Text(
+                                    "${clientrecup.commune!.zone!.ville!.province!.name}",
+                                    style: const TextStyle(
+                                        color: Colors.black87,
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
+                                        decoration: TextDecoration.none)),
+                              ],
+                            ),
+                          ),
+
+                          Divider(
+                            thickness: 1,
+                          ),
+                          SizedBox(height: 1),
+                          Container(
+                            padding: const EdgeInsets.all(10),
+                            child: Row(
+                              children: [
+                                Icon(Icons.location_on),
+                                Text("Ville :",
+                                    style: const TextStyle(
+                                        color: Colors.black87,
+                                        fontSize: 15,
+                                        decoration: TextDecoration.none)),
+                                Spacer(),
+                                Text(
+                                    "${clientrecup.commune!.zone!.ville!.name}",
+                                    style: const TextStyle(
+                                        color: Colors.black87,
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
+                                        decoration: TextDecoration.none)),
+                              ],
+                            ),
+                          ),
+                          Divider(
+                            thickness: 1,
+                          ),
+                          SizedBox(height: 1),
+                          Container(
+                              padding: EdgeInsets.only(left: 3),
                               child: Column(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -106,7 +272,8 @@ class _DetailProspectState extends State<DetailProspect> {
                                           Text("${clientrecup.commune!.name!}",
                                               style: const TextStyle(
                                                   color: Colors.black87,
-                                                  fontSize: 15, fontWeight: FontWeight.bold,
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.bold,
                                                   decoration:
                                                       TextDecoration.none)),
                                         ],
@@ -120,186 +287,8 @@ class _DetailProspectState extends State<DetailProspect> {
                                       padding: const EdgeInsets.all(10),
                                       child: Row(
                                         children: [
-                                          Icon(Icons.zoom_in),
-                                          Text("zone :",
-                                              style: const TextStyle(
-                                                  color: Colors.black87,
-                                                  fontSize: 15,
-                                                  decoration:
-                                                  TextDecoration.none)),
-                                          Spacer(),
-                                          Text("${clientrecup.commune!.zone!.name}",
-                                              style: const TextStyle(
-                                                  color: Colors.black87,
-                                                  fontSize: 15, fontWeight: FontWeight.bold,
-                                                  decoration:
-                                                  TextDecoration.none)),
-                                        ],
-                                      ),
-                                    ),
-                                    Divider(
-                                      thickness: 1,
-                                    ),
-                                    SizedBox(height: 1),
-                                    Container(
-                                      padding: const EdgeInsets.all(10),
-                                      child: Row(
-                                        children: [
-                                          Icon(Icons.location_city),
-                                          Text("ville :",
-                                              style: const TextStyle(
-                                                  color: Colors.black87,
-                                                  fontSize: 15,
-                                                  decoration:
-                                                  TextDecoration.none)),
-                                          Spacer(),
-                                          Text("${clientrecup.commune!.zone!.ville!.name}",
-                                              style: const TextStyle(
-                                                  color: Colors.black87,
-                                                  fontSize: 15, fontWeight: FontWeight.bold,
-                                                  decoration:
-                                                  TextDecoration.none)),
-                                        ],
-                                      ),
-                                    ),
-                                    Divider(
-                                      thickness: 1,
-                                    ),
-                                    SizedBox(height: 1),
-                                    Container(
-                                      padding: const EdgeInsets.all(10),
-                                      child: Row(
-                                        children: [
-                                          Icon(Icons.approval),
-                                          Text("province :",
-                                              style: const TextStyle(
-                                                  color: Colors.black87,
-                                                  fontSize: 15,
-                                                  decoration:
-                                                  TextDecoration.none)),
-                                          Spacer(),
-                                          Text("${clientrecup.commune!.zone!.ville!.province!.name}",
-                                              style: const TextStyle(
-                                                  color: Colors.black87,
-                                                  fontSize: 15, fontWeight: FontWeight.bold,
-                                                  decoration:
-                                                  TextDecoration.none)),
-                                        ],
-                                      ),
-                                    ),
-
-                                    Divider(
-                                      thickness: 1,
-                                    ),
-                                    SizedBox(height: 1),
-                                    Container(
-                                      padding: const EdgeInsets.all(10),
-                                      child: Row(
-                                        children: [
-                                          Icon(Icons.house),
-                                          Text("companyAdress:",
-                                              style: const TextStyle(
-                                                  color: Colors.black87,
-                                                  fontSize: 15,
-                                                  decoration:
-                                                      TextDecoration.none)),
-                                          Spacer(),
-                                          Text("${clientrecup.companyAddress!}",
-                                              style: const TextStyle(
-                                                  color: Colors.black87,
-                                                  fontSize: 15, fontWeight: FontWeight.bold,
-                                                  decoration:
-                                                      TextDecoration.none)),
-                                        ],
-                                      ),
-                                    ),
-                                    Divider(
-                                      thickness: 1,
-                                    ),
-                                    SizedBox(height: 1),
-                                    Container(
-                                      padding: const EdgeInsets.all(10),
-                                      child: Row(
-                                        children: [
-                                          Icon(Icons.local_atm),
-                                          Text("latitude :",
-                                              style: const TextStyle(
-                                                  color: Colors.black87,
-                                                  fontSize: 15,
-                                                  decoration:
-                                                  TextDecoration.none)),
-                                          Spacer(),
-                                          Text("${clientrecup.latitude}",
-                                              style: const TextStyle(
-                                                  color: Colors.black87,
-                                                  fontSize: 15, fontWeight: FontWeight.bold,
-                                                  decoration:
-                                                  TextDecoration.none)),
-                                        ],
-                                      ),
-                                    ),
-                                    Divider(
-                                      thickness: 1,
-                                    ),
-                                    SizedBox(height: 1),
-                                    Container(
-                                      padding: const EdgeInsets.all(10),
-                                      child: Row(
-                                        children: [
-                                          Icon(Icons.looks_one_outlined),
-                                          Text("longitude :",
-                                              style: const TextStyle(
-                                                  color: Colors.black87,
-                                                  fontSize: 15,
-                                                  decoration:
-                                                  TextDecoration.none)),
-                                          Spacer(),
-                                          Text("${clientrecup.longitude}",
-                                              style: const TextStyle(
-                                                  color: Colors.black87,
-                                                  fontSize: 15, fontWeight: FontWeight.bold,
-                                                  decoration:
-                                                  TextDecoration.none)),
-                                        ],
-                                      ),
-                                    ),
-
-
-                                    Divider(
-                                      thickness: 1,
-                                    ),
-                                    SizedBox(height: 1),
-                                    Container(
-                                      padding: const EdgeInsets.all(10),
-                                      child: Row(
-                                        children: [
-                                          Icon(Icons.phone),
-                                          Text("companyPhone:",
-                                              style: const TextStyle(
-                                                  color: Colors.black87,
-                                                  fontSize: 15,
-                                                  decoration:
-                                                      TextDecoration.none)),
-                                          Spacer(),
-                                          Text("${clientrecup.companyPhone}",
-                                              style: const TextStyle(
-                                                  color: Colors.black87,
-                                                  fontSize: 15, fontWeight: FontWeight.bold,
-                                                  decoration:
-                                                      TextDecoration.none)),
-                                        ],
-                                      ),
-                                    ),
-                                    Divider(
-                                      thickness: 1,
-                                    ),
-                                    SizedBox(height: 1),
-                                    Container(
-                                      padding: const EdgeInsets.all(10),
-                                      child: Row(
-                                        children: [
-                                          Icon(Icons.type_specimen_outlined),
-                                          Text("companyType:",
+                                          Icon(Icons.location_on),
+                                          Text("Zone :",
                                               style: const TextStyle(
                                                   color: Colors.black87,
                                                   fontSize: 15,
@@ -307,10 +296,11 @@ class _DetailProspectState extends State<DetailProspect> {
                                                       TextDecoration.none)),
                                           Spacer(),
                                           Text(
-                                              "${clientrecup.companyType!.name}",
+                                              "${clientrecup.commune!.zone!.name}",
                                               style: const TextStyle(
                                                   color: Colors.black87,
-                                                  fontSize: 15, fontWeight: FontWeight.bold,
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.bold,
                                                   decoration:
                                                       TextDecoration.none)),
                                         ],
@@ -320,39 +310,34 @@ class _DetailProspectState extends State<DetailProspect> {
                                       thickness: 1,
                                     ),
                                     SizedBox(height: 1),
+                                    Text("Localisation :",
+                                        style: const TextStyle(
+                                            color: Colors.black87,
+                                            fontSize: 17,
+                                            fontWeight: FontWeight.bold,
+                                            decoration: TextDecoration.none)),
                                     Container(
                                       padding: const EdgeInsets.all(10),
                                       child: Row(
                                         children: [
-                                          Icon(Icons.offline_pin_outlined),
-                                          Text("offres:",
+                                          Icon(Icons.map),
+                                          Text("Latitude , Longitude:",
                                               style: const TextStyle(
                                                   color: Colors.black87,
                                                   fontSize: 15,
                                                   decoration:
                                                       TextDecoration.none)),
                                           Spacer(),
-                                        ],
-                                      ),
-                                    ),
-                                    Wrap(
-                                      children: clientrecup.offres!.map((e) {
-                                        return Container(
-                                          padding: const EdgeInsets.all(2.0),
-                                          margin: const EdgeInsets.all(2),
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(5)),
-                                            color: Colors.lightBlue,
-                                          ),
-                                          child: Text("${e.name}",
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 15, fontWeight: FontWeight.bold,
+                                          Text(
+                                              "${clientrecup.latitude};${clientrecup.longitude}",
+                                              style: const TextStyle(
+                                                  color: Colors.black87,
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.bold,
                                                   decoration:
                                                       TextDecoration.none)),
-                                        );
-                                      }).toList(),
+                                        ],
+                                      ),
                                     ),
                                     Divider(
                                       thickness: 1,
@@ -363,7 +348,7 @@ class _DetailProspectState extends State<DetailProspect> {
                                       child: Row(
                                         children: [
                                           Icon(Icons.person),
-                                          Text("agent :",
+                                          Text("Agent :",
                                               style: const TextStyle(
                                                   color: Colors.black87,
                                                   fontSize: 15,
@@ -373,7 +358,8 @@ class _DetailProspectState extends State<DetailProspect> {
                                           Text("${clientrecup.agent!.identity}",
                                               style: const TextStyle(
                                                   color: Colors.black87,
-                                                  fontSize: 15,fontWeight: FontWeight.bold,
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.bold,
                                                   decoration:
                                                       TextDecoration.none)),
                                         ],
