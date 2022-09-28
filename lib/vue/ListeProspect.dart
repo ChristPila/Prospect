@@ -15,7 +15,13 @@ class ListeProspect extends StatefulWidget {
 
 class _ProspectState extends State<ListeProspect> {
   EdgeInsets paddingVal = EdgeInsets.symmetric(horizontal: 20, vertical: 5);
-  List<String> listeTypesStatut_ = ["Tous", 'Atente', "Valider", "Rejeter", "Brouillon"];
+  List<String> listeTypesStatut_ = [
+    "Tous",
+    'Atente',
+    "Valider",
+    "Rejeter",
+    "Brouillon"
+  ];
   Map<String, String> listeTypesStatut = {
     "Tous": "0",
     'En attente': '1',
@@ -71,25 +77,14 @@ class _ProspectState extends State<ListeProspect> {
         children: <Widget>[
           selectionTypeStatut(context),
           Expanded(child: listProspectVue(context)),
-          /* Expanded(
-              child: (typeStatutSelectionne == "Valider")
-                  ? listStatutValider(
-                      context, context.watch<ProspectController>().listValider)
-                  : (typeStatutSelectionne == "Rejeter")
-                      ? listStatutRejeter(context,
-                          context.watch<ProspectController>().listRejeter)
-                      : listStatutAtente(context,
-                          context.watch<ProspectController>().listAtente)),*/
         ],
       ),
     ));
   }
-
   /*int randomInt() {
     print(Random().nextInt(100 - 0 + 1) + 0);
     return Random().nextInt(100 - 0 + 1) + 0;
   }*/
-
   listStatutValider(BuildContext context, List listValider) {
     return ListView.builder(
       itemCount: listValider.length,
@@ -124,6 +119,7 @@ class _ProspectState extends State<ListeProspect> {
       },
     );
   }
+
   listStatutBrouillon(BuildContext context, List listBrouillon) {
     return ListView.builder(
       itemCount: listBrouillon.length,
@@ -137,7 +133,7 @@ class _ProspectState extends State<ListeProspect> {
                       DetailProspect(id: listBrouillon[index].id.toString()))),
           leading: const Icon(
             Icons.note,
-            color : Colors.yellow,
+            color: Colors.yellow,
             size: 35,
           ),
           title: Text(
@@ -207,7 +203,7 @@ class _ProspectState extends State<ListeProspect> {
             icon = Icons.close;
             color = Colors.red;
             break;
-            case "4":
+          case "4":
             icon = Icons.note;
             color = Colors.yellow;
             break;
@@ -300,11 +296,6 @@ class _ProspectState extends State<ListeProspect> {
               ),
             ),
           );
-
-          /*  return Text(
-            '${prospect.location}',
-            style: TextStyle(fontSize: 30, color: couleur),
-          );*/
         });
   }
 
@@ -327,10 +318,13 @@ class _ProspectState extends State<ListeProspect> {
           typeStatutSelectionne_int = listeTypesStatut[newValue]!;
           List<ProspectModel> listOriginalProspect =
               context.read<ProspectController>().data;
-          if(typeStatutSelectionne_int == "0"){
+          if (typeStatutSelectionne_int == "0") {
             dataProspectCopie = listOriginalProspect;
-          }else{
-          dataProspectCopie= listOriginalProspect.where((e) => e.state == typeStatutSelectionne_int).toList();}
+          } else {
+            dataProspectCopie = listOriginalProspect
+                .where((e) => e.state == typeStatutSelectionne_int)
+                .toList();
+          }
           setState(() {});
         },
       ),
