@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:get_storage/get_storage.dart';
@@ -38,9 +37,9 @@ class ProspectController with ChangeNotifier {
   }
 
   Timer? timer;
-  repetition(){
 
-    if (timer == null){
+  repetition() {
+    if (timer == null) {
       timer = Timer.periodic(Duration(seconds: 5), (t) {
         print("test ${t.tick}");
       });
@@ -78,6 +77,7 @@ class ProspectController with ChangeNotifier {
     var resultat = data.where((e) => e.state == "atente").toList();
     listAtente = resultat;
   }
+
   ajoutListBrouillon() {
     var resultat = data.where((e) => e.state == "atente").toList();
     listAtente = resultat;
