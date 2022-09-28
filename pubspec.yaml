@@ -39,6 +39,7 @@ dependencies:
   get_storage: ^2.0.3
   cached_network_image: ^3.2.1
   faker: ^2.0.0
+  photo_view: ^0.14.0
 
 dev_dependencies:
   flutter_test:
