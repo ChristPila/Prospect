@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:prospect/vues/prospect.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,7 +27,7 @@ class MyApp extends StatelessWidget {
               statusBarBrightness: Brightness.light,
             ),
           )),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: Prospect(),
     );
   }
 }
