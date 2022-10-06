@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import '../Models/UserModel.dart';
-import '../Tools/ConstanteLaravel.dart';
+import '../Tools/Parametres.dart';
 
 class AuthentifacationController with ChangeNotifier {
 
@@ -12,7 +12,7 @@ class AuthentifacationController with ChangeNotifier {
   get context => null;
 
   Authentifier(Map data) async {
-    var access = ConstanteLaravel.ROOT;
+    var access = Parametres.ROOT;
     var byte = utf8.encode(access);
 
     var headers = {
@@ -21,10 +21,10 @@ class AuthentifacationController with ChangeNotifier {
     };
 
     var url = Uri(
-        scheme: "http",
-        host: ConstanteLaravel.HOST,
-        path: ConstanteLaravel.PATH,
-        port: 8000);
+        scheme: Parametres.scheme,
+        host: Parametres.host,
+        path: Parametres.endPointLogin,
+        port: Parametres.port);
 
     try {
       var response = await http
