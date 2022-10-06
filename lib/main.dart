@@ -1,5 +1,7 @@
+import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'Controllers/AuthentifacationController.dart';
+import 'Views/IntroPage.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -7,60 +9,35 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  MyApp({Key? key}) : super(key: key);
-
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-          primarySwatch: Colors.orange,
-          primaryColor: Color.fromRGBO(255, 102, 0, 1),
-          scaffoldBackgroundColor: Colors.grey[50],
-          appBarTheme: AppBarTheme(
-            systemOverlayStyle: SystemUiOverlayStyle(
-              statusBarColor: Colors.transparent,
-              statusBarIconBrightness: Brightness.dark,
-              statusBarBrightness: Brightness.light,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => AuthentifacationController()),
+      ],
+      child: MaterialApp(
+        title: 'Prospect',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+            primaryColor: Colors.white,
+            floatingActionButtonTheme: FloatingActionButtonThemeData(
+              elevation: 0,
+              foregroundColor: Colors.white,
             ),
-          )),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        centerTitle: true,
-        backgroundColor: Colors.transparent,
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(
-              'assets/icon_orange.png',
-              width: 200,
-            ),
-          ],
-        ),
-      ),
+            accentColor: Colors.lightBlue,
+            textTheme: TextTheme(
+                headline1: TextStyle(fontSize: 30.0, color: Colors.lightBlue, fontWeight: FontWeight.bold),
+                headline2: TextStyle(
+                  fontSize: 24.0,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.black,
+                ),
+                bodyText1: TextStyle(
+                    fontSize: 14.0,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.black))),
+       home: IntroPage(),
+      )
     );
   }
 }
