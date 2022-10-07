@@ -1,13 +1,13 @@
-class Authentification {
+class AuthentificationModel {
   final String? token;
-  final String? error;
+  final String? user;
 
-  Authentification({required this.token, required this.error});
+  AuthentificationModel({required this.token, required this.user});
 
-  factory Authentification.fromJson(Map<String, dynamic> json) {
-    return Authentification(
+  factory AuthentificationModel.fromJson(Map<String, dynamic> json) {
+    return AuthentificationModel(
       token: json["token"] != null ? json["token"] : "",
-      error: json["error"] != null ? json["error"] : "",
+      user: json["user"] != null ? json["user"] : "",
     );
   }
 }
