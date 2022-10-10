@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../Controllers/AuthentifacationController.dart';
 import '../Models/UserModel.dart';
 import 'HomePage.dart';
 import 'Layouts/ProgressHUD.dart';
-
 
 class AuthentificationPage extends StatefulWidget {
   @override
@@ -37,7 +37,6 @@ class _AuthentificationPageState extends State<AuthentificationPage> {
   }
 
   Widget _uiSetup(BuildContext context) {
-
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: Theme.of(context).colorScheme.secondary,
@@ -160,26 +159,25 @@ class _AuthentificationPageState extends State<AuthentificationPage> {
                                 isApiCallProcess = true;
                               });
 
-                              AuthentifacationController apiService =
-                              new AuthentifacationController();
-                              var value = await apiService.Authentifier(data);
+                              var value = await context
+                                  .read<AuthentifacationController>()
+                                  .authentifier(data);
                               setState(() {
                                 isApiCallProcess = false;
                               });
-                              print(value);
                               if (value != null) {
                                 final snackBar =
-                                SnackBar(content: Text("Login Successful"));
+                                    SnackBar(content: Text("Login Successful"));
                                 scaffoldKey.currentState!
                                     .showSnackBar(snackBar);
 
                                 Navigator.pushReplacement(context,
                                     MaterialPageRoute(builder: (_) {
-                                      return HomePage();
-                                    }));
+                                  return HomePage();
+                                }));
                               } else {
                                 final snackBar =
-                                SnackBar(content: Text(value.error));
+                                    SnackBar(content: Text(value.error));
                                 scaffoldKey.currentState!
                                     .showSnackBar(snackBar);
                               }
