@@ -1,5 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:prospect/Views/IntroPage.dart';
+import 'package:provider/provider.dart';
+import '../../Controllers/AuthentifacationController.dart';
 import '../../Tools/Espace.dart';
 import '../AuthentificationPage.dart';
 
@@ -20,11 +23,10 @@ class _MenuLateralState extends State<MenuLateral> {
             child: ListTile(
               title: Text(
                 "",
-                style:
-                TextStyle(
+                style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
-                    fontSize: 35 ),
+                    fontSize: 35),
               ),
             )),
         ListTile(
@@ -39,17 +41,14 @@ class _MenuLateralState extends State<MenuLateral> {
             Icons.drafts_outlined,
           ),
           title: const Text('Brouillons'),
-          onTap: () {
-
-          },
+          onTap: () {},
         ),
         ListTile(
           leading: Icon(
             Icons.work_history,
           ),
           title: const Text('Perfomances'),
-          onTap: () {
-          },
+          onTap: () {},
         ),
         Divider(
           thickness: 5,
@@ -59,18 +58,14 @@ class _MenuLateralState extends State<MenuLateral> {
             Icons.important_devices_rounded,
           ),
           title: const Text('Apropos'),
-          onTap: () {
-
-          },
+          onTap: () {},
         ),
         ListTile(
           leading: Icon(
             Icons.account_box,
           ),
           title: const Text('Profil'),
-          onTap: () {
-
-          },
+          onTap: () {},
         ),
         Espace(hauteur: 220),
         Divider(
@@ -81,18 +76,15 @@ class _MenuLateralState extends State<MenuLateral> {
             Icons.logout,
           ),
           title: const Text('Deconnexion'),
-          onTap: () {
-            naviguerVersAuthentification(context);
+          onTap: () async {
+            context.read<AuthentificationController>().finSession();
+            Navigator.pop(context);
+            Navigator.push(context, MaterialPageRoute(builder: (_) {
+              return AuthentificationPage();
+            }));
           },
         ),
       ],
     );
-  }
-
-  naviguerVersAuthentification(context) {
-    Navigator.pop(context);
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) {
-      return AuthentificationPage();
-    }));
   }
 }

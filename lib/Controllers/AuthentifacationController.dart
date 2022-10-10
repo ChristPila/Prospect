@@ -2,41 +2,44 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import '../Models/UserModel.dart';
-import '../Tools/ConstanteLaravel.dart';
+import '../Tools/Parametres.dart';
+import 'package:get_storage/get_storage.dart';
 
-class AuthentifacationController with ChangeNotifier {
+class AuthentificationController with ChangeNotifier {
 
-  Authentification? user;
+  GetStorage stockage = GetStorage();
+  Map<String, dynamic> temp = {};
+  UserModel user = UserModel();
   String? token;
+  var tempUser;
+  String? utilisateur;
 
-  get context => null;
-
-  Authentifier(Map data) async {
-    var access = ConstanteLaravel.ROOT;
-    var byte = utf8.encode(access);
+  authentifier(Map data) async {
 
     var headers = {
-      'authorization': 'Basic ' + base64Encode(byte),
       'Content-Type': 'application/json'
     };
 
     var url = Uri(
-        scheme: "http",
-        host: ConstanteLaravel.HOST,
-        path: ConstanteLaravel.PATH,
-        port: 8000);
-
+        scheme: Parametres.scheme,
+        host: Parametres.host,
+        port: Parametres.port,
+        path: Parametres.endPointLogin,
+        );
     try {
       var response = await http
           .post(url, body: jsonEncode(data), headers: headers)
           .timeout(Duration(seconds: 5));
-      print(response.statusCode);
-      print(response.reasonPhrase);
-      print(response.body);
       if (response.statusCode == 200 ) {
-        token = response.body;
-        var data = Authentification.fromJson({"id":1, "name":"odc", "email":"odc@odc.com", "role":"agent"});
-        user = data;
+        var dataFromApi = response.body;
+        print('datafromApi => $dataFromApi');
+        var dataFromApi1 = json.decode(dataFromApi);
+        token = dataFromApi1['token'];
+        print('token => $token');
+        stockage.write("token", token!);
+        temp = dataFromApi1['user'];
+        user=UserModel.fromMap(temp);
+        stockage.write("user", user.toMap());
         return data;
       } else {
         return null;
@@ -46,5 +49,19 @@ class AuthentifacationController with ChangeNotifier {
       print("$s");
       return null;
     }
+  }
+
+  session() {
+    tempUser = stockage.read("token");
+    print(tempUser);
+    if (tempUser != null) {
+      utilisateur = tempUser;
+    }
+  }
+
+  finSession() {
+    stockage.remove("user");
+    stockage.remove("token");
+    utilisateur = null;
   }
 }

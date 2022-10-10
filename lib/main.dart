@@ -1,10 +1,12 @@
+import 'package:get_storage/get_storage.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'Controllers/AuthentifacationController.dart';
 import 'Views/IntroPage.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await GetStorage.init();
   runApp(MyApp());
 }
 
@@ -13,7 +15,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => AuthentifacationController()),
+        ChangeNotifierProvider(create: (context) => AuthentificationController()),
       ],
       child: MaterialApp(
         title: 'Prospect',
