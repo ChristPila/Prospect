@@ -25,6 +25,24 @@ class _AuthentificationPageState extends State<AuthentificationPage> {
   void initState() {
     super.initState();
     userModel = new UserModel();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      context.read<AuthentificationController>().session();
+      var session = context.read<AuthentificationController>().utilisateur;
+      print("voici la session: ${session}");
+      if (session != null) {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) {
+          return HomePage();
+        }));
+        return;
+      } else {
+        return null;
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -160,7 +178,7 @@ class _AuthentificationPageState extends State<AuthentificationPage> {
                               });
 
                               var value = await context
-                                  .read<AuthentifacationController>()
+                                  .read<AuthentificationController>()
                                   .authentifier(data);
                               setState(() {
                                 isApiCallProcess = false;
@@ -170,6 +188,10 @@ class _AuthentificationPageState extends State<AuthentificationPage> {
                                     SnackBar(content: Text("Login Successful"));
                                 scaffoldKey.currentState!
                                     .showSnackBar(snackBar);
+
+                                var session = context
+                                    .read<AuthentificationController>()
+                                    .session();
 
                                 Navigator.pushReplacement(context,
                                     MaterialPageRoute(builder: (_) {
