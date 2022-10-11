@@ -19,7 +19,7 @@ class _MenuLateralState extends State<MenuLateral> {
     return ListView(
       children: [
         DrawerHeader(
-            decoration: BoxDecoration(color: Colors.lightBlue),
+            decoration: BoxDecoration(color: Colors.deepOrange),
             child: ListTile(
               title: Text(
                 "",
@@ -79,9 +79,8 @@ class _MenuLateralState extends State<MenuLateral> {
           onTap: () async {
             context.read<AuthentificationController>().finSession();
             Navigator.pop(context);
-            Navigator.push(context, MaterialPageRoute(builder: (_) {
-              return AuthentificationPage();
-            }));
+            Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
+                builder: (context) => AuthentificationPage()), (Route route) => false);
           },
         ),
       ],
