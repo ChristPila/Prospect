@@ -3,13 +3,15 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:prospect/utils/Parametre.dart';
 import '../model/ProspectModel.dart';
-import '../utils/fakedata.dart';
 import '../utils/utilitaires.dart';
 import '../vue/test.dart';
+import 'package:http/http.dart' as http;
 
 class ProspectController with ChangeNotifier {
   List<ProspectModel> data = [];
+  Map stockage_data = {};
   List<ProspectModel> listValider = [];
   List<ProspectModel> listRejeter = [];
   List<ProspectModel> listAtente = [];
@@ -22,18 +24,60 @@ class ProspectController with ChangeNotifier {
   }
 
   recupererDonneesAPI() async {
-    data = await lecturestockageLocale();
-    // recuperer API laravel
-    var donneesAPI = fakeData.map((e) => ProspectModel.fromJson(e)).toList();
+    await lecturestockageLocale();
+    var url = Uri.parse(
+        '${Parametre.Scheme}://${Parametre.Host}:${Parametre.Port}/${Parametre.Rebase}');
 
-    print(donneesAPI.map((e) => e.toJson()).toList());
-    data.addAll(donneesAPI);
-    print("local_data ${data.length}");
+    var reponse = await http.get(url).timeout(Duration(seconds: 15));
+    String result = reponse.body;
+    print("result $result");
+    if (reponse.statusCode == 200) {
+      var donneesAPImap = json.decode(result)
+          as Map;
+      var donneesAPI = donneesAPImap ["response"] as List<dynamic>;//conversion donnees api en liste
+      print("result ${donneesAPI.length}");
+      Map tempmap = Map.fromIterable(donneesAPI,
+          key: (v) => v['remote_id'].toString(),
+          value: (v) => v); // conversion donnees api en map
+      stockage_data = {
+        ...stockage_data,
+        ...tempmap
+      }; //fusion des donnees local et de l'api map
+      var tempmapdata = stockage_data.entries
+          .map((e) => e.value)
+          .toList(); // conversion des donnees fusionnees en liste
 
-    /*data.sort((a, b) => a.zone!.compareTo(b.zone!));
-    print('zone ascending order: ${data.toString()}');*/
-    ecritureStockageLocale();
-    notifyListeners();
+      data = tempmapdata
+          .map((e) => ProspectModel.fromJson(e))
+          .toList(); //  conversion des donnees fusionnees en liste de prospect_model
+      notifyListeners();
+      print(reponse.body);
+
+      print("local_data ${data.length}");
+      ecritureStockageLocale();
+    }
+    // notifyListeners();
+  }
+
+  verifierStatusDonneeAPI(String remote_id) async {
+    var url = Uri.parse(
+        '${Parametre.Scheme}://${Parametre.Host}:${Parametre.Port}/${Parametre.Rebase}/$remote_id/${Parametre.Endpoind}');
+
+    print("url $url");
+    var reponse = await http.get(url).timeout(Duration(seconds: 5));
+    String result = reponse.body;
+    print("result $result");
+    if (reponse.statusCode == 200) {
+      var donneesAPI = json.decode(result) as Map;
+      var newstate = donneesAPI["data"]["state"];
+      stockage_data[remote_id]["state"] = newstate;
+      var tempmapdata = stockage_data.entries
+          .map((e) => e.value)
+          .toList(); // conversion des donnees fusionnees en liste
+      data = tempmapdata.map((e) => ProspectModel.fromJson(e)).toList();
+      notifyListeners();
+      ecritureStockageLocale();
+    }
   }
 
   Timer? timer;
@@ -46,21 +90,22 @@ class ProspectController with ChangeNotifier {
     }
   }
 
-  Future<List<ProspectModel>> lecturestockageLocale() async {
+  Future<Map> lecturestockageLocale() async {
     var locale = stockage.read<String>('PROSPECT');
     if (locale != null) {
-      var temp = json.decode(locale) as List<dynamic>;
-      var temp1 = temp.map((e) => ProspectModel.fromJson(e)).toList();
-      return temp1;
+      var temp = json.decode(locale) as Map;
+      stockage_data = temp;
+      //var temp1 = temp.map((e) => ProspectModel.fromJson(e)).toList();
+      return temp;
     } else {
       print("Fichier inexistant");
-      return [];
+      return {};
     }
   }
 
   ecritureStockageLocale() async {
-    var temp = data.map((e) => e.toJson()).toList();
-    await stockage.write("PROSPECT", json.encode(temp));
+    //var temp = data.map((e) => e.toJson()).toList();
+    await stockage.write("PROSPECT", json.encode(stockage_data));
   }
 
   ajoutListValider() {

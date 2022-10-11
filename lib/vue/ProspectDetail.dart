@@ -30,15 +30,36 @@ class _DetailProspectState extends State<DetailProspect> {
         });
       }
     }
+    Map states = {
+      "2": {"color": Colors.green, "icon": Icons.check},
+      "3": {"color": Colors.red, "icon": Icons.close},
+      "4": {"color": Colors.grey, "icon": Icons.edit_note_rounded},
+    };
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Prospect Details"),
-        centerTitle: true,
-        backgroundColor: Utilitaires.DEFAULT_COLOR,
-        actions: [
-          Icon(Icons.star),
-        ],
-      ),
+          title: const Text("Prospect Details"),
+          centerTitle: false,
+          backgroundColor: Utilitaires.DEFAULT_COLOR,
+          actions: [
+            clientrecup.state != "1"
+                ? IconButton(
+                    onPressed: () {
+                    },
+                    icon: Icon(
+                     states[clientrecup.state]["icon"],
+                      color: states[clientrecup.state]["color"],
+                      size: 30,
+                    ))
+                : TextButton(
+                onPressed: () {
+                  context.read<ProspectController>().verifierStatusDonneeAPI(clientrecup.remoteId!);
+            },
+                child: Text("Verification",style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold,
+                    decoration: TextDecoration.none)))
+          ]),
       body: Container(
           padding: const EdgeInsets.only(top: 10),
           color: Colors.white,
@@ -101,7 +122,7 @@ class _DetailProspectState extends State<DetailProspect> {
                                         fontSize: 15,
                                         decoration: TextDecoration.none)),
                                 Spacer(),
-                                Text("${clientrecup.companyType!.name}",
+                                Text("${clientrecup.companyType?.name}",
                                     style: const TextStyle(
                                         color: Colors.black87,
                                         fontSize: 15,
@@ -125,7 +146,7 @@ class _DetailProspectState extends State<DetailProspect> {
                                         fontSize: 15,
                                         decoration: TextDecoration.none)),
                                 Spacer(),
-                                Text("${clientrecup.companyAddress!}",
+                                Text("${clientrecup.companyAddress}",
                                     style: const TextStyle(
                                         color: Colors.black87,
                                         fontSize: 15,
@@ -178,14 +199,14 @@ class _DetailProspectState extends State<DetailProspect> {
                             ),
                           ),
                           Wrap(
-                            children: clientrecup.offres!.map((e) {
+                            children:   clientrecup.offres!.map((e) {
                               return Container(
                                 padding: const EdgeInsets.all(2.0),
                                 margin: const EdgeInsets.all(2),
                                 decoration: BoxDecoration(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(5)),
-                                  color: Colors.lightBlue,
+                                  color: Colors.blueAccent,
                                 ),
                                 child: Text("${e.name}",
                                     style: TextStyle(
@@ -212,7 +233,7 @@ class _DetailProspectState extends State<DetailProspect> {
                                         decoration: TextDecoration.none)),
                                 Spacer(),
                                 Text(
-                                    "${clientrecup.commune!.zone!.ville!.province!.name}",
+                                    "${clientrecup.commune?.zone!.ville!.province!.name}",
                                     style: const TextStyle(
                                         color: Colors.black87,
                                         fontSize: 15,
@@ -238,7 +259,7 @@ class _DetailProspectState extends State<DetailProspect> {
                                         decoration: TextDecoration.none)),
                                 Spacer(),
                                 Text(
-                                    "${clientrecup.commune!.zone!.ville!.name}",
+                                    "${clientrecup.commune?.zone!.ville!.name}",
                                     style: const TextStyle(
                                         color: Colors.black87,
                                         fontSize: 15,
@@ -269,7 +290,7 @@ class _DetailProspectState extends State<DetailProspect> {
                                                   decoration:
                                                       TextDecoration.none)),
                                           Spacer(),
-                                          Text("${clientrecup.commune!.name!}",
+                                          Text("${clientrecup.commune?.name!}",
                                               style: const TextStyle(
                                                   color: Colors.black87,
                                                   fontSize: 15,
@@ -296,7 +317,7 @@ class _DetailProspectState extends State<DetailProspect> {
                                                       TextDecoration.none)),
                                           Spacer(),
                                           Text(
-                                              "${clientrecup.commune!.zone!.name}",
+                                              "${clientrecup.commune?.zone!.name}",
                                               style: const TextStyle(
                                                   color: Colors.black87,
                                                   fontSize: 15,
@@ -355,7 +376,7 @@ class _DetailProspectState extends State<DetailProspect> {
                                                   decoration:
                                                       TextDecoration.none)),
                                           Spacer(),
-                                          Text("${clientrecup.agent!.identity}",
+                                          Text("${clientrecup.agent?.identity}",
                                               style: const TextStyle(
                                                   color: Colors.black87,
                                                   fontSize: 15,
@@ -371,35 +392,36 @@ class _DetailProspectState extends State<DetailProspect> {
                           ),
                           SizedBox(height: 1),
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
+                              /*  Container(
+                           padding: const EdgeInsets.only(left: 100),
+                         ),*/
                               Container(
-                                padding: const EdgeInsets.only(left: 110),
-                              ),
-                              Container(
-                                margin: EdgeInsets.only(top: 40),
-                                child: TextButton(
-                                  style: TextButton.styleFrom(
-                                      elevation: 0,
-                                      backgroundColor:
-                                          Utilitaires.DEFAULT_COLOR,
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(5))),
+                                margin: EdgeInsets.only(
+                                    left: 15, top: 10, right: 15, bottom: 10),
+                                child: FlatButton.icon(
                                   onPressed: () {
                                     Navigator.push(context,
                                         MaterialPageRoute(builder: (_) {
                                       return Dossiers(clientrecup: clientrecup);
                                     }));
                                   },
-                                  child: Text(
-                                    'Voir les dossiers',
-                                    style: TextStyle(color: Colors.black87),
+                                  icon: Icon(Icons.folder_copy),
+                                  label: Text(
+                                    "Pieces Jointes",
+                                    style: TextStyle(
+                                        color: Colors.black, fontSize: 20),
                                   ),
+                                  color: Colors.orange,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(50)),
+                                  padding: EdgeInsets.only(
+                                      left: 20, top: 8, right: 40, bottom: 8),
                                 ),
                               ),
                             ],
-                          ),
-                          SizedBox(height: 1),
+                          )
                         ],
                       ),
                     ),

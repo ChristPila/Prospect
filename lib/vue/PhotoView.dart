@@ -28,8 +28,8 @@ class _PhotoviewState extends State<Photoview> {
   Widget build(BuildContext context) {
     return Container(
         child: PhotoViewGallery.builder(
-          scrollPhysics: const BouncingScrollPhysics(),
-         builder: (BuildContext context, int index) {
+      scrollPhysics: const BouncingScrollPhysics(),
+      builder: (BuildContext context, int index) {
         var img = widget.listimage[index].path;
         return PhotoViewGalleryPageOptions(
           imageProvider: CachedNetworkImageProvider(img),
@@ -39,12 +39,12 @@ class _PhotoviewState extends State<Photoview> {
           heroAttributes: PhotoViewHeroAttributes(tag: img),
         );
       },
-         itemCount: widget.listimage.length,
-         loadingBuilder: (context, event) => Center(
-          child: Container(
-            width: 20.0,
-            height: 20.0,
-            child: CircularProgressIndicator(
+      itemCount: widget.listimage.length,
+      loadingBuilder: (context, event) => Center(
+        child: Container(
+          width: 20.0,
+          height: 20.0,
+          child: CircularProgressIndicator(
             value: event == null
                 ? 0
                 : event.cumulativeBytesLoaded /
