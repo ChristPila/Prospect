@@ -49,3 +49,6 @@ windows/
 linux/
 macos/
 test/
+lib/utils/fakedata.dart
+lib/utils/Parametre.dart
+lib/vue/test.dart
