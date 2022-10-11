@@ -49,9 +49,9 @@ class ProspectModel {
     companyAddress: json["company_address"] == null ? null : json["company_address"],
     companyType: json["company_type"] == null ? null : CompanyType.fromJson(json["company_type"]),
     companyPhone: json["company_phone"] == null ? null : json["company_phone"],
-    offres: json["offres"] == null ? null : List<Offre>.from(json["offres"].map((x) => Offre.fromJson(x))),
+    offres: json["offres"] == null ? [] : List<Offre>.from(json["offres"].map((x) => Offre.fromJson(x))),
     state: json["state"] == null ? null : json["state"],
-    piecesjointes: json["piecesjointes"] == null ? null : List<Piecesjointe>.from(json["piecesjointes"].map((x) => Piecesjointe.fromJson(x))),
+    piecesjointes: json["piecesjointes"] == null ? [] : List<Piecesjointe>.from(json["piecesjointes"].map((x) => Piecesjointe.fromJson(x))),
     remoteId: json["remote_id"] == null ? null : json["remote_id"],
   );
 
@@ -71,6 +71,7 @@ class ProspectModel {
     "remote_id": remoteId == null ? null : remoteId,
   };
 }
+
 
 class Agent {
   Agent({
