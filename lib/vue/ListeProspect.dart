@@ -13,6 +13,9 @@ class ListeProspect extends StatefulWidget {
   State<ListeProspect> createState() => _ProspectState();
 }
 
+
+
+
 class _ProspectState extends State<ListeProspect> {
   EdgeInsets paddingVal = EdgeInsets.symmetric(horizontal: 20, vertical: 5);
   List<String> listeTypesStatut_ = [
@@ -35,10 +38,11 @@ class _ProspectState extends State<ListeProspect> {
   List<ProspectModel> dataProspectCopie = [];
 
   intdata() async {
-    await context.read<ProspectController>().recupererDonneesAPI();
+   // await context.read<ProspectController>().recupererDonneesAPI();
     List<ProspectModel> listOriginalProspect =
         context.read<ProspectController>().data;
     dataProspectCopie = listOriginalProspect;
+    print(dataProspectCopie.length);
     setState(() {});
   }
 
@@ -46,11 +50,11 @@ class _ProspectState extends State<ListeProspect> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async{
+      await context.read<ProspectController>().recupererDonneesAPI();
+      //context.read<ProspectController>().verifierStatusDonneeAPI("remoteId");
       intdata();
-      // code executé une seule fois quand la page est lancée
-      // ne fonctionne pas avec Ctrl+S quand vous voulez actualiser la pge
-      // utilisé pour exploiter la variable context
+
     });
   }
 
@@ -68,6 +72,7 @@ class _ProspectState extends State<ListeProspect> {
           IconButton(
               onPressed: () {
                 intdata();
+                context.read<ProspectController>().recupererDonneesAPI();
               },
               iconSize: 40,
               icon: Icon(Icons.refresh_outlined)),
@@ -76,44 +81,55 @@ class _ProspectState extends State<ListeProspect> {
       body: Column(
         children: <Widget>[
           selectionTypeStatut(context),
-          Expanded(child: listProspectVue(context)),
+          Expanded(
+            child: listProspectVue(context),
+          ),
         ],
       ),
     ));
   }
+
   /*int randomInt() {
     print(Random().nextInt(100 - 0 + 1) + 0);
     return Random().nextInt(100 - 0 + 1) + 0;
   }*/
-  listStatutValider(BuildContext context, List listValider) {
+  /*listStatutValider(BuildContext context, List listValider) {
     return ListView.builder(
       itemCount: listValider.length,
       shrinkWrap: true,
       itemBuilder: (BuildContext context, int index) {
-        return ListTile(
-          onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) =>
-                      DetailProspect(id: listValider[index].id.toString()))),
-          leading: const Icon(
-            Icons.remove_circle,
-            color: Colors.green,
-            size: 35,
-          ),
-          title: Text(
-            'state : ${listValider[index].state}',
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-          subtitle: Row(
-            children: [
-              Text(
-                'companyName: ${listValider[index].companyName}      |       zone: ${listValider[index].zone}',
-                style: const TextStyle(fontSize: 15, color: Colors.black87),
+        return Card(
+          margin: EdgeInsets.symmetric(vertical: 5),
+          child: Container(
+            margin: EdgeInsets.symmetric(horizontal: 5, vertical: 3),
+            padding: EdgeInsets.symmetric(vertical: 2),
+
+            child: ListTile(
+              onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          DetailProspect(id: listValider[index].id.toString()))),
+              leading: const Icon(
+                Icons.remove_circle,
+                color: Colors.green,
+                size: 35,
               ),
-              const SizedBox(width: 20),
-              const InkWell(onTap: null, child: Icon(Icons.mode))
-            ],
+              title: Text(
+                'state : ${listValider[index].state}',
+                style: const TextStyle(fontSize: 15, color: Colors.black87, fontWeight: FontWeight.bold,),
+              ),
+              subtitle: Row(
+                children: [
+                  Text(
+                    "Companie: ${listValider[index].companyName}\nZone: ${listValider[index].zone}",
+                      style: const TextStyle(fontSize: 15, color: Colors.black87),
+                  ),
+                  const SizedBox(width: 20),
+                  const InkWell(onTap: null, child: Icon(Icons.mode))
+                ],
+              ),
+            ),
           ),
         );
       },
@@ -125,30 +141,37 @@ class _ProspectState extends State<ListeProspect> {
       itemCount: listBrouillon.length,
       shrinkWrap: true,
       itemBuilder: (BuildContext context, int index) {
-        return ListTile(
-          onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) =>
-                      DetailProspect(id: listBrouillon[index].id.toString()))),
-          leading: const Icon(
-            Icons.note,
-            color: Colors.yellow,
-            size: 35,
-          ),
-          title: Text(
-            'state : ${listBrouillon[index].state}',
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-          subtitle: Row(
-            children: [
-              Text(
-                'companyName: ${listBrouillon[index].companyName}      |       zone: ${listBrouillon[index].zone}',
-                style: const TextStyle(fontSize: 15, color: Colors.black87),
+        return Card(
+          margin: EdgeInsets.symmetric(vertical: 5),
+          child: Container(
+            margin: EdgeInsets.symmetric(horizontal: 5, vertical: 3),
+            padding: EdgeInsets.symmetric(vertical: 2),
+            child: ListTile(
+              onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          DetailProspect(id: listBrouillon[index].id.toString()))),
+              leading: const Icon(
+                Icons.note,
+                color: Colors.grey,
+                size: 35,
               ),
-              const SizedBox(width: 20),
-              const InkWell(onTap: null, child: Icon(Icons.mode))
-            ],
+              title: Text(
+                'state : ${listBrouillon[index].state}',
+                style: const TextStyle(fontSize: 15, color: Colors.black87, fontWeight: FontWeight.bold,),
+              ),
+              subtitle: Row(
+                children: [
+                  Text(
+                    'Companie: ${listBrouillon[index].companyName} \nZone: ${listBrouillon[index].zone}',
+                      style: const TextStyle(fontSize: 15, color: Colors.black87),
+                  ),
+                  const SizedBox(width: 20),
+                  const InkWell(onTap: null, child: Icon(Icons.mode))
+                ],
+              ),
+            ),
           ),
         );
       },
@@ -174,17 +197,17 @@ class _ProspectState extends State<ListeProspect> {
           ),
           title: Text(
             'state : ${listRejeter[index].state}',
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: const TextStyle(fontSize: 15, color: Colors.black87, fontWeight: FontWeight.bold,),
           ),
           subtitle: Text(
-            'companyName : ${listRejeter[index].companyName}   |    zone: ${listRejeter[index].zone}',
-            style: TextStyle(fontSize: 15, color: Colors.black87),
+            'Companie : ${listRejeter[index].companyName} \nZone: ${listRejeter[index].zone}',
+            style: const TextStyle(fontSize: 15, color: Colors.black87),
           ),
         );
       },
     );
   }
-
+*/
   listProspectVue(BuildContext context) {
     return ListView.builder(
       itemCount: dataProspectCopie.length,
@@ -192,7 +215,7 @@ class _ProspectState extends State<ListeProspect> {
       itemBuilder: (BuildContext context, int index) {
         var prospect = dataProspectCopie[index];
         var icon = Icons.remove_circle;
-        var color = Colors.grey;
+        var color = Colors.blue;
 
         switch (prospect.state) {
           case "2":
@@ -204,8 +227,8 @@ class _ProspectState extends State<ListeProspect> {
             color = Colors.red;
             break;
           case "4":
-            icon = Icons.note;
-            color = Colors.yellow;
+            icon = Icons.edit_note_rounded;
+            color = Colors.grey;
             break;
         }
 
@@ -223,11 +246,11 @@ class _ProspectState extends State<ListeProspect> {
           ),
           title: Text(
             'state : ${prospect.state}',
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: const TextStyle(fontSize: 15, color: Colors.black87, fontWeight: FontWeight.bold,),
           ),
           subtitle: Text(
-            'companyName: ${prospect.companyName}      |       zone: ${prospect.commune?.zone?.name}',
-            style: TextStyle(fontSize: 15, color: Colors.black87),
+            'Companie: ${prospect.companyName}\nZone: ${prospect.commune?.zone?.name}',
+            style: const TextStyle(fontSize: 15, color: Colors.black87),
           ),
         );
       },
@@ -239,27 +262,33 @@ class _ProspectState extends State<ListeProspect> {
       itemCount: listAtente.length,
       shrinkWrap: true,
       itemBuilder: (BuildContext context, int index) {
-        return ListTile(
-          onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => DetailProspect(
-                        id: listAtente[index].id.toString(),
-                      ))),
-          leading: Icon(
-            Icons.remove_circle,
-            color: Colors.grey,
-            size: 35,
-          ),
-          title: Text(
-            'state : ${listAtente[index].state}',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          subtitle: Text(
-            'companyName: ${listAtente[index].companyName}      |       zone: ${listAtente[index].zone}',
-            style: TextStyle(fontSize: 15, color: Colors.black87),
-          ),
-        );
+        return Card(
+            margin: EdgeInsets.symmetric(vertical: 5),
+            child: Container(
+                margin: EdgeInsets.symmetric(horizontal: 5, vertical: 3),
+                padding: EdgeInsets.symmetric(vertical: 2),
+                child: ListTile(
+                  onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => DetailProspect(
+                                id: listAtente[index].id.toString(),
+                              ))),
+                  leading: Icon(
+                    Icons.remove_circle,
+                    color: Colors.blue,
+                    size: 35,
+                  ),
+                  title: Text(
+                    'state : ${listAtente[index].state}',
+                    style: const TextStyle(fontSize: 15, color: Colors.black87, fontWeight: FontWeight.bold,),
+                  ),
+                  subtitle: Text(
+                    "Companie: ${listAtente[index].companyName}\nZone: ${listAtente[index].zone}",
+                    textAlign: TextAlign.start,
+                    style: const TextStyle(fontSize: 15, color: Colors.black87),
+                  ),
+                )));
       },
     );
   }
@@ -283,12 +312,12 @@ class _ProspectState extends State<ListeProspect> {
                 size: 30,
               ),
               title: Text(
-                'companyName: ${prospect.companyName}',
-                style: TextStyle(fontSize: 20, color: Colors.black87),
+                'Companie: ${prospect.companyName}',
+                style: const TextStyle(fontSize: 15, color: Colors.black87),
               ),
               subtitle: Text(
-                'statut :${prospect.state}       |       zone: 1',
-                style: TextStyle(fontSize: 15, color: Colors.black87),
+                'statut :${prospect.state}\nZone: 1',
+                style: const TextStyle(fontSize: 15, color: Colors.black87),
               ),
               trailing: IconButton(
                 onPressed: () {},
@@ -331,3 +360,4 @@ class _ProspectState extends State<ListeProspect> {
     );
   }
 }
+
