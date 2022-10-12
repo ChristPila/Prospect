@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import '../../Controllers/sevenLastDaysController.dart';
 import '../../Models/SevenLastDaysModel.dart';
+import 'dart:ui';
 
 class SevenLastDays extends StatefulWidget {
 
@@ -23,6 +26,8 @@ class _SevenLastDaysState extends State<SevenLastDays> {
   @override
   Widget build(BuildContext context) {
 
+    List<SevenLastDaysModel> SevenLastDaysList =
+        context.watch<SevenLastDaysController>().SevenLastDaysList;
     return SingleChildScrollView(
       child: Container(
         height: 280,
@@ -51,7 +56,7 @@ class _SevenLastDaysState extends State<SevenLastDays> {
               series: <ChartSeries> [
                 ColumnSeries  <SevenLastDaysModel, String>(
                   /*pointColorMapper: (SevenLastDaysModel rapport, _)=>rapport.color,*/
-                  dataSource: OneData,
+                  dataSource: SevenLastDaysList,
                   xValueMapper: (SevenLastDaysModel rapport, _)=>rapport.jour,
                   yValueMapper: (SevenLastDaysModel rapport, _)=>rapport.nombre,
                   dataLabelSettings: DataLabelSettings(isVisible: true),

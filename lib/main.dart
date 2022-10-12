@@ -1,7 +1,9 @@
 import 'package:get_storage/get_storage.dart';
+import 'package:prospect/Views/HomePage.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'Controllers/AuthentifacationController.dart';
+import 'Controllers/sevenLastDaysController.dart';
 import 'Views/IntroPage.dart';
 
 void main() async {
@@ -16,6 +18,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => AuthentificationController()),
+        ChangeNotifierProvider(create: (context) => SevenLastDaysController()),
       ],
       child: MaterialApp(
         title: 'Prospect',
@@ -26,9 +29,9 @@ class MyApp extends StatelessWidget {
               elevation: 0,
               foregroundColor: Colors.white,
             ),
-            accentColor: Colors.lightBlue,
+            accentColor: Colors.deepOrange,
             textTheme: TextTheme(
-                headline1: TextStyle(fontSize: 30.0, color: Colors.lightBlue, fontWeight: FontWeight.bold),
+                headline1: TextStyle(fontSize: 30.0, color: Colors.deepOrange, fontWeight: FontWeight.bold),
                 headline2: TextStyle(
                   fontSize: 24.0,
                   fontWeight: FontWeight.w700,

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ui';
 import 'package:intl/intl.dart';
 
 SevenLastDaysModel SevenLastDaysModelFromJson(String str) =>
@@ -9,7 +10,7 @@ String SevenLastDaysModelToJson(SevenLastDaysModel data) =>
 
 class SevenLastDaysModel {
   SevenLastDaysModel(
-      {this.userId, this.id, this.nombre, this.jour, this.jourFormatted});
+      {this.userId, this.id, this.nombre, this.jour, this.jourFormatted,});
 
   int? userId;
   int? id;
@@ -19,7 +20,6 @@ class SevenLastDaysModel {
 
   factory SevenLastDaysModel.fromJson(Map<String, dynamic> json) {
     var jour = json["jour"] == null ? null : json["jour"];
-    print(jour.runtimeType);
     String? jourFormatted;
     if (jour != null) {
       var data_jour = DateTime.parse(jour);
