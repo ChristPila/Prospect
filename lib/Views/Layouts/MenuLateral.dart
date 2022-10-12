@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../Controllers/AuthentifacationController.dart';
 import '../../Tools/Espace.dart';
 import '../AuthentificationPage.dart';
+import '../PerformancesPage.dart';
 
 class MenuLateral extends StatefulWidget {
   const MenuLateral({Key? key}) : super(key: key);
@@ -48,7 +49,9 @@ class _MenuLateralState extends State<MenuLateral> {
             Icons.work_history,
           ),
           title: const Text('Perfomances'),
-          onTap: () {},
+          onTap: () {
+            naviguerVersPerformance(context);
+          },
         ),
         Divider(
           thickness: 5,
@@ -85,5 +88,11 @@ class _MenuLateralState extends State<MenuLateral> {
         ),
       ],
     );
+  }
+  naviguerVersPerformance(context) {
+    Navigator.pop(context);
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) {
+      return PerformancesPages();
+    }));
   }
 }
