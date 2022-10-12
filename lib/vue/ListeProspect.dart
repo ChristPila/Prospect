@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:prospect/model/ProspectModel.dart';
 import 'package:provider/provider.dart';
 import 'package:prospect/controller/ProspectController.dart';
-import 'package:prospect/vue/ProspectDetail.dart';
+import 'package:prospect/vue/DetailProspect.dart';
 import '../utils/utilitaires.dart';
-import 'ProspectDetail.dart';
+import 'DetailProspect.dart';
 
 class ListeProspect extends StatefulWidget {
   const ListeProspect({Key? key}) : super(key: key);

@@ -3,12 +3,12 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 class Utilitaires {
-  static const Color DEFAULT_COLOR = Colors.orange;
+  static const Color DEFAULT_COLOR = Colors.deepOrange;
 
   // faire ipconfig (ifconfig sur Mac) pour recuperer votre IP de la machine
   // et mettre à jour
   //static const String HOST_URL = "10.224.196.156";
-  static const String STOCKAGE_VERSION ="V44";
+  static const String STOCKAGE_VERSION ="V45";
 
   static String formatAmount(double valeurNumerique) {
     // cette methode peut etre etre remplacée par le package Intl

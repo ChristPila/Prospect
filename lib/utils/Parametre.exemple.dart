@@ -6,7 +6,7 @@ class Parametre{
   static const Rebase =  "api/prospects";
   static const Endpoind = "status";
 
-  
+
 }
 
 

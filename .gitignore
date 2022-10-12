@@ -52,3 +52,4 @@ test/
 lib/utils/fakedata.dart
 lib/utils/Parametre.dart
 lib/vue/test.dart
+/lib/utils/Parametre.dart

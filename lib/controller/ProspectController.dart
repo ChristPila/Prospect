@@ -56,6 +56,9 @@ class ProspectController with ChangeNotifier {
       print("local_data ${data.length}");
       ecritureStockageLocale();
     }
+    else{
+      print("Erreur Reception données");
+    }
     // notifyListeners();
   }
 
@@ -70,13 +73,16 @@ class ProspectController with ChangeNotifier {
     if (reponse.statusCode == 200) {
       var donneesAPI = json.decode(result) as Map;
       var newstate = donneesAPI["data"]["state"];
-      stockage_data[remote_id]["state"] = newstate;
+      stockage_data[remote_id]["state"] =  newstate;
       var tempmapdata = stockage_data.entries
           .map((e) => e.value)
           .toList(); // conversion des donnees fusionnees en liste
       data = tempmapdata.map((e) => ProspectModel.fromJson(e)).toList();
       notifyListeners();
       ecritureStockageLocale();
+    }
+    else{
+      print("Erreur Reception données");
     }
   }
 
