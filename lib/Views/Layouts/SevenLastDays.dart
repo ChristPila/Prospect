@@ -57,7 +57,7 @@ class _SevenLastDaysState extends State<SevenLastDays> {
                 ColumnSeries  <SevenLastDaysModel, String>(
                   /*pointColorMapper: (SevenLastDaysModel rapport, _)=>rapport.color,*/
                   dataSource: SevenLastDaysList,
-                  xValueMapper: (SevenLastDaysModel rapport, _)=>rapport.jour,
+                  xValueMapper: (SevenLastDaysModel rapport, _)=>rapport.jourFormatted,
                   yValueMapper: (SevenLastDaysModel rapport, _)=>rapport.nombre,
                   dataLabelSettings: DataLabelSettings(isVisible: true),
                 )
