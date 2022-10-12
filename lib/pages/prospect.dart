@@ -3,10 +3,20 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:prospect/controller/ActiviteController.dart';
+import 'package:prospect/controller/CommuneController.dart';
+import 'package:prospect/controller/ProspectController.dart';
 import 'package:prospect/controller/ProvinceController.dart';
 import 'package:prospect/controller/OffresController.dart';
+import 'package:prospect/controller/VilleController.dart';
+import 'package:prospect/controller/ZoneController.dart';
+import 'package:prospect/models/ActiviteModel.dart';
+import 'package:prospect/models/CommuneModel.dart';
 import 'package:prospect/models/OffresModel.dart';
+import 'package:prospect/models/ProspectModel.dart';
 import 'package:prospect/models/ProvinceModel.dart';
+import 'package:prospect/models/VilleModel.dart';
+import 'package:prospect/models/ZoneModel.dart';
 import 'package:provider/provider.dart';
 import 'package:signature/signature.dart';
 import 'package:file_picker/file_picker.dart';
@@ -31,19 +41,19 @@ class _ProspectState extends State<Prospect> {
     exportBackgroundColor: Colors.yellowAccent,
   );
   List<ProvinceModel>? provinces;
+  List<ActiviteModel>? activites;
+  List<VilleModel>? villes;
+  List<ZoneModel>? zones;
+  List<CommuneModel>? communes;
   List<OffresModel> offres = [];
-  bool value = false;
+  int prov = 2;
   List selectedData = [];
-  List<String> listeVille = ["Matadi", "Boma","mwanda","lufu","lumbumbashi"];
-  List<String> listezone = ["Funa", "Tshangu"];
-  List<String> listecommune = ["Lemba", "Matete", "Gombe"];
-  List<String> listetype = ["boutique", "pharmacie", "shop",];
-  String? provinceselectionner;
-  String villeSelect = "Matadi";
-  String zoneSelect = "Funa";
-  String communeSelect = "Lemba";
+  static String? provinceselectionner;
+  String? villeSelect;
+  String? zoneSelect;
+  String? communeSelect;
   String offreSelect = "voice call";
-  String typeSelect = "shop";
+  String? typeSelect;
   get floatingActionButton => null;
   get builder => null;
   int currentStep = 0;
@@ -319,13 +329,35 @@ class _ProspectState extends State<Prospect> {
             type: StepperType.horizontal,
             currentStep: currentStep,
             steps: stepList(),
-            onStepContinue: () {
+            onStepContinue: () async {
               final isLastStep =  currentStep == stepList().length - 1;
+              print(isLastStep);
               if (isLastStep) {
                 setState(()=> isCompleted = true);
-                Text("DONNEES ENVOYÉS");
-                print("complete");
-                // ENVOYER LES DONNEES DU PROSPECT AU SERVEUR
+                  Chargement(context);
+                  var data = ProspectModel(
+                      longitude: _position?.longitude.toString(),
+                      latitude: _position?.latitude.toString(),
+                      agentId: "1",
+                      communeId: "1",
+                      zoneId: "1",
+                      villeId: "1",
+                      provinceId: "1",
+                      companyName: company_name.text,
+                      companyAddress: company_adress.text,
+                      companyTypeId: "1",
+                      companyPhone: company_phone.text,
+                      offerId: "1, 2",
+                      state: "1",
+                      remoteId: "12RT567",
+                  );
+                  var response = await context.read<ProspectController>().submitProspect(data).catchError((err){});
+                  Navigator.pop(context);
+                  if(response.statusCode == 200 || response.statusCode == 201){
+                    succesPopUp(context);
+                    return response.body;
+                  }
+                  debugPrint("Succès");
               } else {
                 setState(() => currentStep +=1);
               }
@@ -409,7 +441,12 @@ class _ProspectState extends State<Prospect> {
       ),
       InputDecorator(
           decoration: InputDecoration(
-              label: labelText('Province'),
+              label: Text("Province",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                      fontSize: 20)
+              ),
               border: OutlineInputBorder(),
               contentPadding: EdgeInsets.only(left: 10)),
           child: DropdownButtonHideUnderline(
@@ -419,29 +456,74 @@ class _ProspectState extends State<Prospect> {
             icon: const Icon(Icons.keyboard_arrow_down_rounded),
             items: provinces?.map((prov) {
               return DropdownMenuItem(
-                value: prov.name,
                 child: Text(prov.name),
+                value: prov.id.toString(),
               );
             }).toList(),
             onChanged: (String? newValue) {
-              setState(() {
+              setState(() async {
                 provinceselectionner = newValue!;
+                villes = await RemoteServicesVilles.getVilles(int.parse(provinceselectionner!));
+                if(villes!=null){
+                  setState(() {
+                    isLoad=true;
+                  });
+                }
               });
             },
-          ))),
+          )
+          )
+      ),
     ];
   }
+
+  typeVue() {
+    return [
+      SizedBox(
+        height: 20,
+      ),
+      InputDecorator(
+          decoration: InputDecoration(
+              label: Text(
+                "Type d'activité",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                  fontSize: 20)
+              ),
+              border: OutlineInputBorder(),
+              contentPadding: EdgeInsets.only(left: 10)),
+          child: DropdownButtonHideUnderline(
+              child: DropdownButton(
+                isExpanded: true,
+                value: typeSelect,
+                icon: const Icon(Icons.keyboard_arrow_down_rounded),
+                items: activites?.map((activity) {
+                  return DropdownMenuItem(
+                    value: activity.name,
+                    child: Text(activity.name),
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    typeSelect = newValue!;
+                  });
+                },
+              ))),
+    ];
+  }
+
   getData() async {
-    provinces = await RemoteServices.getProvinces();
+    provinces = await RemoteServicesProv.getProvinces();
     offres = await RemoteServicesOf.getOffres();
-    if(provinces!=null || offres!= null)
+    activites = await RemoteServicesAct.getActivity();
+    if(provinces!=null || offres!= null || activites!= null)
     {
       setState(() {
         isLoad=true;
       });
     }
   }
-
 
   villeVue() {
     return [
@@ -450,26 +532,37 @@ class _ProspectState extends State<Prospect> {
       ),
       InputDecorator(
           decoration: InputDecoration(
-              label: labelText('Ville'),
+              label: Text("Ville",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                      fontSize: 20)
+              ),
               border: OutlineInputBorder(),
               contentPadding: EdgeInsets.only(left: 10)),
           child: DropdownButtonHideUnderline(
               child: DropdownButton(
-            isExpanded: true,
-            value: villeSelect,
-            icon: const Icon(Icons.keyboard_arrow_down_rounded),
-            items: listeVille.map((String items) {
-              return DropdownMenuItem(
-                value: items,
-                child: Text(items),
-              );
-            }).toList(),
-            onChanged: (String? newValue) {
-              setState(() {
-                villeSelect = newValue!;
-              });
-            },
-          ))),
+                isExpanded: true,
+                value: villeSelect,
+                icon: const Icon(Icons.keyboard_arrow_down_rounded),
+                items: villes?.map((city) {
+                  return DropdownMenuItem(
+                    child: Text(city.name),
+                    value: city.id.toString()
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  setState(() async {
+                    villeSelect = newValue!;
+                    zones = await RemoteServicesZone.getZone(int.parse(villeSelect!));
+                    if(zones!=null){
+                      setState(() {
+                        isLoad=true;
+                      });
+                    }
+                  });
+                },
+              ))),
     ];
   }
 
@@ -480,26 +573,37 @@ class _ProspectState extends State<Prospect> {
       ),
       InputDecorator(
           decoration: InputDecoration(
-              label: labelText('Zone'),
+              label: Text("Zone",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                      fontSize: 20)
+              ),
               border: OutlineInputBorder(),
               contentPadding: EdgeInsets.only(left: 10)),
           child: DropdownButtonHideUnderline(
               child: DropdownButton(
-            isExpanded: true,
-            value: zoneSelect,
-            icon: const Icon(Icons.keyboard_arrow_down_rounded),
-            items: listezone.map((String items) {
-              return DropdownMenuItem(
-                value: items,
-                child: Text(items),
-              );
-            }).toList(),
-            onChanged: (String? newValue) {
-              setState(() {
-                zoneSelect = newValue!;
-              });
-            },
-          ))),
+                isExpanded: true,
+                value: zoneSelect,
+                icon: const Icon(Icons.keyboard_arrow_down_rounded),
+                items: zones?.map((z) {
+                  return DropdownMenuItem(
+                      child: Text(z.name),
+                      value: z.id.toString()
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  setState(() async {
+                    zoneSelect = newValue!;
+                    communes = await RemoteServicesCommune.getCommune(int.parse(zoneSelect!));
+                    if(communes!=null){
+                      setState(() {
+                        isLoad=true;
+                      });
+                    }
+                  });
+                },
+              ))),
     ];
   }
 
@@ -510,26 +614,31 @@ class _ProspectState extends State<Prospect> {
       ),
       InputDecorator(
           decoration: InputDecoration(
-              label: labelText('Commune'),
+              label: Text("Commune",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                      fontSize: 20)
+              ),
               border: OutlineInputBorder(),
               contentPadding: EdgeInsets.only(left: 10)),
           child: DropdownButtonHideUnderline(
               child: DropdownButton(
-            isExpanded: true,
-            value: zoneSelect,
-            icon: const Icon(Icons.keyboard_arrow_down_rounded),
-            items: listezone.map((String items) {
-              return DropdownMenuItem(
-                value: items,
-                child: Text(items),
-              );
-            }).toList(),
-            onChanged: (String? newValue) {
-              setState(() {
-                zoneSelect = newValue!;
-              });
-            },
-          ))),
+                isExpanded: true,
+                value: communeSelect,
+                icon: const Icon(Icons.keyboard_arrow_down_rounded),
+                items: communes?.map((com) {
+                  return DropdownMenuItem(
+                      child: Text(com.name),
+                      value: com.id.toString()
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    communeSelect = newValue!;
+                  });
+                },
+              ))),
     ];
   }
 
@@ -574,36 +683,6 @@ class _ProspectState extends State<Prospect> {
               )),
         ),
       ),
-    ];
-  }
-
-  typeVue() {
-    return [
-      SizedBox(
-        height: 20,
-      ),
-      InputDecorator(
-          decoration: InputDecoration(
-              label: labelText('Type'),
-              border: OutlineInputBorder(),
-              contentPadding: EdgeInsets.only(left: 10)),
-          child: DropdownButtonHideUnderline(
-              child: DropdownButton(
-            isExpanded: true,
-            value: typeSelect,
-            icon: const Icon(Icons.keyboard_arrow_down_rounded),
-            items: listetype.map((String items) {
-              return DropdownMenuItem(
-                value: items,
-                child: Text(items),
-              );
-            }).toList(),
-            onChanged: (String? newValue) {
-              setState(() {
-                typeSelect = newValue!;
-              });
-            },
-          ))),
     ];
   }
 
@@ -1130,6 +1209,61 @@ class _ProspectState extends State<Prospect> {
         ),
       );
     }).toList());
+  }
+
+  Chargement(BuildContext context, [int duree = 1500]) async {
+    ouvrirDialog(context);
+  }
+
+  ouvrirDialog(context) {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Text("Chargement en cours..."),
+        );
+      },
+    );
+  }
+
+  succesPopUp(BuildContext context){
+    showDialog(
+        context: context,
+        builder: (BuildContext context){
+          return AlertDialog(
+            title: Center(child: Text("ENVOI DU PROSPECT")),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.check_box,
+                  color: Colors.green,
+                  size: 50,
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Text(
+                  "Prospects envoyés",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold, color: Colors.green
+                  ),
+                )
+              ],
+            ),
+            actions: <Widget>[
+              new TextButton(
+                  onPressed: (){
+                    Navigator.pop(context);
+                  },
+                  child: new Text("OK")
+              )
+            ],
+          );
+        }
+    );
   }
 
 

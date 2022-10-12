@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:prospect/vues/prospect.dart';
+import 'package:prospect/controller/ProspectController.dart';
+import 'package:prospect/pages/prospect.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,21 +15,26 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-          primarySwatch: Colors.orange,
-          primaryColor: Color.fromRGBO(255, 102, 0, 1),
-          scaffoldBackgroundColor: Colors.grey[50],
-          appBarTheme: AppBarTheme(
-            systemOverlayStyle: SystemUiOverlayStyle(
-              statusBarColor: Colors.transparent,
-              statusBarIconBrightness: Brightness.dark,
-              statusBarBrightness: Brightness.light,
-            ),
-          )),
-      home: Prospect(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => ProspectController())
+      ],
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+            primarySwatch: Colors.orange,
+            primaryColor: Color.fromRGBO(255, 102, 0, 1),
+            scaffoldBackgroundColor: Colors.grey[50],
+            appBarTheme: AppBarTheme(
+              systemOverlayStyle: SystemUiOverlayStyle(
+                statusBarColor: Colors.transparent,
+                statusBarIconBrightness: Brightness.dark,
+                statusBarBrightness: Brightness.light,
+              ),
+            )),
+        home: Prospect(),
+      ),
     );
   }
 }
