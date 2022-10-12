@@ -185,7 +185,7 @@ class _AuthentificationPageState extends State<AuthentificationPage> {
                               });
                               if (value != null) {
                                 final snackBar =
-                                    SnackBar(content: Text("Login Successful"));
+                                    SnackBar(content: Text("Authentification réussie"));
                                 scaffoldKey.currentState!
                                     .showSnackBar(snackBar);
 
@@ -199,11 +199,10 @@ class _AuthentificationPageState extends State<AuthentificationPage> {
                                 }));
                               } else {
                                 final snackBar =
-                                    SnackBar(content: Text(value.error));
+                                    SnackBar(content: Text('Problème de connexion'));
                                 scaffoldKey.currentState!
                                     .showSnackBar(snackBar);
-                              }
-                              ;
+                              };
                             }
                           },
                           child: Text(
