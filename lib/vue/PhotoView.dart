@@ -23,7 +23,6 @@ class _PhotoviewState extends State<Photoview> {
     super.initState();
     pageController = PageController(initialPage: widget.position);
   }
-
   @override
   Widget build(BuildContext context) {
     return Container(

@@ -28,13 +28,13 @@ class ProspectController with ChangeNotifier {
     var url = Uri.parse(
         '${Parametre.Scheme}://${Parametre.Host}:${Parametre.Port}/${Parametre.Rebase}');
 
-    var reponse = await http.get(url).timeout(Duration(seconds: 15));
+    var reponse = await http.get(url).timeout(Duration(seconds: 5));
     String result = reponse.body;
     print("result $result");
     if (reponse.statusCode == 200) {
-      var donneesAPImap = json.decode(result)
-          as Map;
-      var donneesAPI = donneesAPImap ["response"] as List<dynamic>;//conversion donnees api en liste
+      var donneesAPImap = json.decode(result) as Map;
+      var donneesAPI = donneesAPImap["response"]
+          as List<dynamic>; //conversion donnees api en liste
       print("result ${donneesAPI.length}");
       Map tempmap = Map.fromIterable(donneesAPI,
           key: (v) => v['remote_id'].toString(),
@@ -47,6 +47,7 @@ class ProspectController with ChangeNotifier {
           .map((e) => e.value)
           .toList(); // conversion des donnees fusionnees en liste
 
+
       data = tempmapdata
           .map((e) => ProspectModel.fromJson(e))
           .toList(); //  conversion des donnees fusionnees en liste de prospect_model
@@ -55,8 +56,7 @@ class ProspectController with ChangeNotifier {
 
       print("local_data ${data.length}");
       ecritureStockageLocale();
-    }
-    else{
+    } else {
       print("Erreur Reception données");
     }
     // notifyListeners();
@@ -73,15 +73,14 @@ class ProspectController with ChangeNotifier {
     if (reponse.statusCode == 200) {
       var donneesAPI = json.decode(result) as Map;
       var newstate = donneesAPI["data"]["state"];
-      stockage_data[remote_id]["state"] =  newstate;
+      stockage_data[remote_id]["state"] = newstate;
       var tempmapdata = stockage_data.entries
           .map((e) => e.value)
           .toList(); // conversion des donnees fusionnees en liste
       data = tempmapdata.map((e) => ProspectModel.fromJson(e)).toList();
       notifyListeners();
       ecritureStockageLocale();
-    }
-    else{
+    } else {
       print("Erreur Reception données");
     }
   }
