@@ -31,7 +31,7 @@ class ProspectController with ChangeNotifier {
     var reponse = await http.get(url).timeout(Duration(seconds: 5));
     String result = reponse.body;
     print("result $result");
-    if (reponse.statusCode == 200 ||  reponse.statusCode == 201) {
+    if (reponse.statusCode == 200) {
       var donneesAPImap = json.decode(result) as Map;
       var donneesAPI = donneesAPImap["response"]
           as List<dynamic>; //conversion donnees api en liste
