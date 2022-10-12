@@ -54,7 +54,6 @@ class _DossiersState extends State<Dossiers> {
       ),
     );
   }
-
   tab1(clientrecup) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
