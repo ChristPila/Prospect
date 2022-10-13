@@ -1,21 +1,22 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import '../model/ProspectModel.dart';
-import 'PhotoView.dart';
+import '../Models/ProspectModel.dart';
+import 'PhotoViewPage.dart';
 
-class Dossiers extends StatefulWidget {
-  Dossiers({required this.clientrecup});
+class DossiersPage extends StatefulWidget {
+  DossiersPage({required this.clientrecup});
 
   ProspectModel clientrecup;
 
   @override
-  State<Dossiers> createState() => _DossiersState(clientrecup: clientrecup);
+  State<DossiersPage> createState() =>
+      _DossiersPageState(clientrecup: clientrecup);
 }
 
-class _DossiersState extends State<Dossiers> {
+class _DossiersPageState extends State<DossiersPage> {
   ProspectModel clientrecup;
 
-  _DossiersState({required this.clientrecup});
+  _DossiersPageState({required this.clientrecup});
 
   @override
   Widget build(BuildContext context) {
@@ -49,12 +50,13 @@ class _DossiersState extends State<Dossiers> {
           ),
         ),
         body: TabBarView(
-          children: [tab1(widget.clientrecup), tab2(widget.clientrecup)],
+          children: [ZoneImg(widget.clientrecup), ZoneDoc(widget.clientrecup)],
         ),
       ),
     );
   }
-  tab1(clientrecup) {
+
+  ZoneImg(clientrecup) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
@@ -69,7 +71,7 @@ class _DossiersState extends State<Dossiers> {
     );
   }
 
-  tab2(clientrecup) {
+  ZoneDoc(clientrecup) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
@@ -101,7 +103,7 @@ class _DossiersState extends State<Dossiers> {
             onTap: () => Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => Photoview(
+                    builder: (context) => PhotoviewPage(
                           position: index,
                           listimage: clientrecup.piecesjointes,
                         ))),

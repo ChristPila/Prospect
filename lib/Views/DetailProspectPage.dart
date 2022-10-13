@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:prospect/controller/ProspectController.dart';
-import '../model/ProspectModel.dart';
-import '../utils/utilitaires.dart';
-import 'Dossiers.dart';
+import 'package:prospect/Controllers/ProspectController.dart';
+import '../Models/ProspectModel.dart';
+import '../Tools/utilitaires.dart';
+import '../Views/DossiersPage.dart';
 
-class DetailProspect extends StatefulWidget {
-  const DetailProspect({
+class DetailProspectPage extends StatefulWidget {
+  const DetailProspectPage({
     super.key,
     required this.id,
   });
@@ -14,10 +14,10 @@ class DetailProspect extends StatefulWidget {
   final String id;
 
   @override
-  State<DetailProspect> createState() => _DetailProspectState();
+  State<DetailProspectPage> createState() => _DetailProspectPageState();
 }
 
-class _DetailProspectState extends State<DetailProspect> {
+class _DetailProspectPageState extends State<DetailProspectPage> {
   @override
   Widget build(BuildContext context) {
     context.read<ProspectController>().statut();
@@ -414,7 +414,8 @@ class _DetailProspectState extends State<DetailProspect> {
                                 onPressed: () {
                                   Navigator.push(context,
                                       MaterialPageRoute(builder: (_) {
-                                    return Dossiers(clientrecup: clientrecup);
+                                    return DossiersPage(
+                                        clientrecup: clientrecup);
                                   }));
                                 },
                                 icon: Icon(Icons.folder_copy),

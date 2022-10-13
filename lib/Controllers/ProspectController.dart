@@ -3,10 +3,10 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:prospect/utils/Parametre.dart';
-import '../model/ProspectModel.dart';
-import '../utils/utilitaires.dart';
-import '../vue/test.dart';
+import '../Models/ProspectModel.dart';
+import '../Tools/Parametres.dart';
+import '../Tools/utilitaires.dart';
+import '../Views/test.dart';
 import 'package:http/http.dart' as http;
 
 class ProspectController with ChangeNotifier {
@@ -26,7 +26,7 @@ class ProspectController with ChangeNotifier {
   recupererDonneesAPI() async {
     await lecturestockageLocale();
     var url = Uri.parse(
-        '${Parametre.Scheme}://${Parametre.Host}:${Parametre.Port}/${Parametre.Rebase}');
+        '${Parametres.scheme}://${Parametres.host}:${Parametres.port}/${Parametres.rebase}');
 
     var reponse = await http.get(url).timeout(Duration(seconds: 5));
     String result = reponse.body;
@@ -62,13 +62,13 @@ class ProspectController with ChangeNotifier {
 
   verifierStatusDonneeAPI(String remote_id) async {
     var url = Uri.parse(
-        '${Parametre.Scheme}://${Parametre.Host}:${Parametre.Port}/${Parametre.Rebase}/$remote_id/${Parametre.Endpoind}');
+        '${Parametres.scheme}://${Parametres.host}:${Parametres.port}/${Parametres.rebase}/$remote_id/${Parametres.endPoind}');
 
     print("url $url");
     var reponse = await http.get(url).timeout(Duration(seconds: 5));
     String result = reponse.body;
     print("result $result");
-    if (reponse.statusCode == 200 ||  reponse.statusCode == 201) {
+    if (reponse.statusCode == 200 || reponse.statusCode == 201) {
       var donneesAPI = json.decode(result) as Map;
       var newstate = donneesAPI["data"]["state"];
       stockage_data[remote_id]["state"] = newstate;

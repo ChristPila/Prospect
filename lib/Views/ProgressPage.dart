@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
-class Progress extends StatelessWidget {
+class ProgressPage extends StatelessWidget {
   final Widget child;
   final bool inAsyncCall;
   final double opacity;
   final Color color;
   final Animation<Color>? valueColor;
-  Progress({
+
+  ProgressPage({
     Key? key,
     required this.child,
     required this.inAsyncCall,
@@ -14,6 +15,7 @@ class Progress extends StatelessWidget {
     this.color = Colors.grey,
     this.valueColor,
   }) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     List<Widget> widgetList = <Widget>[];

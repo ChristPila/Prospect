@@ -31,6 +31,7 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 /build/
+lib/Tools/Parametres.dart
 
 # Web related
 lib/generated_plugin_registrant.dart
@@ -49,9 +50,10 @@ windows/
 linux/
 macos/
 test/
-lib/utils/fakedata.dart
-lib/utils/Parametre.dart
-lib/vue/test.dart
-/lib/utils/Parametre.dart
+lib/Tools/fakedata.dart
+lib/Tools/Parametre.dart
+lib/Views/test.dart
+/lib/Tools/Parametre.dart
 assets/Shed-bro.png
 assets/Shed-pana.png
+lib/Tools/Parametres.dart

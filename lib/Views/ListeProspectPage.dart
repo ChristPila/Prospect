@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:prospect/model/ProspectModel.dart';
+import 'package:prospect/Models/ProspectModel.dart';
 import 'package:provider/provider.dart';
-import 'package:prospect/controller/ProspectController.dart';
-import 'package:prospect/vue/DetailProspect.dart';
-import '../utils/utilitaires.dart';
-import 'DetailProspect.dart';
-import 'Progress.dart';
+import 'package:prospect/Controllers/ProspectController.dart';
+import '../Tools/utilitaires.dart';
+import 'DetailProspectPage.dart';
+import 'ProgressPage.dart';
 
-class ListeProspect extends StatefulWidget {
-  const ListeProspect({Key? key}) : super(key: key);
+class ListeProspectPage extends StatefulWidget {
+  const ListeProspectPage({Key? key}) : super(key: key);
 
   @override
-  State<ListeProspect> createState() => _ProspectState();
+  State<ListeProspectPage> createState() => _ProspectState();
 }
 
-class _ProspectState extends State<ListeProspect> {
+class _ProspectState extends State<ListeProspectPage> {
   EdgeInsets paddingVal = EdgeInsets.symmetric(horizontal: 20, vertical: 5);
   List<String> listeTypesStatut_ = [
     "Tous",
@@ -55,15 +54,15 @@ class _ProspectState extends State<ListeProspect> {
       intdata();
     });
   }
+
   @override
   Widget build(BuildContext context) {
-    return Progress(
+    return ProgressPage(
       child: build2(context),
-        inAsyncCall: isapicallprocess,
-        opacity: 0.3,
+      inAsyncCall: isapicallprocess,
+      opacity: 0.3,
     );
   }
-
 
   @override
   Widget build2(BuildContext context) {
@@ -77,21 +76,21 @@ class _ProspectState extends State<ListeProspect> {
         title: Text("ProspectsStorage (${listProspect.length})"),
         actions: [
           IconButton(
-              onPressed: ()async {
+              onPressed: () async {
                 intdata();
                 setState(() {
-                  isapicallprocess= true;
+                  isapicallprocess = true;
                 });
                 var value = await context
-                    .read<ProspectController>().recupererDonneesAPI();
+                    .read<ProspectController>()
+                    .recupererDonneesAPI();
                 print('value $value');
                 setState(() {
-                  isapicallprocess= false;
+                  isapicallprocess = false;
                 });
-                if (value != null){
+                if (value != null) {
                   SnackBar(content: Text('Données téléchargées avec succès'));
-
-                }else{
+                } else {
                   SnackBar(content: Text('Echec de la connexion'));
                 }
               },
@@ -99,8 +98,8 @@ class _ProspectState extends State<ListeProspect> {
               icon: Icon(Icons.refresh_outlined)),
         ],
       ),
-      body: Column(
-        children: <Widget>[
+         body: Column(
+         children: <Widget>[
           selectionTypeStatut(context),
           listProspectVue(context),
         ],
@@ -137,7 +136,7 @@ class _ProspectState extends State<ListeProspect> {
             onTap: () => Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => DetailProspect(
+                    builder: (context) => DetailProspectPage(
                           id: prospect.id.toString(),
                         ))),
             leading: Icon(
@@ -177,7 +176,7 @@ class _ProspectState extends State<ListeProspect> {
                   onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => DetailProspect(
+                          builder: (context) => DetailProspectPage(
                                 id: listAtente[index].id.toString(),
                               ))),
                   leading: Icon(
@@ -237,6 +236,7 @@ class _ProspectState extends State<ListeProspect> {
           );
         });
   }
+
   selectionTypeStatut(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(left: 200),

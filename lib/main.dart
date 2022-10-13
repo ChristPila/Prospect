@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:prospect/utils/utilitaires.dart';
-import 'package:prospect/vue/ListeProspect.dart';
 import 'package:provider/provider.dart';
+import 'Controllers/AuthentifacationController.dart';
+import 'Controllers/LastThreeDayController.dart';
+import 'Controllers/LastThreeMonthsController.dart';
+import 'Controllers/sevenLastDaysController.dart';
+import 'Views/IntroPage.dart';
+import 'Controllers/ProspectController.dart';
 
-import 'controller/ProspectController.dart';
-
-void main() async{
-  await GetStorage.init(Utilitaires.STOCKAGE_VERSION);
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await GetStorage.init();
   runApp(MyApp());
 }
 
@@ -20,22 +22,38 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (context) => ProspectController()),
+          ChangeNotifierProvider(
+              create: (context) => AuthentificationController()),
+          ChangeNotifierProvider(
+              create: (context) => SevenLastDaysController()),
+          ChangeNotifierProvider(create: (context) => LastThreeDayController()),
+          ChangeNotifierProvider(
+              create: (context) => LastThreeMonthsController()),
         ],
         child:MaterialApp(
-          title: 'ProspectAppl',
+          title: 'Prospect',
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
-              primarySwatch: Colors.orange,
-              primaryColor: Color.fromRGBO(255, 102, 0, 1),
-              scaffoldBackgroundColor: Colors.grey[50],
-              appBarTheme: AppBarTheme(
-                systemOverlayStyle: SystemUiOverlayStyle(
-                  statusBarColor: Colors.transparent,
-                  statusBarIconBrightness: Brightness.dark,
-                  statusBarBrightness: Brightness.light,
-                ),
-              )),
-          home: ListeProspect(),
+              primaryColor: Colors.white,
+              floatingActionButtonTheme: FloatingActionButtonThemeData(
+                elevation: 0,
+                foregroundColor: Colors.white,
+              ),
+              accentColor: Colors.deepOrange,
+              textTheme: TextTheme(
+                  headline1: TextStyle(fontSize: 30.0,
+                      color: Colors.deepOrange,
+                      fontWeight: FontWeight.bold),
+                  headline2: TextStyle(
+                    fontSize: 24.0,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.black,
+                  ),
+                  bodyText1: TextStyle(
+                      fontSize: 14.0,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.black))),
+          home: IntroPage(),
     ),
     );
   }
@@ -65,7 +83,7 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
           ],
         ),
-      ),
-    );
+      ),);
   }
+
 }
