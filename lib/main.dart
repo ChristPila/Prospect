@@ -6,6 +6,7 @@ import 'Controllers/AuthentifacationController.dart';
 import 'Controllers/LastThreeDayController.dart';
 import 'Controllers/LastThreeMonthsController.dart';
 import 'Controllers/sevenLastDaysController.dart';
+import 'Views/FormulaireProspectPage.dart';
 import 'Views/IntroPage.dart';
 
 void main() async {
@@ -44,7 +45,7 @@ class MyApp extends StatelessWidget {
                     fontSize: 14.0,
                     fontWeight: FontWeight.w400,
                     color: Colors.black)), colorScheme: ColorScheme.fromSwatch().copyWith(secondary: Colors.deepOrange)),
-       home: IntroPage(),
+       home: FormulaireProspectPage(),
       )
     );
   }
