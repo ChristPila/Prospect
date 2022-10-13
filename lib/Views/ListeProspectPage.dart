@@ -66,7 +66,7 @@ class _ProspectState extends State<ListeProspectPage> {
 
   @override
   Widget build2(BuildContext context) {
-    context.read<ProspectController>().statut();
+    // context.read<ProspectController>().statut();
     List<ProspectModel> listProspect = context.watch<ProspectController>().data;
 
     return SafeArea(
@@ -98,8 +98,8 @@ class _ProspectState extends State<ListeProspectPage> {
               icon: Icon(Icons.refresh_outlined)),
         ],
       ),
-         body: Column(
-         children: <Widget>[
+      body: Column(
+        children: <Widget>[
           selectionTypeStatut(context),
           listProspectVue(context),
         ],
@@ -137,7 +137,7 @@ class _ProspectState extends State<ListeProspectPage> {
                 context,
                 MaterialPageRoute(
                     builder: (context) => DetailProspectPage(
-                          id: prospect.id.toString(),
+                          data: prospect,
                         ))),
             leading: Icon(
               icon,
@@ -177,7 +177,7 @@ class _ProspectState extends State<ListeProspectPage> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => DetailProspectPage(
-                                id: listAtente[index].id.toString(),
+                                data: listAtente[index],
                               ))),
                   leading: Icon(
                     Icons.remove_circle,

@@ -26,24 +26,24 @@ class _DossiersPageState extends State<DossiersPage> {
         appBar: AppBar(
           title: Text("Dossiers du prospect"),
           elevation: 0,
-          backgroundColor: Colors.transparent,
+          backgroundColor: Colors.deepOrange,
           bottom: TabBar(
             tabs: [
               Tab(
                 child: Text(
                   "Images",
-                  style: TextStyle(color: Colors.black),
+                  style: TextStyle(color: Colors.white),
                 ),
-                icon: Icon(Icons.browse_gallery_outlined, color: Colors.black),
+                icon: Icon(Icons.browse_gallery_outlined, color: Colors.white),
               ),
               Tab(
                 child: Text(
                   "Documents",
-                  style: TextStyle(color: Colors.black),
+                  style: TextStyle(color: Colors.white),
                 ),
                 icon: Icon(
                   Icons.document_scanner,
-                  color: Colors.black,
+                  color: Colors.white,
                 ),
               ),
             ],

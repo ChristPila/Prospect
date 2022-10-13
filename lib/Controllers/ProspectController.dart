@@ -111,7 +111,7 @@ class ProspectController with ChangeNotifier {
     await stockage.write("PROSPECT", json.encode(stockage_data));
   }
 
-  ajoutListValider() {
+ /* ajoutListValider() {
     var resultat = data.where((e) => e.state == "valider").toList();
     listValider = resultat;
   }
@@ -136,7 +136,7 @@ class ProspectController with ChangeNotifier {
     ajoutListRejeter();
     ajoutListAtente();
     ajoutListBrouillon();
-  }
+  }*/
 }
 
 void main() async {
