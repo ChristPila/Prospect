@@ -32,6 +32,7 @@ migrate_working_dir/
 .pub/
 /build/
 lib/utils/Parametres.dart
+lib/Tools/Parametres.dart
 
 # Web related
 lib/generated_plugin_registrant.dart
