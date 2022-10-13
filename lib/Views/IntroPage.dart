@@ -12,14 +12,14 @@ class _IntroPageState extends State<IntroPage> {
   @override
   void initState() {
     super.initState();
-    animationRetarde();
+    navigationVersAuthentification();
   }
-  animationRetarde() async {
+  navigationVersAuthentification() async {
     await Future.delayed(Duration(milliseconds: 500));
     afficher = true;
     setState(() {});
     await Future.delayed(Duration(milliseconds: 3000));
-    Navigator.push(context, MaterialPageRoute(builder: (_) {
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) {
       return AuthentificationPage();
     }));
   }
@@ -39,16 +39,18 @@ class _IntroPageState extends State<IntroPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset(
-                    'assets/icon_orange.png',
-                    width: 200,
-                  ),
+                  iconAplication(),
                 ],
               ),
             ),
           )
-
       ),
+    );
+  }
+  iconAplication(){
+    return Image.asset(
+      'assets/icon_orange.png',
+      width: 200,
     );
   }
 }
