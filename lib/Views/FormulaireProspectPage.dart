@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:image_picker/image_picker.dart';
+//import 'package:image_picker/image_picker.dart';
 import 'package:prospect/Controllers/ActiviteController.dart';
 import 'package:prospect/Controllers/CommuneController.dart';
 import 'package:prospect/Controllers/OffresController.dart';
@@ -18,28 +18,28 @@ import 'package:prospect/models/ProvinceModel.dart';
 import 'package:prospect/models/VilleModel.dart';
 import 'package:prospect/models/ZoneModel.dart';
 import 'package:provider/provider.dart';
-import 'package:signature/signature.dart';
-import 'package:file_picker/file_picker.dart';
+//import 'package:signature/signature.dart';
+//import 'package:file_picker/file_picker.dart';
 
-class Prospect extends StatefulWidget {
-  const Prospect({Key? key}) : super(key: key);
+class FormulaireProspectPage extends StatefulWidget {
+  const FormulaireProspectPage({Key? key}) : super(key: key);
 
   @override
-  State<Prospect> createState() => _ProspectState();
+  State<FormulaireProspectPage> createState() => _FormulaireProspectPageState();
 }
 
-class _ProspectState extends State<Prospect> {
+class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
   //TextEditingController company_name = TextEditingController();
 
   Position? _position;
   Uint8List? exportedImage;
   bool isLoad = false;
 
-  SignatureController controller = SignatureController(
+  /*SignatureController controller = SignatureController(
     penStrokeWidth: 3,
     penColor: Colors.red,
     exportBackgroundColor: Colors.yellowAccent,
-  );
+  );*/
   List<ProvinceModel>? provinces;
   List<ActiviteModel>? activites;
   List<VilleModel>? villes;
@@ -281,16 +281,16 @@ class _ProspectState extends State<Prospect> {
 
 
   //Liste des images
-  List<XFile>? imageFileList = [];
+  /*List<XFile>? imageFileList = [];
   XFile? imageFile1;
   PlatformFile? file;
   PlatformFile? file1;
 
   //Liste des documents
-  List<File> lisDoc = [];
+  List<File> lisDoc = [];*/
 
   //here filepicker
-  void openFiles() async {
+  /*void openFiles() async {
     FilePickerResult? resultFile = await FilePicker.platform.pickFiles(
       allowMultiple: true,
       type: FileType.custom,
@@ -302,7 +302,7 @@ class _ProspectState extends State<Prospect> {
       lisDoc.addAll(files);
       setState(() {});
     } else {}
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -791,7 +791,7 @@ class _ProspectState extends State<Prospect> {
     );
   }
 
-  imgVue() {
+  /*imgVue() {
     return Container(
       height: 100,
       //color: Colors.red,
@@ -944,7 +944,7 @@ class _ProspectState extends State<Prospect> {
           );
   }
 
-  Widget imageProfile2() {
+  /*Widget imageProfile2() {
     return Stack(
       children: <Widget>[
         imageFile1 == null
@@ -1074,9 +1074,9 @@ class _ProspectState extends State<Prospect> {
         color: Colors.black12,
       ),
     );
-  }
+  }*/
 
-  Widget bottomSheet() {
+  /*Widget bottomSheet() {
     return Container(
       height: 100.0,
       width: MediaQuery.of(context).size.width,
@@ -1117,9 +1117,9 @@ class _ProspectState extends State<Prospect> {
         ],
       ),
     );
-  }
+  }*/
 
-  _getFromGallery() async {
+  /*_getFromGallery() async {
     List<XFile>? pickedFile = await ImagePicker()
         .pickMultiImage(maxWidth: 1800, maxHeight: 1800, imageQuality: 12);
     if (pickedFile!.isNotEmpty) {
@@ -1128,9 +1128,9 @@ class _ProspectState extends State<Prospect> {
       });
     }
     Navigator.pop(context);
-  }
+  }*/
 
-  _getFromCamera() async {
+  /*_getFromCamera() async {
     PickedFile? pickedFile = await ImagePicker().getImage(
       source: ImageSource.camera,
       maxWidth: 1800,
@@ -1142,7 +1142,7 @@ class _ProspectState extends State<Prospect> {
       });
     }
     Navigator.pop(context);
-  }
+  }*/
 
   labelText(String text) {
     return Text(
@@ -1193,7 +1193,7 @@ class _ProspectState extends State<Prospect> {
         ),
       ],
     );
-  }
+  }*/
 
   visualiseroffre() {
     return Wrap(

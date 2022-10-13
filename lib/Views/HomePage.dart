@@ -34,7 +34,7 @@ class _HomePageState extends State<HomePage> {
         appBar: AppBar(
           elevation: 0,
           backgroundColor: Colors.black,
-          title: Text("Tableau de bord "),
+          title: Text("Tableau de bord"),
           actions: [
             IconButton(
                 onPressed: () {},
@@ -46,13 +46,15 @@ class _HomePageState extends State<HomePage> {
             )
           ],
         ),
-        body: Column(
-          children: [
-            SizedBox(height: 11),
-            Statistique(),
-            SevenLastDays(),
-            DayToDate(),
-          ],
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              SizedBox(height: 11),
+              Statistique(),
+              SevenLastDays(),
+              DayToDate(),
+            ],
+          ),
         ),
       ),
     );
