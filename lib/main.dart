@@ -1,11 +1,11 @@
 import 'package:get_storage/get_storage.dart';
-import 'package:prospect/Controllers/AuthentifacationController.dart';
-import 'package:prospect/Controllers/ProspectController.dart';
+import 'package:prospect/Views/HomePage.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:prospect/Views/FormulaireProspectPage.dart';
-import 'package:provider/provider.dart';
+import 'Controllers/AuthentifacationController.dart';
+import 'Controllers/LastThreeDayController.dart';
+import 'Controllers/LastThreeMonthsController.dart';
+import 'Controllers/sevenLastDaysController.dart';
 import 'Views/IntroPage.dart';
 
 void main() async {
@@ -19,57 +19,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => ProspectController())
-      ],
-      child: MaterialApp(
-        title: 'Flutter Demo',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-            primarySwatch: Colors.orange,
-            primaryColor: Color.fromRGBO(255, 102, 0, 1),
-            scaffoldBackgroundColor: Colors.grey[50],
-            appBarTheme: AppBarTheme(
-              systemOverlayStyle: SystemUiOverlayStyle(
-                statusBarColor: Colors.transparent,
-                statusBarIconBrightness: Brightness.dark,
-                statusBarBrightness: Brightness.light,
-              ),
-            )),
-        home: Prospect(),
-      ),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        centerTitle: true,
-        backgroundColor: Colors.transparent,
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(
-              'assets/icon_orange.png',
-              width: 200,
-    return MultiProvider(
-      providers: [
         ChangeNotifierProvider(create: (context) => AuthentificationController()),
+        ChangeNotifierProvider(create: (context) => SevenLastDaysController()),
+        ChangeNotifierProvider(create: (context) => LastThreeDayController()),
+        ChangeNotifierProvider(create: (context) => LastThreeMonthsController()),
       ],
       child: MaterialApp(
         title: 'Prospect',
@@ -80,9 +33,9 @@ class _MyHomePageState extends State<MyHomePage> {
               elevation: 0,
               foregroundColor: Colors.white,
             ),
-            accentColor: Colors.lightBlue,
+            accentColor: Colors.deepOrange,
             textTheme: TextTheme(
-                headline1: TextStyle(fontSize: 30.0, color: Colors.lightBlue, fontWeight: FontWeight.bold),
+                headline1: TextStyle(fontSize: 30.0, color: Colors.deepOrange, fontWeight: FontWeight.bold),
                 headline2: TextStyle(
                   fontSize: 24.0,
                   fontWeight: FontWeight.w700,
