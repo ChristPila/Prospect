@@ -51,3 +51,11 @@ windows/
 linux/
 macos/
 test/
+lib/Tools/fakedata.dart
+lib/Tools/Parametre.dart
+lib/Views/test.dart
+/lib/Tools/Parametre.dart
+assets/Shed-bro.png
+assets/Shed-pana.png
+lib/Tools/Parametres.dart
+lib/Tools/Documents/
