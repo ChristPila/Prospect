@@ -3,9 +3,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 //import 'package:gallery_saver/files.dart';
 import 'package:http/http.dart' as http;
-import 'package:prospect/models/ProspectModel.dart';
-import 'package:prospect/models/prosModel.dart';
-import 'package:prospect/utils/Parametres.dart';
+import 'package:prospect/Models/ProspectModel.dart';
+
+import '../Models/prosModel.dart';
+import '../utils/Parametres.dart';
 
 class ProspectController with ChangeNotifier {
   // liste initiale
