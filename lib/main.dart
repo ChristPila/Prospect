@@ -45,7 +45,7 @@ class MyApp extends StatelessWidget {
                     fontSize: 14.0,
                     fontWeight: FontWeight.w400,
                     color: Colors.black)), colorScheme: ColorScheme.fromSwatch().copyWith(secondary: Colors.deepOrange)),
-       home: FormulaireProspectPage(),
+       home: IntroPage(),
       )
     );
   }
