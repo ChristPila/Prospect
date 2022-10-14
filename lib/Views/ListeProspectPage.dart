@@ -122,6 +122,7 @@ class _ProspectState extends State<ListeProspectPage> {
               icon = Icons.check;
               color = Colors.green;
               break;
+
             case "3":
               icon = Icons.close;
               color = Colors.red;

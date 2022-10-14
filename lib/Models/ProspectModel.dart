@@ -260,4 +260,5 @@ class Piecesjointe {
         "path": path == null ? null : path,
         "type": type == null ? null : type,
       };
+
 }
