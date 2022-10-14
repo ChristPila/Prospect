@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:prospect/Models/ProspectModel.dart';
 import 'package:provider/provider.dart';
 import 'package:prospect/Controllers/ProspectController.dart';
-import '../Tools/utilitaires.dart';
+import '../Tools/Utilitaires.dart';
 import 'DetailProspectPage.dart';
 import 'ProgressPage.dart';
 
@@ -73,7 +73,7 @@ class _ProspectState extends State<ListeProspectPage> {
         child: Scaffold(
       appBar: AppBar(
         backgroundColor: Utilitaires.DEFAULT_COLOR,
-        title: Text("ProspectsStorage (${listProspect.length})"),
+        title: Text("Liste des prospects (${listProspect.length})"),
         actions: [
           IconButton(
               onPressed: () async {

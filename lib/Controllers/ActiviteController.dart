@@ -1,5 +1,5 @@
 import 'package:prospect/models/ActiviteModel.dart';
-import '../utils/Parametres.dart';
+import '../Tools/Parametres.dart';
 import 'package:http/http.dart' as http;
 
 class RemoteServicesAct{
