@@ -43,6 +43,7 @@ dependencies:
   entry: ^0.0.7
   intl: ^0.17.0
   syncfusion_flutter_charts: ^20.3.48
+  geolocator: ^9.0.2
 
 
 dev_dependencies:
@@ -96,3 +97,4 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:prospect/Models/ProspectModel.dart';
+import 'package:prospect/Tools/Parametres.dart';
 import 'package:provider/provider.dart';
 import 'package:prospect/Controllers/ProspectController.dart';
-import '../Tools/utilitaires.dart';
 import 'DetailProspectPage.dart';
 import 'ProgressPage.dart';
 
@@ -72,8 +72,8 @@ class _ProspectState extends State<ListeProspectPage> {
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
-        backgroundColor: Utilitaires.DEFAULT_COLOR,
-        title: Text("ProspectsStorage (${listProspect.length})"),
+        backgroundColor: Parametres.DEFAULT_COLOR,
+        title: Text("Liste des prospects (${listProspect.length})"),
         actions: [
           IconButton(
               onPressed: () async {
@@ -122,6 +122,7 @@ class _ProspectState extends State<ListeProspectPage> {
               icon = Icons.check;
               color = Colors.green;
               break;
+
             case "3":
               icon = Icons.close;
               color = Colors.red;

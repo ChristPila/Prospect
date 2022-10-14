@@ -14,7 +14,7 @@ class ProspectModel {
     this.commune,
     this.companyName,
     this.companyAddress,
-    this.companyType,
+    this.TypeActivities,
     this.companyPhone,
     this.offres,
     this.state,
@@ -29,7 +29,7 @@ class ProspectModel {
   Commune? commune;
   String? companyName;
   String? companyAddress;
-  CompanyType? companyType;
+  CompanyType? TypeActivities;
   String? companyPhone;
   List<Offre>? offres;
 
@@ -47,7 +47,7 @@ class ProspectModel {
         companyName: json["company_name"] == null ? null : json["company_name"],
         companyAddress:
             json["company_address"] == null ? null : json["company_address"],
-        companyType: json["company_type"] == null
+        TypeActivities: json["company_type"] == null
             ? null
             : CompanyType.fromJson(json["company_type"]),
         companyPhone:
@@ -71,7 +71,7 @@ class ProspectModel {
         "commune": commune == null ? null : commune!.toJson(),
         "company_name": companyName == null ? null : companyName,
         "company_address": companyAddress == null ? null : companyAddress,
-        "company_type": companyType == null ? null : companyType!.toJson(),
+        "company_type": TypeActivities == null ? null : TypeActivities!.toJson(),
         "company_phone": companyPhone == null ? null : companyPhone,
         "offres": offres == null
             ? null
@@ -260,4 +260,5 @@ class Piecesjointe {
         "path": path == null ? null : path,
         "type": type == null ? null : type,
       };
+
 }

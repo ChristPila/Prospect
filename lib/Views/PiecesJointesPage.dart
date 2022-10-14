@@ -3,20 +3,20 @@ import 'package:flutter/material.dart';
 import '../Models/ProspectModel.dart';
 import 'PhotoViewPage.dart';
 
-class DossiersPage extends StatefulWidget {
-  DossiersPage({required this.clientrecup});
+class PiecesJointesPage extends StatefulWidget {
+  PiecesJointesPage({required this.clientrecup});
 
   ProspectModel clientrecup;
 
   @override
-  State<DossiersPage> createState() =>
-      _DossiersPageState(clientrecup: clientrecup);
+  State<PiecesJointesPage> createState() =>
+      _PiecesJointesPageState(clientrecup: clientrecup);
 }
 
-class _DossiersPageState extends State<DossiersPage> {
+class _PiecesJointesPageState extends State<PiecesJointesPage> {
   ProspectModel clientrecup;
 
-  _DossiersPageState({required this.clientrecup});
+  _PiecesJointesPageState({required this.clientrecup});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class _DossiersPageState extends State<DossiersPage> {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: Text("Dossiers du prospect"),
+          title: Text("Pieces Jointes Du Prospect"),
           elevation: 0,
           backgroundColor: Colors.deepOrange,
           bottom: TabBar(

@@ -3,10 +3,9 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:prospect/Tools/Test.dart';
 import '../Models/ProspectModel.dart';
 import '../Tools/Parametres.dart';
-import '../Tools/utilitaires.dart';
-import '../Views/test.dart';
 import 'package:http/http.dart' as http;
 
 class ProspectController with ChangeNotifier {
@@ -16,7 +15,7 @@ class ProspectController with ChangeNotifier {
   List<ProspectModel> listRejeter = [];
   List<ProspectModel> listAtente = [];
   List<ProspectModel> listBrouillon = [];
-  final stockage = GetStorage(Utilitaires.STOCKAGE_VERSION);
+  final stockage = GetStorage(Parametres.STOCKAGE_VERSION);
 
   int randomInt() {
     print(Random().nextInt(100 - 0 + 1) + 0);
