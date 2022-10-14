@@ -34,7 +34,7 @@ class _HomePageState extends State<HomePage> {
         appBar: AppBar(
           elevation: 0,
           backgroundColor: Colors.black,
-          title: Text("Tableau de bord "),
+          title: Text("Tableau de bord"),
           actions: [
             IconButton(
                 onPressed: () {},

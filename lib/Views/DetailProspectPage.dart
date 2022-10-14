@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:prospect/Controllers/ProspectController.dart';
 import '../Models/ProspectModel.dart';
-import '../Tools/utilitaires.dart';
-import '../Views/DossiersPage.dart';
+import '../Tools/Utilitaires.dart';
+import '../Views/PiecesJointesPage.dart';
 
 class DetailProspectPage extends StatefulWidget {
   const DetailProspectPage({
@@ -49,30 +49,30 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
     };
     return Scaffold(
       appBar: AppBar(
-          title: const Text("Prospect Details"),
+          title: const Text("DetailsProspect"),
           centerTitle: false,
           backgroundColor: Utilitaires.DEFAULT_COLOR,
           actions: [
             clientrecup.state != "1"
                 ? IconButton(
-                    onPressed: () {},
-                    icon: Icon(
-                      states[clientrecup.state]["icon"],
-                      color: states[clientrecup.state]["color"],
-                      size: 30,
-                    ))
+                onPressed: () {},
+                icon: Icon(
+                  states[clientrecup.state]["icon"],
+                  color: states[clientrecup.state]["color"],
+                  size: 30,
+                ))
                 : TextButton(
-                    onPressed: () {
-                      context
-                          .read<ProspectController>()
-                          .verifierStatusDonneeAPI(clientrecup.remoteId!);
-                    },
-                    child: Text("Verification",
-                        style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 17,
-                            fontWeight: FontWeight.bold,
-                            decoration: TextDecoration.none)))
+                onPressed: () {
+                  context
+                      .read<ProspectController>()
+                      .verifierStatusDonneeAPI(clientrecup.remoteId!);
+                },
+                child: Text("Verification",
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 17,
+                        fontWeight: FontWeight.bold,
+                        decoration: TextDecoration.none)))
           ]),
       body: SingleChildScrollView(
         child: Column(
@@ -98,23 +98,17 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
               height: 0.5,
             ),
             companyadresse(),
-            Divider(
-                thickness: 1
-            ),
+            Divider(thickness: 1),
             SizedBox(
               height: 0.5,
             ),
             companyphone(),
-            Divider(
-                thickness: 1
-            ),
+            Divider(thickness: 1),
             SizedBox(
               height: 0.5,
             ),
             companyoffre(),
-            Divider(
-                thickness: 1
-            ),
+            Divider(thickness: 1),
             SizedBox(
               height: 0.5,
             ),
@@ -126,23 +120,17 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
               height: 0.5,
             ),
             companyville(),
-            Divider(
-                thickness: 1
-            ),
+            Divider(thickness: 1),
             SizedBox(
               height: 0.5,
             ),
             companycommune(),
-            Divider(
-                thickness: 1
-            ),
+            Divider(thickness: 1),
             SizedBox(
               height: 0.5,
             ),
             companyzone(),
-            Divider(
-                thickness: 1
-            ),
+            Divider(thickness: 1),
             SizedBox(
               height: 0.5,
             ),
@@ -155,9 +143,7 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
               height: 0.5,
             ),
             agent(),
-            Divider(
-                thickness: 1
-            ),
+            Divider(thickness: 1),
             SizedBox(
               height: 0.5,
             ),
@@ -198,7 +184,8 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
       ),
     );
   }
-  companytype(){
+
+  companytype() {
     return Container(
       padding: const EdgeInsets.all(10),
       child: Row(
@@ -220,7 +207,8 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
       ),
     );
   }
-  companyadresse(){
+
+  companyadresse() {
     return Container(
       padding: const EdgeInsets.all(10),
       child: Row(
@@ -242,8 +230,9 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
       ),
     );
   }
-  companyphone(){
-    return  Container(
+
+  companyphone() {
+    return Container(
       padding: const EdgeInsets.all(10),
       child: Row(
         children: [
@@ -264,8 +253,9 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
       ),
     );
   }
-  companyoffre(){
-   return Container(
+
+  companyoffre() {
+    return Container(
       padding: const EdgeInsets.all(10),
       child: Row(
         children: [
@@ -286,7 +276,8 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
       ),
     );
   }
-  companyprovince(){
+
+  companyprovince() {
     return Container(
       padding: const EdgeInsets.all(10),
       child: Row(
@@ -298,8 +289,7 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
                   fontSize: 15,
                   decoration: TextDecoration.none)),
           Spacer(),
-          Text(
-              "${clientrecup.commune?.zone!.ville!.province!.name}",
+          Text("${clientrecup.commune?.zone!.ville!.province!.name}",
               style: const TextStyle(
                   color: Colors.black87,
                   fontSize: 15,
@@ -309,7 +299,8 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
       ),
     );
   }
-  companyville(){
+
+  companyville() {
     return Container(
       padding: const EdgeInsets.all(10),
       child: Row(
@@ -331,8 +322,9 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
       ),
     );
   }
-  companycommune(){
-   return Container(
+
+  companycommune() {
+    return Container(
       padding: const EdgeInsets.all(10),
       child: Row(
         children: [
@@ -353,8 +345,9 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
       ),
     );
   }
-  companyzone(){
-   return Container(
+
+  companyzone() {
+    return Container(
       padding: const EdgeInsets.all(10),
       child: Row(
         children: [
@@ -375,7 +368,8 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
       ),
     );
   }
-  localisation1(){
+
+  localisation1() {
     return Text("Localisation :",
         style: const TextStyle(
             color: Colors.black87,
@@ -383,8 +377,9 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
             fontWeight: FontWeight.bold,
             decoration: TextDecoration.none));
   }
-  localisation2(){
-   return Container(
+
+  localisation2() {
+    return Container(
       padding: const EdgeInsets.all(10),
       child: Row(
         children: [
@@ -395,8 +390,7 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
                   fontSize: 15,
                   decoration: TextDecoration.none)),
           Spacer(),
-          Text(
-              "${clientrecup.latitude};${clientrecup.longitude}",
+          Text("${clientrecup.latitude};${clientrecup.longitude}",
               style: const TextStyle(
                   color: Colors.black87,
                   fontSize: 15,
@@ -406,7 +400,8 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
       ),
     );
   }
-  agent(){
+
+  agent() {
     return Container(
       padding: const EdgeInsets.all(10),
       child: Row(
@@ -428,33 +423,29 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
       ),
     );
   }
-  boutonpiecesjointes(){
+
+  boutonpiecesjointes() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
-          margin: EdgeInsets.only(
-              left: 15, top: 10, right: 15, bottom: 10),
-          child: FlatButton.icon(
+          margin: EdgeInsets.only(left: 15, top: 10, right: 15, bottom: 10),
+          child: TextButton.icon(
             onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (_) {
-                    return DossiersPage(clientrecup: clientrecup);
-                  }));
+              Navigator.push(context, MaterialPageRoute(builder: (_) {
+                return PiecesJointesPage(clientrecup: clientrecup);
+              }));
             },
             icon: Icon(Icons.folder_copy,color: Colors.white),
-            label: Text(
-              "Pieces Jointes",
-              style: TextStyle(
-                  color: Colors.white, fontSize: 20),
+            label: Text("Pieces Jointes"),
+            style: ButtonStyle(
+                foregroundColor: MaterialStateProperty.all(Colors.white),
+                backgroundColor: MaterialStateProperty.all(Colors.deepOrange),
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(50)),
+                )
             ),
-            color: Colors.deepOrange,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(50)),
-            padding: EdgeInsets.only(
-                left: 20, top: 8, right: 40, bottom: 8),
-          ),
-        ),
+          ),)
       ],
     );
   }
