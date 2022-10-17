@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'Controllers/AuthentifacationController.dart';
 import 'Controllers/LastThreeDayController.dart';
 import 'Controllers/LastThreeMonthsController.dart';
+import 'Controllers/LastThreeWeeksController.dart';
 import 'Controllers/sevenLastDaysController.dart';
 import 'Views/IntroPage.dart';
 
@@ -23,6 +24,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => SevenLastDaysController()),
         ChangeNotifierProvider(create: (context) => LastThreeDayController()),
         ChangeNotifierProvider(create: (context) => LastThreeMonthsController()),
+        ChangeNotifierProvider(create: (context) => LastThreeWeeksController()),
       ],
       child: MaterialApp(
         title: 'Prospect',
