@@ -9,4 +9,5 @@ class Parametres{
   static const String endThreeLastDays = "/api/lastThreeDays";
   static const String endThreeLastMonths = "/api/lastThreeMonths";
   static const String endThreeLastWeeks = "/api/lastThreeWeeks";
+  static const String endDayToDate = "/api/dayToDate";
 }*/

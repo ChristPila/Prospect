@@ -3,6 +3,7 @@ import 'package:prospect/Views/HomePage.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'Controllers/AuthentifacationController.dart';
+import 'Controllers/DayToDateController.dart';
 import 'Controllers/LastThreeDayController.dart';
 import 'Controllers/LastThreeMonthsController.dart';
 import 'Controllers/LastThreeWeeksController.dart';
@@ -25,6 +26,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => LastThreeDayController()),
         ChangeNotifierProvider(create: (context) => LastThreeMonthsController()),
         ChangeNotifierProvider(create: (context) => LastThreeWeeksController()),
+        ChangeNotifierProvider(create: (context) => DayToDateController()),
       ],
       child: MaterialApp(
         title: 'Prospect',
