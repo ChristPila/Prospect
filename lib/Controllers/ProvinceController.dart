@@ -1,6 +1,6 @@
 import 'package:http/http.dart' as http;
+import 'package:prospect/Tools/Parametres.dart';
 import 'package:prospect/models/ProvinceModel.dart';
-import 'package:prospect/utils/Parametres.dart';
 
 class RemoteServicesProv{
   static getProvinces() async {
