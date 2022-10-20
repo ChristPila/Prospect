@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:prospect/Views/FormulaireProspectPage.dart';
+import 'package:prospect/Views/IntroPage.dart';
 import 'package:provider/provider.dart';
 import '../../Controllers/AuthentifacationController.dart';
 import '../../Tools/Espace.dart';
@@ -35,7 +37,9 @@ class _MenuLateralState extends State<MenuLateral> {
             Icons.people,
           ),
           title: const Text('Visites'),
-          onTap: () {},
+          onTap: () {
+            naviguerVersVisite(context);
+          },
         ),
         ListTile(
           leading: Icon(
@@ -102,6 +106,13 @@ class _MenuLateralState extends State<MenuLateral> {
     Navigator.pop(context);
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) {
       return ListeProspectPage();
+    }));
+  }
+
+  naviguerVersVisite(context) {
+    Navigator.pop(context);
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) {
+      return FormulaireProspectPage();
     }));
   }
 }

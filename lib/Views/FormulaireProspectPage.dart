@@ -18,6 +18,8 @@ import 'package:prospect/models/ProvinceModel.dart';
 import 'package:prospect/models/VilleModel.dart';
 import 'package:prospect/models/ZoneModel.dart';
 import 'package:provider/provider.dart';
+
+import '../Controllers/FormulaireProspectController.dart';
 //import 'package:signature/signature.dart';
 //import 'package:file_picker/file_picker.dart';
 
@@ -308,90 +310,7 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
   Widget build(BuildContext context) {
     print(offres.map((e) => e.value).toList());
     print(selectedData.map((e) => e).toList());
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-            centerTitle: true,
-            backgroundColor: Colors.white10,
-            title: Text(
-              "Nouveau Prospect",
-              style: TextStyle(
-                color: Colors.black87,
-                fontSize: 25,
-              ),
-            )),
-        body: isCompleted ? buildCompleted()
-            : Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(primary: Colors.orange),
-          ),
-          child: Stepper(
-            type: StepperType.horizontal,
-            currentStep: currentStep,
-            steps: stepList(),
-            onStepContinue: () async {
-              final isLastStep =  currentStep == stepList().length - 1;
-              print(isLastStep);
-              if (isLastStep) {
-                setState(()=> isCompleted = true);
-                  Chargement(context);
-                  var data = ProspectModel(
-                      longitude: _position?.longitude.toString(),
-                      latitude: _position?.latitude.toString(),
-                      agentId: "1",
-                      communeId: "1",
-                      zoneId: "1",
-                      villeId: "1",
-                      provinceId: "1",
-                      companyName: company_name.text,
-                      companyAddress: company_adress.text,
-                      companyTypeId: "1",
-                      companyPhone: company_phone.text,
-                      offerId: "1, 2",
-                      state: "1",
-                      remoteId: "12RT567",
-                  );
-                  var response = await context.read<ProspectController>().submitProspect(data).catchError((err){});
-                  Navigator.pop(context);
-                  if(response.statusCode == 200 || response.statusCode == 201){
-                    succesPopUp(context);
-                    return response.body;
-                  }
-                  debugPrint("Succès");
-              } else {
-                setState(() => currentStep +=1);
-              }
-            },
-            onStepTapped: (step) => setState(() => currentStep = step),
-            onStepCancel: currentStep == 0 ? null : () => setState(() => currentStep -=1),
-            controlsBuilder: (BuildContext context, ControlsDetails details) {
-              final isLastStep = currentStep == stepList().length - 1;
-              return Container(
-                child: Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: ElevatedButton(
-                        child: Text(isLastStep ? "CONFIRMER" : "SUIVANT"),
-                        onPressed: details.onStepContinue,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    if (currentStep != 0)
-                    Expanded(
-                      child: ElevatedButton(
-                        child: Text("PRECEDENT"),
-                        onPressed: details.onStepCancel,
-                      ),
-                    ),
-                  ],
-                ),
-
-              );
-            }
-          ),
-        ),
-      ),
-    );
+    return nouveauProspect();
   }
 
   Widget buildCompleted() {
@@ -421,6 +340,97 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
       }
     }
     return await Geolocator.getCurrentPosition();
+  }
+
+  nouveauProspect(){
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+            centerTitle: true,
+            backgroundColor: Colors.white10,
+            title: Text(
+              "Nouveau Prospect",
+              style: TextStyle(
+                color: Colors.black87,
+                fontSize: 25,
+              ),
+            )),
+        body: isCompleted ? buildCompleted()
+            : Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.light(primary: Colors.orange),
+          ),
+          child: Stepper(
+              type: StepperType.horizontal,
+              currentStep: currentStep,
+              steps: stepList(),
+              onStepContinue: () async {
+                final isLastStep =  currentStep == stepList().length - 1;
+                print(isLastStep);
+                if (isLastStep) {
+                  setState(()=> isCompleted = true);
+                  Chargement(context);
+                  var data = ProspectModel(
+                    longitude: _position?.longitude.toString(),
+                    latitude: _position?.latitude.toString(),
+                    agent: Agent(),
+                    commune: Commune(id: int.parse(communeSelect!),
+                      zone: Zone(id: int.parse(zoneSelect!),
+                        ville: Ville(id: int.parse(villeSelect!),
+                          province: Province(id: int.parse(provinceselectionner!)
+                          )
+                        )
+                      )
+                    ),
+                    companyName: company_name.text,
+                    companyAddress: company_adress.text,
+                    companyType: CompanyType(id: 1),
+                    companyPhone: company_phone.text,
+                    offres: [],
+                    state: "1",
+                    remoteId: "12RT567",
+                  );
+                  var response = await context.read<FormulaireProspectController>().submitProspect(data).catchError((err){});
+                  Navigator.pop(context);
+                  if(response.statusCode == 200 || response.statusCode == 201){
+                    succesPopUp(context);
+                    return response.body;
+                  }
+                  debugPrint("Succès");
+                } else {
+                  setState(() => currentStep +=1);
+                }
+              },
+              onStepTapped: (step) => setState(() => currentStep = step),
+              onStepCancel: currentStep == 0 ? null : () => setState(() => currentStep -=1),
+              controlsBuilder: (BuildContext context, ControlsDetails details) {
+                final isLastStep = currentStep == stepList().length - 1;
+                return Container(
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: ElevatedButton(
+                          child: Text(isLastStep ? "CONFIRMER" : "SUIVANT"),
+                          onPressed: details.onStepContinue,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      if (currentStep != 0)
+                        Expanded(
+                          child: ElevatedButton(
+                            child: Text("PRECEDENT"),
+                            onPressed: details.onStepCancel,
+                          ),
+                        ),
+                    ],
+                  ),
+
+                );
+              }
+          ),
+        ),
+      ),
+    );
   }
 
   localisation(){

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:prospect/Controllers/FormulaireProspectController.dart';
 import 'package:provider/provider.dart';
 import 'Controllers/AuthentifacationController.dart';
 import 'Controllers/LastThreeDayController.dart';
@@ -29,6 +30,7 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (context) => LastThreeDayController()),
           ChangeNotifierProvider(
               create: (context) => LastThreeMonthsController()),
+          ChangeNotifierProvider(create: (context) => FormulaireProspectController()),
         ],
         child:MaterialApp(
           title: 'Prospect',
