@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:prospect/Views/FormulaireProspectPage.dart';
 import 'package:prospect/Views/IntroPage.dart';
 import 'package:provider/provider.dart';
 import '../../Controllers/AuthentifacationController.dart';
 import '../../Tools/Espace.dart';
 import '../AuthentificationPage.dart';
+import '../ListeProspectPage.dart';
 import '../PerformancesPage.dart';
 
 class MenuLateral extends StatefulWidget {
@@ -17,7 +19,7 @@ class MenuLateral extends StatefulWidget {
 class _MenuLateralState extends State<MenuLateral> {
   @override
   Widget build(BuildContext context) {
-    return ListView(
+    return Column(
       children: [
         DrawerHeader(
             decoration: BoxDecoration(color: Colors.deepOrange),
@@ -35,14 +37,18 @@ class _MenuLateralState extends State<MenuLateral> {
             Icons.people,
           ),
           title: const Text('Visites'),
-          onTap: () {},
+          onTap: () {
+            naviguerVersVisite(context);
+          },
         ),
         ListTile(
           leading: Icon(
             Icons.drafts_outlined,
           ),
           title: const Text('Brouillons'),
-          onTap: () {},
+          onTap: () {
+            naviguerVersBrouillons(context);
+          },
         ),
         ListTile(
           leading: Icon(
@@ -70,7 +76,8 @@ class _MenuLateralState extends State<MenuLateral> {
           title: const Text('Profil'),
           onTap: () {},
         ),
-        Espace(hauteur: 220),
+        //Espace(hauteur: 220),
+        Spacer(),
         Divider(
           thickness: 5,
         ),
@@ -93,6 +100,19 @@ class _MenuLateralState extends State<MenuLateral> {
     Navigator.pop(context);
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) {
       return PerformancesPages();
+    }));
+  }
+  naviguerVersBrouillons(context) {
+    Navigator.pop(context);
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) {
+      return ListeProspectPage();
+    }));
+  }
+
+  naviguerVersVisite(context) {
+    Navigator.pop(context);
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) {
+      return FormulaireProspectPage();
     }));
   }
 }

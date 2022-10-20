@@ -17,7 +17,8 @@ class AuthentificationController with ChangeNotifier {
   authentifier(Map data) async {
 
     var headers = {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Accept':'application/json'
     };
 
     var url = Uri(
@@ -26,13 +27,16 @@ class AuthentificationController with ChangeNotifier {
         port: Parametres.port,
         path: Parametres.endPointLogin,
         );
-    try {
+    print('url $url');
+    print('data $data');
       var response = await http
-          .post(url, body: jsonEncode(data), headers: headers)
-          .timeout(Duration(seconds: 5));
+          .post(url, body: json.encode(data)
+          , headers: headers
+      )
+          .timeout(Duration(seconds: 10));
+
       if (response.statusCode == 200 ) {
         var dataFromApi = response.body;
-        print('datafromApi => $dataFromApi');
         var dataFromApi1 = json.decode(dataFromApi);
         token = dataFromApi1['token'];
         print('token => $token');
@@ -44,11 +48,6 @@ class AuthentificationController with ChangeNotifier {
       } else {
         return null;
       }
-    } on Exception catch (e, s) {
-      print("$e");
-      print("$s");
-      return null;
-    }
   }
 
   session() {

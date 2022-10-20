@@ -37,8 +37,14 @@ dependencies:
   provider: ^6.0.3
   http: ^0.13.5
   get_storage: ^2.0.3
+  cached_network_image: ^3.2.1
+  faker: ^2.0.0
+  photo_view: ^0.14.0
+  entry: ^0.0.7
   intl: ^0.17.0
   syncfusion_flutter_charts: ^20.3.48
+  geolocator: ^9.0.2
+
 
 dev_dependencies:
   flutter_test:
@@ -64,8 +70,7 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-      - assets/
-  #   - images/a_dot_ham.jpeg
+    - assets/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
