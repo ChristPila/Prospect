@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
+import '../Controllers/DayToDateController.dart';
 import '../Controllers/sevenLastDaysController.dart';
 import 'Layouts/DayToDate.dart';
 import 'Layouts/MenuLateral.dart';
@@ -20,6 +21,7 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<SevenLastDaysController>().getReportData();
+      context.read<DayToDateController>().getReportData();
     });
   }
 
@@ -37,7 +39,10 @@ class _HomePageState extends State<HomePage> {
           title: Text("Tableau de bord"),
           actions: [
             IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  context.read<SevenLastDaysController>().getReportData();
+                  context.read<DayToDateController>().getReportData();
+                },
                 iconSize: 40,
                 icon: Icon(
                   Icons.refresh,

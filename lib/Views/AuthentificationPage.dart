@@ -12,8 +12,8 @@ class AuthentificationPage extends StatefulWidget {
 }
 
 class _AuthentificationPageState extends State<AuthentificationPage> {
-  TextEditingController email = TextEditingController(text: "divinenagonjo@gmail.com");
-  TextEditingController password = TextEditingController(text: "123456789");
+  TextEditingController email = TextEditingController(text: "admin@admin.com");
+  TextEditingController password = TextEditingController(text: "123456");
 
   bool hidePassword = true;
   bool isApiCallProcess = false;

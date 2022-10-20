@@ -1,28 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:prospect/Models/SevenLastDaysModel.dart';
+import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import '../../Controllers/DayToDateController.dart';
+import '../../Models/DayToDateModel.dart';
 
 class DayToDate extends StatefulWidget {
 
   @override
   State<DayToDate> createState() => _DayToDateState();
 }
+
 class _DayToDateState extends State<DayToDate> {
-
-  List<SevenLastDaysModel> OneData = [
-    SevenLastDaysModel(jour: 'Jeudi', nombre: 850,/* color: Colors.blue*/),
-    SevenLastDaysModel(jour: 'Vendredi', nombre: 300, /*color: Colors.blue*/),
-    SevenLastDaysModel(jour: 'samadi', nombre: 400, /*color: Colors.blue*/),
-  ];
-
-  List<SevenLastDaysModel> TwoData = [
-    SevenLastDaysModel(jour: 'Jeudi', nombre: 700, /*color: Colors.red*/),
-    SevenLastDaysModel(jour: 'Vendredi', nombre: 600, /*color: Colors.red*/),
-    SevenLastDaysModel(jour: 'samadi', nombre: 500, /*color: Colors.red*/),
-
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -31,44 +20,52 @@ class _DayToDateState extends State<DayToDate> {
       child: Card(
         shadowColor: Colors.black,
         elevation: 8,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(25)
-        ),
-        child:Container(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        child: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors : [Colors.white24, Colors.white10],
+              colors: [Colors.white24, Colors.white10],
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
             ),
           ),
-          padding: EdgeInsets.all(24),
-          child: SfCartesianChart(
-            primaryXAxis: CategoryAxis(),
-            title:
-            ChartTitle(
-              text: 'Day to Date',
-            ),
-            series: <ChartSeries> [
-              ColumnSeries  <SevenLastDaysModel, String>(
-                /*pointColorMapper: (SevenLastDaysModel rapport, _)=>rapport.color,*/
-                dataSource: OneData,
-                xValueMapper: (SevenLastDaysModel rapport, _)=>rapport.jour,
-                yValueMapper: (SevenLastDaysModel rapport, _)=>rapport.nombre,
-                dataLabelSettings: DataLabelSettings(isVisible: true),
-              ),
-              ColumnSeries  <SevenLastDaysModel, String>(
-                /*pointColorMapper: (SevenLastDaysModel rapport, _)=>rapport.color,*/
-                dataSource: TwoData,
-                xValueMapper: (SevenLastDaysModel rapport, _)=>rapport.jour,
-                yValueMapper: (SevenLastDaysModel rapport, _)=>rapport.nombre,
-                dataLabelSettings: DataLabelSettings(isVisible: true),
-              ),
-            ],
-          ),
+          padding: EdgeInsets.all(10),
+          child: daytodateChart(),
         ),
       ),
     );
   }
-}
 
+  daytodateChart() {
+    DayToDateModel rapportGlobale =
+        context.watch<DayToDateController>().raportDayToDate;
+    return SfCartesianChart(
+      primaryXAxis: CategoryAxis(),
+
+      title:
+      ChartTitle(
+          text: 'Day to Date',
+      ),
+
+      series: <ChartSeries>[
+        ColumnSeries<RapportSemaineActuelle, String>(
+          dataSource: rapportGlobale.rapportSemaineActuelle ?? [],
+          xValueMapper: (RapportSemaineActuelle rapport, _) {
+            return rapport.jourFormatted;
+          },
+          yValueMapper: (RapportSemaineActuelle rapport, _) => rapport.nombre,
+          dataLabelSettings: DataLabelSettings(isVisible: true),
+          name: 'Semaine actuelle', color: Color.fromRGBO(8, 142, 255, 1)
+        ),
+        ColumnSeries<RapportSemainePassee, String>(
+          dataSource: rapportGlobale.rapportSemainePassee ?? [],
+          xValueMapper: (RapportSemainePassee rapport, _) =>
+              rapport.jourFormatted,
+          yValueMapper: (RapportSemainePassee rapport, _) => rapport.nombre,
+          dataLabelSettings: DataLabelSettings(isVisible: true),
+          name: 'Semaine passée',
+        ),
+      ],
+    );
+  }
+}
