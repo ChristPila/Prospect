@@ -10,6 +10,7 @@ import 'Controllers/LastThreeWeeksController.dart';
 import 'Controllers/sevenLastDaysController.dart';
 import 'Views/IntroPage.dart';
 import 'Controllers/ProspectController.dart';
+import 'Views/UserProfilePage.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -48,6 +49,9 @@ class MyApp extends StatelessWidget {
             ),
             textTheme: TextTheme(
                 headline1: TextStyle(fontSize: 30.0, color: Colors.deepOrange, fontWeight: FontWeight.bold),
+                headline3: TextStyle(fontSize: 20.0, color: Colors.deepOrange, fontWeight: FontWeight.bold),
+                headline6: TextStyle(fontSize: 17.0, color: Colors.black54, fontWeight: FontWeight.bold),
+                headline5 : TextStyle(fontSize: 25.0, color: Colors.black54, fontWeight: FontWeight.bold),
                 headline2: TextStyle(
                   fontSize: 24.0,
                   fontWeight: FontWeight.w700,
@@ -57,7 +61,7 @@ class MyApp extends StatelessWidget {
                     fontSize: 14.0,
                     fontWeight: FontWeight.w400,
                     color: Colors.black)), colorScheme: ColorScheme.fromSwatch().copyWith(secondary: Colors.deepOrange)),
-       home: IntroPage(),
+       home: UserProfilePage(),
       )
     );
   }

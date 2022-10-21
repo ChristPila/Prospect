@@ -8,6 +8,7 @@ import '../../Tools/Espace.dart';
 import '../AuthentificationPage.dart';
 import '../ListeProspectPage.dart';
 import '../PerformancesPage.dart';
+import '../UserProfilePage.dart';
 
 class MenuLateral extends StatefulWidget {
   const MenuLateral({Key? key}) : super(key: key);
@@ -74,7 +75,9 @@ class _MenuLateralState extends State<MenuLateral> {
             Icons.account_box,
           ),
           title: const Text('Profil'),
-          onTap: () {},
+          onTap: () {
+            naviguerVersProfilUser(context);
+          },
         ),
         //Espace(hauteur: 220),
         Spacer(),
@@ -113,6 +116,13 @@ class _MenuLateralState extends State<MenuLateral> {
     Navigator.pop(context);
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) {
       return FormulaireProspectPage();
+    }));
+  }
+
+  naviguerVersProfilUser(context) {
+    Navigator.pop(context);
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) {
+      return UserProfilePage();
     }));
   }
 }
