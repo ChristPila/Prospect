@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import '../Controllers/DayToDateController.dart';
+import '../Controllers/GetAllProspectsController.dart';
 import '../Controllers/sevenLastDaysController.dart';
 import 'Layouts/DayToDate.dart';
 import 'Layouts/MenuLateral.dart';
@@ -22,6 +23,7 @@ class _HomePageState extends State<HomePage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<SevenLastDaysController>().getReportData();
       context.read<DayToDateController>().getReportData();
+      context.read<GetAllProspectsController>().getReportData();
     });
   }
 
@@ -42,6 +44,7 @@ class _HomePageState extends State<HomePage> {
                 onPressed: () {
                   context.read<SevenLastDaysController>().getReportData();
                   context.read<DayToDateController>().getReportData();
+                  context.read<GetAllProspectsController>().getReportData();
                 },
                 iconSize: 40,
                 icon: Icon(
