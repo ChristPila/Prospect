@@ -744,10 +744,10 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
                         children: [
                           Expanded(
                             child: ListView.builder(
-                                itemCount: offres?.length,
+                                itemCount: offres.length,
                                 shrinkWrap: true,
                                 itemBuilder: (context, index) {
-                                  OffresModel offre = offres![index];
+                                  OffresModel offre = offres[index];
                                   return Container(
                                     child: CheckboxListTile(
                                         title: Text(offre.name),
