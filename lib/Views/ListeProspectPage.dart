@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:prospect/Models/ProspectModel.dart';
 import 'package:prospect/Tools/Parametres.dart';
-import 'package:prospect/models/ProspectModel.dart';
 import 'package:provider/provider.dart';
 import 'package:prospect/Controllers/ProspectController.dart';
 import 'DetailProspectPage.dart';
@@ -97,9 +95,9 @@ class _ProspectState extends State<ListeProspectPage> {
               },
               iconSize: 40,
               icon: Icon(Icons.refresh_outlined)),
-        ],
-      ),
-      body: Column(
+         ],
+        ),
+         body: Column(
         children: <Widget>[
           selectionTypeStatut(context),
           listProspectVue(context),
