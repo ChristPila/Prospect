@@ -4,12 +4,14 @@ import 'package:prospect/Controllers/FormulaireProspectController.dart';
 import 'package:provider/provider.dart';
 import 'Controllers/AuthentifacationController.dart';
 import 'Controllers/DayToDateController.dart';
+import 'Controllers/GetAllProspectsController.dart';
 import 'Controllers/LastThreeDayController.dart';
 import 'Controllers/LastThreeMonthsController.dart';
 import 'Controllers/LastThreeWeeksController.dart';
 import 'Controllers/sevenLastDaysController.dart';
 import 'Views/IntroPage.dart';
 import 'Controllers/ProspectController.dart';
+import 'Views/UserProfilePage.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,6 +38,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => LastThreeDayController()),
         ChangeNotifierProvider( create: (context) => LastThreeMonthsController()),
         ChangeNotifierProvider(create: (context) => FormulaireProspectController()),
+        ChangeNotifierProvider(create: (context) => GetAllProspectsController()),
       ],
       child: MaterialApp(
         title: 'Prospect',
@@ -48,6 +51,9 @@ class MyApp extends StatelessWidget {
             ),
             textTheme: TextTheme(
                 headline1: TextStyle(fontSize: 30.0, color: Colors.deepOrange, fontWeight: FontWeight.bold),
+                headline3: TextStyle(fontSize: 20.0, color: Colors.deepOrange, fontWeight: FontWeight.bold),
+                headline6: TextStyle(fontSize: 17.0, color: Colors.black54, fontWeight: FontWeight.bold),
+                headline5 : TextStyle(fontSize: 25.0, color: Colors.black54, fontWeight: FontWeight.bold),
                 headline2: TextStyle(
                   fontSize: 24.0,
                   fontWeight: FontWeight.w700,
