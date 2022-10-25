@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import '../Models/ProspectModel.dart';
+import 'package:prospect/models/ProspectModel.dart';
 import 'PhotoViewPage.dart';
 
 class PiecesJointesPage extends StatefulWidget {
