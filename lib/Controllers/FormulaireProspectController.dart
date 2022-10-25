@@ -9,14 +9,6 @@ import '../Models/prosModel.dart';
 import '../Tools/Parametres.dart';
 
 class FormulaireProspectController with ChangeNotifier {
-  // liste initiale
-  List<ProsModel> listProspects = [];
-  // focntion pour ajouter un prospect
-  void ajouterProspect(ProsModel data) {
-    data.id = listProspects.length + 1;
-    listProspects.add(data);
-    notifyListeners();
-  }
 
   Future<dynamic> submitProspect(dynamic data) async{
     var res = json.encode(data);

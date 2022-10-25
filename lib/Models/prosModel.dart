@@ -1,241 +1,81 @@
 // To parse this JSON data, do
 //
-//     final prosModel = prosModelFromMap(jsonString);
+//     final prosModel = prosModelFromJson(jsonString);
 
 import 'dart:convert';
 
-ProsModel prosModelFromMap(String str) => ProsModel.fromMap(json.decode(str));
+List<ProsModel> prosModelFromJson(String str) => List<ProsModel>.from(json.decode(str).map((x) => ProsModel.fromJson(x)));
 
-String prosModelToMap(ProsModel data) => json.encode(data.toMap());
+String prosModelToJson(List<ProsModel> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class ProsModel {
   ProsModel({
-    this.id,
-    this.location,
-    this.agent,
-    this.companyName,
-    this.companyPhone,
-    this.companyAddress,
-    this.companyType,
-    this.offre,
-    this.piecejointes,
-    this.remonteId,
-    this.commune,
+    required this.longitude,
+    required this.latitude,
+    required this.agentId,
+    required this.communeId,
+    required this.zoneId,
+    required this.villeId,
+    required this.provinceId,
+    required this.companyName,
+    required this.companyAddress,
+    required this.typeActivitiesId,
+    required this.companyPhone,
+    required this.offerId,
+    required this.state,
+    this.piecesJointesId,
+    required this.remoteId,
   });
 
-  int? id;
-  String? location;
-  Agent? agent;
-  String? companyName;
-  String? companyPhone;
-  String? companyAddress;
-  CompanyType? companyType;
-  Offre? offre;
-  List<Piecejointe>? piecejointes;
-  String? remonteId;
-  Commune? commune;
+  String? longitude;
+  String? latitude;
+  int agentId;
+  int communeId;
+  int zoneId;
+  int villeId;
+  int provinceId;
+  String companyName;
+  String companyAddress;
+  int typeActivitiesId;
+  String companyPhone;
+  int? offerId;
+  String state;
+  int? piecesJointesId;
+  String remoteId;
 
-  factory ProsModel.fromMap(Map<String, dynamic> json) => ProsModel(
-    id: json["id"] == null ? null : json["id"],
-    location: json["location"] == null ? null : json["location"],
-    agent: json["agent"] == null ? null : Agent.fromMap(json["agent"]),
-    companyName: json["company_name"] == null ? null : json["company_name"],
-    companyPhone: json["company_phone"] == null ? null : json["company_phone"],
-    companyAddress: json["company_address"] == null ? null : json["company_address"],
-    companyType: json["company_type"] == null ? null : CompanyType.fromMap(json["company_type"]),
-    offre: json["offre"] == null ? null : Offre.fromMap(json["offre"]),
-    piecejointes: json["piecejointes"] == null ? null : List<Piecejointe>.from(json["piecejointes"].map((x) => Piecejointe.fromMap(x))),
-    remonteId: json["remonte_id"] == null ? null : json["remonte_id"],
-    commune: json["commune"] == null ? null : Commune.fromMap(json["commune"]),
+  factory ProsModel.fromJson(Map<String, dynamic> json) => ProsModel(
+    longitude: json["longitude"],
+    latitude: json["latitude"],
+    agentId: json["agent_id"],
+    communeId: json["commune_id"],
+    zoneId: json["zone_id"],
+    villeId: json["ville_id"],
+    provinceId: json["province_id"],
+    companyName: json["company_name"],
+    companyAddress: json["company_address"],
+    typeActivitiesId: json["type_activities_id"],
+    companyPhone: json["company_phone"],
+    offerId: json["offer_id"],
+    state: json["state"],
+    piecesJointesId: json["pieces_jointes_id"],
+    remoteId: json["remote_id"],
   );
 
-  Map<String, dynamic> toMap() => {
-    "id": id == null ? null : id,
-    "location": location == null ? null : location,
-    "agent": agent == null ? null : agent!.toMap(),
-    "company_name": companyName == null ? null : companyName,
-    "company_phone": companyPhone == null ? null : companyPhone,
-    "company_address": companyAddress == null ? null : companyAddress,
-    "company_type": companyType == null ? null : companyType!.toMap(),
-    "offre": offre == null ? null : offre!.toMap(),
-    "piecejointes": piecejointes == null ? null : List<dynamic>.from(piecejointes!.map((x) => x.toMap())),
-    "remonte_id": remonteId == null ? null : remonteId,
-    "commune": commune == null ? null : commune!.toMap(),
-  };
-}
-
-class Agent {
-  Agent({
-    this.id,
-    this.identity,
-  });
-
-  int? id;
-  String? identity;
-
-  factory Agent.fromMap(Map<String, dynamic> json) => Agent(
-    id: json["id"] == null ? null : json["id"],
-    identity: json["identity"] == null ? null : json["identity"],
-  );
-
-  Map<String, dynamic> toMap() => {
-    "id": id == null ? null : id,
-    "identity": identity == null ? null : identity,
-  };
-}
-
-class Commune {
-  Commune({
-    this.id,
-    this.name,
-    this.zone,
-  });
-
-  int? id;
-  String? name;
-  Zone? zone;
-
-  factory Commune.fromMap(Map<String, dynamic> json) => Commune(
-    id: json["id"] == null ? null : json["id"],
-    name: json["name"] == null ? null : json["name"],
-    zone: json["zone"] == null ? null : Zone.fromMap(json["zone"]),
-  );
-
-  Map<String, dynamic> toMap() => {
-    "id": id == null ? null : id,
-    "name": name == null ? null : name,
-    "zone": zone == null ? null : zone!.toMap(),
-  };
-}
-
-class Zone {
-  Zone({
-    this.id,
-    this.name,
-    this.ville,
-  });
-
-  int? id;
-  String? name;
-  Ville? ville;
-
-  factory Zone.fromMap(Map<String, dynamic> json) => Zone(
-    id: json["id"] == null ? null : json["id"],
-    name: json["name"] == null ? null : json["name"],
-    ville: json["ville"] == null ? null : Ville.fromMap(json["ville"]),
-  );
-
-  Map<String, dynamic> toMap() => {
-    "id": id == null ? null : id,
-    "name": name == null ? null : name,
-    "ville": ville == null ? null : ville!.toMap(),
-  };
-}
-
-class Ville {
-  Ville({
-    this.id,
-    this.name,
-    this.province,
-  });
-
-  int? id;
-  String? name;
-  Province? province;
-
-  factory Ville.fromMap(Map<String, dynamic> json) => Ville(
-    id: json["id"] == null ? null : json["id"],
-    name: json["name"] == null ? null : json["name"],
-    province: json["province"] == null ? null : Province.fromMap(json["province"]),
-  );
-
-  Map<String, dynamic> toMap() => {
-    "id": id == null ? null : id,
-    "name": name == null ? null : name,
-    "province": province == null ? null : province!.toMap(),
-  };
-}
-
-class CompanyType {
-  CompanyType({
-    this.id,
-    this.name,
-  });
-
-  int? id;
-  String? name;
-
-  factory CompanyType.fromMap(Map<String, dynamic> json) => CompanyType(
-    id: json["id"] == null ? null : json["id"],
-    name: json["name"] == null ? null : json["name"],
-  );
-
-  Map<String, dynamic> toMap() => {
-    "id": id == null ? null : id,
-    "name": name == null ? null : name,
-  };
-}
-
-class Offre {
-  Offre({
-    this.id,
-    this.name,
-  });
-
-  int? id;
-  String? name;
-
-  factory Offre.fromMap(Map<String, dynamic> json) => Offre(
-    id: json["id"] == null ? null : json["id"],
-    name: json["name"] == null ? null : json["name"],
-  );
-
-  Map<String, dynamic> toMap() => {
-    "id": id == null ? null : id,
-    "name": name == null ? null : name,
-  };
-}
-
-class Province {
-  Province({
-    this.id,
-    this.name,
-  });
-
-  int? id;
-  String? name;
-
-  factory Province.fromMap(Map<String, dynamic> json) => Province(
-    id: json["id"] == null ? null : json["id"],
-    name: json["name"] == null ? null : json["name"],
-  );
-
-  Map<String, dynamic> toMap() => {
-    "id": id == null ? null : id,
-    "name": name == null ? null : name,
-  };
-}
-
-class Piecejointe {
-  Piecejointe({
-    this.id,
-    this.path,
-    this.type,
-  });
-
-  int? id;
-  String? path;
-  String? type;
-
-  factory Piecejointe.fromMap(Map<String, dynamic> json) => Piecejointe(
-    id: json["id"] == null ? null : json["id"],
-    path: json["path"] == null ? null : json["path"],
-    type: json["type"] == null ? null : json["type"],
-  );
-
-  Map<String, dynamic> toMap() => {
-    "id": id == null ? null : id,
-    "path": path == null ? null : path,
-    "type": type == null ? null : type,
+  Map<String, dynamic> toJson() => {
+    "longitude": longitude,
+    "latitude": latitude,
+    "agent_id": agentId,
+    "commune_id": communeId,
+    "zone_id": zoneId,
+    "ville_id": villeId,
+    "province_id": provinceId,
+    "company_name": companyName,
+    "company_address": companyAddress,
+    "type_activities_id": typeActivitiesId,
+    "company_phone": companyPhone,
+    "offer_id": offerId,
+    "state": state,
+    "pieces_jointes_id": piecesJointesId,
+    "remote_id": remoteId,
   };
 }
