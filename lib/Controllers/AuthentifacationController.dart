@@ -29,18 +29,14 @@ class AuthentificationController with ChangeNotifier {
         );
     print('url $url');
     print('data $data');
-    //try {
       var response = await http
           .post(url, body: json.encode(data)
           , headers: headers
       )
           .timeout(Duration(seconds: 10));
 
-      print(response.statusCode);
-      print(response.body);
       if (response.statusCode == 200 ) {
         var dataFromApi = response.body;
-        print('datafromApi => $dataFromApi');
         var dataFromApi1 = json.decode(dataFromApi);
         token = dataFromApi1['token'];
         print('token => $token');
@@ -52,11 +48,6 @@ class AuthentificationController with ChangeNotifier {
       } else {
         return null;
       }
-    /*} on Exception catch (e, s) {
-      print("$e");
-      print("$s");
-      return null;
-    }*/
   }
 
   session() {
@@ -70,6 +61,7 @@ class AuthentificationController with ChangeNotifier {
   finSession() {
     stockage.remove("user");
     stockage.remove("token");
+    stockage.remove("getAllProspect");
     utilisateur = null;
   }
 }

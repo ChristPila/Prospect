@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'HomePage.dart';
 import 'Layouts/DayTab.dart';
 import 'Layouts/MonthTab.dart';
+import 'Layouts/WeekTab.dart';
 
 class PerformancesPages extends StatefulWidget {
   const PerformancesPages({Key? key}) : super(key: key);
@@ -23,7 +24,7 @@ class _PerformancesPagesState extends State<PerformancesPages> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 2,
+      length: 3,
       child: Scaffold(
         appBar: AppBar(
           title: Text('Mes Performances', style: TextStyle(color: Colors.white),),
@@ -53,6 +54,9 @@ class _PerformancesPagesState extends State<PerformancesPages> {
                     child: Text('Jour', style: TextStyle(color: Colors.black)),
                   ),
                   Tab(
+                      child: Text('Semaine', style: TextStyle(color: Colors.black))
+                  ),
+                  Tab(
                     child: Text('Mois', style: TextStyle(color: Colors.black)),
                   ),
                 ]
@@ -61,6 +65,7 @@ class _PerformancesPagesState extends State<PerformancesPages> {
                 child: TabBarView(
                   children: [
                     DayTab(),
+                    WeekTab(),
                     MonthTab()
                   ],
                 )
