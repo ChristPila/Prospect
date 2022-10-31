@@ -76,7 +76,7 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getData();
+    //getData();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       recuperationDataForm();
     });
@@ -84,22 +84,74 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
 
   recuperationDataForm() async {
     var formCtrl = context.read<FormulaireProspectController>();
+    provinceRecup();
+
+    villeReccup();
+
+    zoneRecup();
+
+    communeRecup();
+
+    activityRecup();
+
+    offreRecup();
+
+  }
+
+  provinceRecup() async{
+    var formCtrl = context.read<FormulaireProspectController>();
     var listProvince = await formCtrl.lectureAPIstockage(Parametres.keyProvince, Parametres.endPointProvinces);
-    var listVilles = await formCtrl.lectureAPIstockage(Parametres.keyVilles, Parametres.endPointVilles);
-    var listZones = await formCtrl.lectureAPIstockage(Parametres.keyZones, Parametres.endPointZones);
-    var listCommunes = await formCtrl.lectureAPIstockage(Parametres.keyCommunes, Parametres.endPointCommunes);
-    var listActivities = await formCtrl.lectureAPIstockage(Parametres.keyActivities, Parametres.endPointAct);
-    var listOffres = await formCtrl.lectureAPIstockage(Parametres.keyOffres, Parametres.endPointOffres);
     formCtrl.provinces = listProvince.map<ProvinceModel>((e) => ProvinceModel.fromJson(e)).toList();
-    formCtrl.villes= listVilles.map<VilleModel>((e) => VilleModel.fromJson(e)).toList();
-    formCtrl.zones= listZones.map<ZoneModel>((e) => ZoneModel.fromJson(e)).toList();
-    formCtrl.communes= listCommunes.map<CommuneModel>((e) => CommuneModel.fromJson(e)).toList();
-    formCtrl.activities= listActivities.map<ActiviteModel>((e) => ActiviteModel.fromJson(e)).toList();
-    formCtrl.offres= listOffres.map<OffresModel>((e) => OffresModel.fromJson(e)).toList();
     setState(() {
 
     });
   }
+
+  villeReccup() async{
+    var formCtrl = context.read<FormulaireProspectController>();
+    var listVilles = await formCtrl.lectureAPIstockage(Parametres.keyVilles, Parametres.endPointVilles);
+    formCtrl.villes= listVilles.map<VilleModel>((e) => VilleModel.fromJson(e)).toList();
+    setState(() {
+
+    });
+  }
+
+  zoneRecup() async{
+    var formCtrl = context.read<FormulaireProspectController>();
+    var listZones = await formCtrl.lectureAPIstockage(Parametres.keyZones, Parametres.endPointZones);
+    formCtrl.zones= listZones.map<ZoneModel>((e) => ZoneModel.fromJson(e)).toList();
+    setState(() {
+
+    });
+  }
+
+  communeRecup() async {
+    var formCtrl = context.read<FormulaireProspectController>();
+    var listCommunes = await formCtrl.lectureAPIstockage(Parametres.keyCommunes, Parametres.endPointCommunes);
+    formCtrl.communes= listCommunes.map<CommuneModel>((e) => CommuneModel.fromJson(e)).toList();
+    setState(() {
+
+    });
+  }
+
+  activityRecup() async {
+    var formCtrl = context.read<FormulaireProspectController>();
+    var listActivities = await formCtrl.lectureAPIstockage(Parametres.keyActivities, Parametres.endPointAct);
+    formCtrl.activities= listActivities.map<ActiviteModel>((e) => ActiviteModel.fromJson(e)).toList();
+    setState(() {
+
+    });
+  }
+
+  offreRecup() async {
+  var formCtrl = context.read<FormulaireProspectController>();
+  var listOffres = await formCtrl.lectureAPIstockage(Parametres.keyOffres, Parametres.endPointOffres);
+  formCtrl.offres= listOffres.map<OffresModel>((e) => OffresModel.fromJson(e)).toList();
+  print("OFFRES :${formCtrl.offres}");
+  setState(() {
+
+  });
+}
 
   List<Step> stepList() => [
         Step(
@@ -192,7 +244,7 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
                 children: [
                   Text("Longitude : ${_position?.longitude.toString()}"),
                   Text("Latitude : ${_position?.latitude.toString()}"),
-                  Text("AgentId : ${user!['id'].toString()}"),
+                  Text("AgentId : ${user?['id'].toString()}"),
                   Text("Province : ${provinceselectionner}"),
                   Text("Ville : ${villeSelect}"),
                   Text("Zone : ${zoneSelect}"),
@@ -338,7 +390,7 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
   Widget build(BuildContext context) {
     print(selectedData.map((e) => e).toList());
     user = us.read('user');
-    print(user!["id"]);
+    //print(user?["id"]);
     return nouveauProspect();
   }
 
@@ -423,6 +475,7 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
   }
 
   typeVue() {
+    activites = context.watch<FormulaireProspectController>().activities;
     return [
       SizedBox(
         height: 20,
@@ -651,6 +704,7 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
   }
 
   offreVue() {
+    offres = context.watch<FormulaireProspectController>().offres;
     return [
       SizedBox(
         height: 20,
@@ -1157,94 +1211,110 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
   }
 
   nouveauProspect() {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-            centerTitle: true,
-            backgroundColor: Colors.white10,
-            title: Text(
-              "Nouveau Prospect",
-              style: TextStyle(
-                color: Colors.black87,
-                fontSize: 25,
-              ),
-            )),
-        body: isCompleted
-            ? buildCompleted()
-            : Theme(
-                data: Theme.of(context).copyWith(
-                  colorScheme: ColorScheme.light(primary: Colors.orange),
+    return WillPopScope(
+      onWillPop: () async {
+        await validerFormulaire(true);
+        return Future.value(true);
+      },
+      child: SafeArea(
+        child: Scaffold(
+          appBar: AppBar(
+              centerTitle: true,
+              backgroundColor: Colors.white10,
+              title: Text(
+                "Nouveau Prospect",
+                style: TextStyle(
+                  color: Colors.black87,
+                  fontSize: 25,
                 ),
-                child: Stepper(
-                    type: StepperType.horizontal,
-                    currentStep: currentStep,
-                    steps: stepList(),
-                    onStepContinue: () async {
-                      final isLastStep = currentStep == stepList().length - 1;
-                      print(isLastStep);
-                      if (isLastStep) {
-                        setState(() => isCompleted = true);
-                        Chargement(context);
-                        var data = ProsModel(
-                          longitude: _position?.longitude.toString(),
-                          latitude: _position?.latitude.toString(),
-                          agentId: user!["id"],
-                          communeId: int.parse(communeSelect!),
-                          zoneId: int.parse(zoneSelect!),
-                          villeId: int.parse(villeSelect!),
-                          provinceId: int.parse(provinceselectionner!),
-                          companyName: company_name.text.toString(),
-                          companyAddress: company_adress.text.toString(),
-                          typeActivitiesId: int.parse(typeSelect!),
-                          companyPhone: company_phone.text.toString(),
-                          offerId: 1,
-                          state: "1",
-                          remoteId: "12RT567",
-                        );
-                        debugPrint('DONNEE: $data');
-                        var response = await context
-                            .read<FormulaireProspectController>()
-                            .submitProspect(data)
-                            .catchError((err) {});
-                        Navigator.pop(context);
-                        succesPopUp(context);
-                        debugPrint("Succès");
-                      } else {
-                        setState(() => currentStep += 1);
-                      }
-                    },
-                    onStepTapped: (step) => setState(() => currentStep = step),
-                    onStepCancel: currentStep == 0
-                        ? null
-                        : () => setState(() => currentStep -= 1),
-                    controlsBuilder:
-                        (BuildContext context, ControlsDetails details) {
-                      final isLastStep = currentStep == stepList().length - 1;
-                      return Container(
-                        child: Row(
-                          children: <Widget>[
-                            Expanded(
-                              child: ElevatedButton(
-                                child:
-                                    Text(isLastStep ? "CONFIRMER" : "SUIVANT"),
-                                onPressed: details.onStepContinue,
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            if (currentStep != 0)
+              )),
+          body: isCompleted
+              ? buildCompleted()
+              : Theme(
+                  data: Theme.of(context).copyWith(
+                    colorScheme: ColorScheme.light(primary: Colors.orange),
+                  ),
+                  child: Stepper(
+                      type: StepperType.horizontal,
+                      currentStep: currentStep,
+                      steps: stepList(),
+                      onStepContinue: () async {
+                        final isLastStep = currentStep == stepList().length - 1;
+                        print(isLastStep);
+                        if (isLastStep) {
+                          setState(() => isCompleted = true);
+                          Chargement(context);
+                          validerFormulaire();
+                          succesPopUp(context);
+                          debugPrint("Succès");
+                        } else {
+                          setState(() => currentStep += 1);
+                        }
+                      },
+                      onStepTapped: (step) => setState(() => currentStep = step),
+                      onStepCancel: currentStep == 0
+                          ? null
+                          : () => setState(() => currentStep -= 1),
+                      controlsBuilder:
+                          (BuildContext context, ControlsDetails details) {
+                        final isLastStep = currentStep == stepList().length - 1;
+                        return Container(
+                          child: Row(
+                            children: <Widget>[
                               Expanded(
                                 child: ElevatedButton(
-                                  child: Text("PRECEDENT"),
-                                  onPressed: details.onStepCancel,
+                                  child:
+                                      Text(isLastStep ? "CONFIRMER" : "SUIVANT"),
+                                  onPressed: details.onStepContinue,
                                 ),
                               ),
-                          ],
-                        ),
-                      );
-                    }),
-              ),
+                              const SizedBox(width: 12),
+                              if (currentStep != 0)
+                                Expanded(
+                                  child: ElevatedButton(
+                                    child: Text("PRECEDENT"),
+                                    onPressed: details.onStepCancel,
+                                  ),
+                                ),
+                            ],
+                          ),
+                        );
+                      }),
+                ),
+        ),
       ),
     );
+  }
+
+   validerFormulaire([bool save = false]) async {
+    var data = ProsModel(
+      longitude: _position?.longitude.toString(),
+      latitude: _position?.latitude.toString(),
+      agentId: user!["id"],
+      communeId: int.parse(communeSelect!),
+      zoneId: int.parse(zoneSelect!),
+      villeId: int.parse(villeSelect!),
+      provinceId: int.parse(provinceselectionner!),
+      companyName: company_name.text.toString(),
+      companyAddress: company_adress.text.toString(),
+      typeActivitiesId: int.parse(typeSelect!),
+      companyPhone: company_phone.text.toString(),
+      offerId: 1,
+      state: "1",
+      remoteId: "12RT567",
+    );
+    debugPrint('DONNEE: $data');
+    if(save){
+      print("DATA BROUILLON");
+    }else{
+      var response = await context
+          .read<FormulaireProspectController>()
+          .submitProspect(data)
+          .catchError((err) {});
+      Navigator.pop(context);
+    }
+
+
   }
 
 // User canceled the picker
