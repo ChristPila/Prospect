@@ -48,7 +48,7 @@ class _ProspectState extends State<ListeProspectPage> {
     // TODO: implement initState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await context.read<ProspectController>().recupererDonneesAPI();
+     // await context.read<ProspectController>().recupererDonneesAPI();
       //context.read<ProspectController>().verifierStatusDonneeAPI("remoteId");
       intdata();
     });

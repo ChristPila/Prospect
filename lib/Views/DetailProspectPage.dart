@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:prospect/Models/ProspectModel.dart';
 import 'package:prospect/models/ProspectModel.dart';
 import 'package:provider/provider.dart';
 import 'package:prospect/Controllers/ProspectController.dart';
@@ -7,10 +8,7 @@ import '../Views/PiecesJointesPage.dart';
 import 'FormulaireProspectPage.dart';
 
 class DetailProspectPage extends StatefulWidget {
-  const DetailProspectPage({
-    super.key,
-    required this.data,
-  });
+  const DetailProspectPage({super.key, required this.data,});
 
   final ProspectModel data;
 
@@ -19,7 +17,7 @@ class DetailProspectPage extends StatefulWidget {
 }
 
 class _DetailProspectPageState extends State<DetailProspectPage> {
-  ProspectModel clientrecup = ProspectModel();
+  ProsModel clientrecup = ProsModel();
 
   @override
   void initState() {

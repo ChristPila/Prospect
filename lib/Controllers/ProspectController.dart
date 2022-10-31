@@ -5,17 +5,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:prospect/Models/ProspectModel.dart';
 import 'package:prospect/Tools/Test.dart';
-
 import '../Tools/Parametres.dart';
 import 'package:http/http.dart' as http;
 
 class ProspectController with ChangeNotifier {
-  List<ProspectModel> data = [];
+  List<ProsModel> data = [];
   Map stockage_data = {};
-  List<ProspectModel> listValider = [];
-  List<ProspectModel> listRejeter = [];
-  List<ProspectModel> listAtente = [];
-  List<ProspectModel> listBrouillon = [];
+  List<ProsModel> listValider = [];
+  List<ProsModel> listRejeter = [];
+  List<ProsModel> listAtente = [];
+  List<ProsModel> listBrouillon = [];
   final stockage = GetStorage(Parametres.STOCKAGE_VERSION);
 
   int randomInt() {
@@ -23,8 +22,17 @@ class ProspectController with ChangeNotifier {
     return Random().nextInt(100 - 0 + 1) + 0;
   }
 
+  recupererDonneesLocales() {
+    lecturestockageLocale();
+    var tempstrore = stockage_data.entries
+        .map((e) => e.value)
+        .toList();
+    data = tempstrore.map((e) => ProsModel.fromJson(e)).toList();
+    notifyListeners();
+  }
+
   recupererDonneesAPI() async {
-    await lecturestockageLocale();
+    lecturestockageLocale();
     var url = Uri.parse(
         '${Parametres.scheme}://${Parametres.host}:${Parametres.port}/${Parametres.rebase}');
 
@@ -47,7 +55,7 @@ class ProspectController with ChangeNotifier {
           .map((e) => e.value)
           .toList(); // conversion des donnees fusionnees en liste
       data = tempmapdata
-          .map((e) => ProspectModel.fromJson(e))
+          .map((e) => ProsModel.fromJson(e))
           .toList(); //  conversion des donnees fusionnees en liste de prospect_model
       notifyListeners();
       print(reponse.body);
@@ -75,7 +83,7 @@ class ProspectController with ChangeNotifier {
       var tempmapdata = stockage_data.entries
           .map((e) => e.value)
           .toList(); // conversion des donnees fusionnees en liste
-      data = tempmapdata.map((e) => ProspectModel.fromJson(e)).toList();
+      data = tempmapdata.map((e) => ProsModel.fromJson(e)).toList();
       notifyListeners();
       ecritureStockageLocale();
     } else {
@@ -93,7 +101,7 @@ class ProspectController with ChangeNotifier {
     }
   }
 
-  Future<Map> lecturestockageLocale() async {
+  lecturestockageLocale() {
     var locale = stockage.read<String>('PROSPECT');
     if (locale != null) {
       var temp = json.decode(locale) as Map;
@@ -111,7 +119,7 @@ class ProspectController with ChangeNotifier {
     await stockage.write("PROSPECT", json.encode(stockage_data));
   }
 
- /* ajoutListValider() {
+/* ajoutListValider() {
     var resultat = data.where((e) => e.state == "valider").toList();
     listValider = resultat;
   }

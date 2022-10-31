@@ -3,7 +3,6 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get_storage/get_storage.dart';
-
 //import 'package:image_picker/image_picker.dart';
 import 'package:prospect/Controllers/ActiviteController.dart';
 import 'package:prospect/Controllers/CommuneController.dart';
@@ -24,15 +23,11 @@ import 'package:provider/provider.dart';
 
 import '../Controllers/FormulaireProspectController.dart';
 import '../Models/prosModel.dart';
-
 //import 'package:signature/signature.dart';
 //import 'package:file_picker/file_picker.dart';
 
 class FormulaireProspectPage extends StatefulWidget {
-  const FormulaireProspectPage({
-    this.recup,
-  });
-
+  const FormulaireProspectPage({this.recup,});
   final recup;
 
   @override
@@ -66,9 +61,7 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
   String? communeSelect;
   String? offreSelect;
   String? typeSelect;
-
   get floatingActionButton => null;
-
   get builder => null;
   int currentStep = 0;
   bool isCompleted = false;
@@ -356,97 +349,6 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
     return await Geolocator.getCurrentPosition();
   }
 
-  nouveauProspect(){
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-            centerTitle: true,
-            backgroundColor: Colors.white10,
-            title: Text(
-              "Nouveau Prospect",
-              style: TextStyle(
-                color: Colors.black87,
-                fontSize: 25,
-              ),
-            )),
-        body: isCompleted ? buildCompleted()
-            : Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(primary: Colors.orange),
-          ),
-          child: Stepper(
-              type: StepperType.horizontal,
-              currentStep: currentStep,
-              steps: stepList(),
-              onStepContinue: () async {
-                final isLastStep =  currentStep == stepList().length - 1;
-                print(isLastStep);
-                if (isLastStep) {
-                  setState(()=> isCompleted = true);
-                  Chargement(context);
-                  var data = ProspectModel(
-                    longitude: _position?.longitude.toString(),
-                    latitude: _position?.latitude.toString(),
-                    agent: Agent(),
-                    commune: Commune(id: int.parse(communeSelect!),
-                      zone: Zone(id: int.parse(zoneSelect!),
-                        ville: Ville(id: int.parse(villeSelect!),
-                          province: Province(id: int.parse(provinceselectionner!)
-                          )
-                        )
-                      )
-                    ),
-                    companyName: company_name.text,
-                    companyAddress: company_adress.text,
-                    companyType: CompanyType(id: 1),
-                    companyPhone: company_phone.text,
-                    offres: [],
-                    state: "1",
-                    remoteId: "12RT567",
-                  );
-                  var response = await context.read<FormulaireProspectController>().submitProspect(data).catchError((err){});
-                  Navigator.pop(context);
-                  if(response.statusCode == 200 || response.statusCode == 201){
-                    succesPopUp(context);
-                    return response.body;
-                  }
-                  debugPrint("Succès");
-                } else {
-                  setState(() => currentStep +=1);
-                }
-              },
-              onStepTapped: (step) => setState(() => currentStep = step),
-              onStepCancel: currentStep == 0 ? null : () => setState(() => currentStep -=1),
-              controlsBuilder: (BuildContext context, ControlsDetails details) {
-                final isLastStep = currentStep == stepList().length - 1;
-                return Container(
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: ElevatedButton(
-                          child: Text(isLastStep ? "CONFIRMER" : "SUIVANT"),
-                          onPressed: details.onStepContinue,
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      if (currentStep != 0)
-                        Expanded(
-                          child: ElevatedButton(
-                            child: Text("PRECEDENT"),
-                            onPressed: details.onStepCancel,
-                          ),
-                        ),
-                    ],
-                  ),
-
-                );
-              }
-          ),
-        ),
-      ),
-    );
-  }
-
   localisation(){
     return Column(
       children: [
@@ -524,7 +426,7 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
                 icon: const Icon(Icons.keyboard_arrow_down_rounded),
                 items: activites?.map((activity) {
                   return DropdownMenuItem(
-                    value: activity.name,
+                    value: activity.id.toString(),
                     child: Text(activity.name),
                   );
                 }).toList(),
@@ -733,86 +635,39 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
   }
 
   offreVue() {
-    return Container(
-      width: 500,
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          side: BorderSide(color: Colors.grey, width: 2),
-          primary: Colors.transparent,
-          elevation: 0,
-          padding: EdgeInsets.all(18),
-        ),
-        onPressed: () {
-          showDialog(
-            context: context,
-            builder: (context) => SingleChildScrollView(
-              child: StatefulBuilder(builder: (context, setState2) {
-                return AlertDialog(
-                    title: Text("Choisir les offres"),
-                    contentPadding: const EdgeInsets.all(20.0),
-                    content: Container(
-                      width: MediaQuery.of(context).size.width * 0.9,
-                      height: MediaQuery.of(context).size.height * 0.6,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Expanded(
-                            child: ListView.builder(
-                                itemCount: offres?.length,
-                                shrinkWrap: true,
-                                itemBuilder: (context, index) {
-                                  OffresModel offre = offres![index];
-                                  return Container(
-                                    child: CheckboxListTile(
-                                        title: Text(offre.name),
-                                        //controlAffinity: ListTileControlAffinity.leading,
-                                        value: offre.value,
-                                        activeColor: Colors.orange,
-                                        onChanged: (bool? newValue) {
-                                          if(selectedData.indexOf(offre.name)<0){
-                                            setState2(() {
-                                              offre.value=newValue!;
-                                              selectedData.add(offre.name);
-                                            });
-                                            setState(() {
-
-                                            });
-                                          }else{
-                                            setState2(() {
-                                              offre.value=newValue!;
-                                              selectedData.removeWhere((element) => element == offre.name);
-                                            });
-                                            setState(() {
-
-                                            });
-                                          }
-                                        },
-                                      secondary: Icon(Icons.local_offer_outlined),
-                                        ),
-                                  );
-                                }),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: Text(
-                              "FERMER",
-                            ),
-                          )
-                        ],
-                      ),
-                    ));
-              }),
-            ),
-          );
-        },
-        child: Text(
-          "Selectionner Offre",
-          style: TextStyle(fontSize: 15, color: Colors.black),
-        ),
+    return [
+      SizedBox(
+        height: 20,
       ),
-    );
+      InputDecorator(
+          decoration: InputDecoration(
+              label: Text(
+                  "Offres",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                      fontSize: 20)
+              ),
+              border: OutlineInputBorder(),
+              contentPadding: EdgeInsets.only(left: 10)),
+          child: DropdownButtonHideUnderline(
+              child: DropdownButton(
+                isExpanded: true,
+                value: offreSelect,
+                icon: const Icon(Icons.keyboard_arrow_down_rounded),
+                items: offres?.map((offer) {
+                  return DropdownMenuItem(
+                    value: offer.id.toString(),
+                    child: Text(offer.name),
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    offreSelect = newValue!;
+                  });
+                },
+              ))),
+    ];
   }
 
   /*imgVue() {
@@ -1287,6 +1142,91 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
             ],
           );
         }
+    );
+  }
+
+  nouveauProspect(){
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+            centerTitle: true,
+            backgroundColor: Colors.white10,
+            title: Text(
+              "Nouveau Prospect",
+              style: TextStyle(
+                color: Colors.black87,
+                fontSize: 25,
+              ),
+            )),
+        body: isCompleted ? buildCompleted()
+            : Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.light(primary: Colors.orange),
+          ),
+          child: Stepper(
+              type: StepperType.horizontal,
+              currentStep: currentStep,
+              steps: stepList(),
+              onStepContinue: () async {
+                final isLastStep =  currentStep == stepList().length - 1;
+                print(isLastStep);
+                if (isLastStep) {
+                  setState(()=> isCompleted = true);
+                  Chargement(context);
+                  var data = ProsModel(
+                    longitude: _position?.longitude.toString(),
+                    latitude: _position?.latitude.toString(),
+                    agentId: user!["id"],
+                    communeId: int.parse(communeSelect!),
+                    zoneId: int.parse(zoneSelect!),
+                    villeId: int.parse(villeSelect!),
+                    provinceId: int.parse(provinceselectionner!),
+                    companyName: company_name.text.toString(),
+                    companyAddress: company_adress.text.toString(),
+                    typeActivitiesId: int.parse(typeSelect!),
+                    companyPhone: company_phone.text.toString(),
+                    offerId: 1,
+                    state: "1",
+                    remoteId: "12RT567",
+                  );
+                  debugPrint('DONNEE: $data');
+                  var response = await context.read<FormulaireProspectController>().submitProspect(data).catchError((err){});
+                  Navigator.pop(context);
+                    succesPopUp(context);
+                  debugPrint("Succès");
+                } else {
+                  setState(() => currentStep +=1);
+                }
+              },
+              onStepTapped: (step) => setState(() => currentStep = step),
+              onStepCancel: currentStep == 0 ? null : () => setState(() => currentStep -=1),
+              controlsBuilder: (BuildContext context, ControlsDetails details) {
+                final isLastStep = currentStep == stepList().length - 1;
+                return Container(
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: ElevatedButton(
+                          child: Text(isLastStep ? "CONFIRMER" : "SUIVANT"),
+                          onPressed: details.onStepContinue,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      if (currentStep != 0)
+                        Expanded(
+                          child: ElevatedButton(
+                            child: Text("PRECEDENT"),
+                            onPressed: details.onStepCancel,
+                          ),
+                        ),
+                    ],
+                  ),
+
+                );
+              }
+          ),
+        ),
+      ),
     );
   }
 
