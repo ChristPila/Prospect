@@ -1,6 +1,6 @@
 import 'package:http/http.dart' as http;
 import 'package:prospect/Tools/Parametres.dart';
-import 'package:prospect/models/ZoneModel.dart';
+import 'package:prospect/Models/ZoneModel.dart';
 
 class RemoteServicesZone{
   static getZone(int? id) async {

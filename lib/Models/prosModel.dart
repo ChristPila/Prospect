@@ -10,38 +10,38 @@ String prosModelToJson(List<ProsModel> data) => json.encode(List<dynamic>.from(d
 
 class ProsModel {
   ProsModel({
-    required this.longitude,
-    required this.latitude,
-    required this.agentId,
-    required this.communeId,
-    required this.zoneId,
-    required this.villeId,
-    required this.provinceId,
-    required this.companyName,
-    required this.companyAddress,
-    required this.typeActivitiesId,
-    required this.companyPhone,
-    required this.offerId,
-    required this.state,
+    this.longitude,
+    this.latitude,
+    this.agentId,
+    this.communeId,
+    this.zoneId,
+    this.villeId,
+    this.provinceId,
+    this.companyName,
+    this.companyAddress,
+    this.typeActivitiesId,
+    this.companyPhone,
+    this.offerId,
+    this.state,
     this.piecesJointesId,
-    required this.remoteId,
+    this.remoteId,
   });
 
   String? longitude;
   String? latitude;
-  int agentId;
-  int communeId;
-  int zoneId;
-  int villeId;
-  int provinceId;
-  String companyName;
-  String companyAddress;
-  int typeActivitiesId;
-  String companyPhone;
+  int? agentId;
+  int? communeId;
+  int? zoneId;
+  int? villeId;
+  int? provinceId;
+  String? companyName;
+  String? companyAddress;
+  int? typeActivitiesId;
+  String? companyPhone;
   int? offerId;
-  String state;
+  String? state;
   int? piecesJointesId;
-  String remoteId;
+  String? remoteId;
 
   factory ProsModel.fromJson(Map<String, dynamic> json) => ProsModel(
     longitude: json["longitude"],
