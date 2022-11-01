@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../FormulaireProspectPage.dart';
+import '../ListeProspectPage.dart';
 
 class Statistique extends StatefulWidget {
   final int nbrevisits;
@@ -107,12 +108,18 @@ class _StatistiqueState extends State<Statistique> {
             padding: const EdgeInsets.all(12.0),
             child: Column(
               children: [
-                SizedBox(height: 7),
-                Icon(
-                  Icons.drafts_outlined,
-                  size: 68,
-                  color: Colors.deepOrange,
-                ),
+                IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.push(context, MaterialPageRoute(builder: (_) {
+                        return ListeProspectPage();
+                      }));
+                    },
+                    iconSize: 55,
+                    icon: Icon(
+                      Icons.drafts_outlined,
+                      color: Colors.deepOrange,
+                    )),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
