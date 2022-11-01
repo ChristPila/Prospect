@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 
 class Statistique extends StatefulWidget {
   final int nbrevisits;
+  final int nbreBrouillons;
 
   Statistique(
-      {super.key, required this.nbrevisits});
-
+      {super.key, required this.nbreBrouillons, required this.nbrevisits});
   @override
   State<Statistique> createState() => _StatistiqueState();
 }
@@ -113,7 +113,7 @@ class _StatistiqueState extends State<Statistique> {
                       style: TextStyle(fontSize: 18, color: Colors.deepOrange),
                     ),
                     Text(
-                      "",
+                      "${widget.nbreBrouillons}",
                       style: TextStyle(
                           fontSize: 18,
                           color: Colors.deepOrange,
