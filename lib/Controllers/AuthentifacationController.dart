@@ -4,10 +4,11 @@ import 'package:flutter/cupertino.dart';
 import '../Models/UserModel.dart';
 import '../Tools/Parametres.dart';
 import 'package:get_storage/get_storage.dart';
+import '../Tools/Utilitaires.dart';
 
 class AuthentificationController with ChangeNotifier {
 
-  GetStorage stockage = GetStorage();
+  GetStorage stockage = GetStorage(Utilitaires.STOCKAGE_VERSION);
   Map<String, dynamic> temp = {};
   UserModel user = UserModel();
   String? token;
@@ -44,7 +45,7 @@ class AuthentificationController with ChangeNotifier {
         temp = dataFromApi1['user'];
         user=UserModel.fromMap(temp);
         stockage.write("user", user.toMap());
-        return data;
+        return true;
       } else {
         return null;
       }
@@ -62,6 +63,7 @@ class AuthentificationController with ChangeNotifier {
     stockage.remove("user");
     stockage.remove("token");
     stockage.remove("getAllProspect");
+    stockage.remove("PROSPECT");
     utilisateur = null;
   }
 }
