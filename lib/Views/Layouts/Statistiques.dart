@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../FormulaireProspectPage.dart';
+
 class Statistique extends StatefulWidget {
   final int nbrevisits;
   final int nbreBrouillons;
@@ -46,12 +48,18 @@ class _StatistiqueState extends State<Statistique> {
             padding: const EdgeInsets.all(12.0),
             child: Column(
               children: [
-                SizedBox(height: 7),
-                Icon(
-                  Icons.people,
-                  size: 68,
-                  color: Colors.deepOrange,
-                ),
+                IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.push(context, MaterialPageRoute(builder: (_) {
+                        return FormulaireProspectPage();
+                      }));
+                    },
+                    iconSize: 55,
+                    icon: Icon(
+                      Icons.people,
+                      color: Colors.deepOrange,
+                    )),
                 Expanded(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
