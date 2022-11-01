@@ -1,10 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:prospect/Views/FormulaireProspectPage.dart';
-import 'package:prospect/Views/IntroPage.dart';
 import 'package:provider/provider.dart';
 import '../../Controllers/AuthentifacationController.dart';
-import '../../Tools/Espace.dart';
 import '../AuthentificationPage.dart';
 import '../ListeProspectPage.dart';
 import '../PerformancesPage.dart';
@@ -92,36 +90,40 @@ class _MenuLateralState extends State<MenuLateral> {
           onTap: () async {
             context.read<AuthentificationController>().finSession();
             Navigator.pop(context);
-            Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
-                builder: (context) => AuthentificationPage()), (Route route) => false);
+            Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (context) => AuthentificationPage()),
+                (Route route) => false);
           },
         ),
       ],
     );
   }
+
   naviguerVersPerformance(context) {
     Navigator.pop(context);
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) {
+    Navigator.push(context, MaterialPageRoute(builder: (_) {
       return PerformancesPages();
     }));
   }
-  naviguerVersBrouillons(context) {
+
+  naviguerVersBrouillons(context) async {
     Navigator.pop(context);
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) {
+    Navigator.push(context, MaterialPageRoute(builder: (_) {
       return ListeProspectPage();
     }));
+
   }
 
   naviguerVersVisite(context) {
     Navigator.pop(context);
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) {
+    Navigator.push(context, MaterialPageRoute(builder: (_) {
       return FormulaireProspectPage();
     }));
   }
 
   naviguerVersProfilUser(context) {
     Navigator.pop(context);
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) {
+    Navigator.push(context, MaterialPageRoute(builder: (_) {
       return UserProfilePage();
     }));
   }
