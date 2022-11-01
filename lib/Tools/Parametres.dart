@@ -18,4 +18,7 @@ class Parametres{
   static const String endPointAct = 'api/type-activities';
   static const String rebase =  "api/prospects";
   static const String endPoind = "status";
+  static const String loginUser = "admin@admin.com";
+  static const String loginPassword = "123456";
+
 }

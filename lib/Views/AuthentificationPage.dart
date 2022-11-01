@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../Controllers/AuthentifacationController.dart';
-import '../Models/UserModel.dart';
+import '../Tools/Parametres.dart';
 import 'HomePage.dart';
 import 'Layouts/ProgressHUD.dart';
 
@@ -12,19 +12,17 @@ class AuthentificationPage extends StatefulWidget {
 }
 
 class _AuthentificationPageState extends State<AuthentificationPage> {
-  TextEditingController email = TextEditingController(text: "admin@admin.com");
-  TextEditingController password = TextEditingController(text: "123456");
+  TextEditingController email = TextEditingController(text: Parametres.loginUser);
+  TextEditingController password = TextEditingController(text: Parametres.loginPassword);
 
   bool hidePassword = true;
   bool isApiCallProcess = false;
   GlobalKey<FormState> globalFormKey = GlobalKey<FormState>();
-  UserModel? userModel;
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
-    userModel = new UserModel();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       context.read<AuthentificationController>().session();
       var session = context.read<AuthentificationController>().utilisateur;
@@ -33,8 +31,6 @@ class _AuthentificationPageState extends State<AuthentificationPage> {
           return HomePage();
         }));
         return;
-      } else {
-        return null;
       }
     });
   }
@@ -127,7 +123,6 @@ class _AuthentificationPageState extends State<AuthentificationPage> {
     return new TextFormField(
       controller: email,
       keyboardType: TextInputType.emailAddress,
-      onSaved: (input) => userModel!.email = input,
       validator: (input) => !input!.contains('@')
           ? "Votre adresse email est un valide"
           : null,
@@ -208,50 +203,7 @@ class _AuthentificationPageState extends State<AuthentificationPage> {
         children: [
           Expanded(
             child: TextButton(
-              onPressed: () async {
-                if (validateAndSave()) {
-                  Map data = {
-                    "email": email.text,
-                    "password": password.text
-                  };
-                  print(data);
-                  // return ;
-
-                  setState(() {
-                    isApiCallProcess = true;
-                  });
-
-                  var value = await context
-                      .read<AuthentificationController>()
-                      .authentifier(data);
-                  setState(() {
-                    isApiCallProcess = false;
-                  });
-                  if (value != null) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content:Text('Authentification réussie !'),
-                        duration: Duration(seconds: 5),
-                      ),
-                    );
-                    var session = context
-                        .read<AuthentificationController>()
-                        .session();
-
-                    Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (_) {
-                          return HomePage();
-                        }));
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content:Text('Problème de connexion !'),
-                        duration: Duration(seconds: 10),
-                      ),
-                    );
-                  };
-                }
-              },
+              onPressed: () => validatationFormulaire(context),
               child: Text(
                 'Login',
                 style: TextStyle(fontSize: 15, color: Colors.white),
@@ -263,5 +215,50 @@ class _AuthentificationPageState extends State<AuthentificationPage> {
         ],
       ),
     );
+  }
+
+  validatationFormulaire(BuildContext context) async {
+    if (validateAndSave()) {
+      Map data = {
+        "email": email.text,
+        "password": password.text
+      };
+      print(data);
+      // return ;
+
+      setState(() {
+        isApiCallProcess = true;
+      });
+
+      var status = await context
+          .read<AuthentificationController>()
+          .authentifier(data);
+      setState(() {
+        isApiCallProcess = false;
+      });
+      if (status != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content:Text('Authentification réussie !'),
+            duration: Duration(seconds: 5),
+          ),
+        );
+        var session = context
+            .read<AuthentificationController>()
+            .session();
+
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (_) {
+              return HomePage();
+            }));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content:Text('Problème de connexion !'),
+            duration: Duration(seconds: 10),
+          ),
+        );
+      };
+    }
   }
 }
