@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get_storage/get_storage.dart';
-
 
 class Statistique extends StatefulWidget {
+  final int nbrevisits;
+
+  Statistique(
+      {super.key, required this.nbrevisits});
 
   @override
   State<Statistique> createState() => _StatistiqueState();
@@ -25,10 +27,6 @@ class _StatistiqueState extends State<Statistique> {
   }
 
   cardVisite() {
-
-    GetStorage stockage = GetStorage();
-    var nombreVisite = stockage.read("getAllProspect");
-
     return Expanded(
       child: Card(
         shadowColor: Colors.black,
@@ -54,34 +52,25 @@ class _StatistiqueState extends State<Statistique> {
                   size: 68,
                   color: Colors.deepOrange,
                 ),
-                nombreVisite != null
-                    ? Expanded(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              "Visites : ",
-                              style: TextStyle(
-                                  fontSize: 18, color: Colors.deepOrange),
-                            ),
-                            Text(
-                              "${nombreVisite}",
-                              style: TextStyle(
-                                  fontSize: 18,
-                                  color: Colors.deepOrange,
-                                  fontWeight: FontWeight.bold),
-                            )
-                          ],
-                        ),
-                      )
-                    : Text(
-                        "En attente",
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Visites : ",
+                        style:
+                            TextStyle(fontSize: 18, color: Colors.deepOrange),
+                      ),
+                      Text(
+                        "${widget.nbrevisits}",
                         style: TextStyle(
                             fontSize: 18,
                             color: Colors.deepOrange,
-                            fontWeight: FontWeight.bold
-                        ),
-                      ),
+                            fontWeight: FontWeight.bold),
+                      )
+                    ],
+                  ),
+                )
               ],
             ),
           ),
@@ -124,7 +113,7 @@ class _StatistiqueState extends State<Statistique> {
                       style: TextStyle(fontSize: 18, color: Colors.deepOrange),
                     ),
                     Text(
-                      "50",
+                      "",
                       style: TextStyle(
                           fontSize: 18,
                           color: Colors.deepOrange,

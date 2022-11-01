@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get_storage/get_storage.dart';
@@ -19,7 +20,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  var nombreBrouillons = 0;
+  var nombreVisits = 0;
 
   @override
   void initState() {
@@ -34,25 +35,18 @@ class _HomePageState extends State<HomePage> {
     context.read<DayToDateController>().getReportData();
     context.read<GetAllProspectsController>().getReportData();
     await context.read<ProspectController>().recupererDonneesAPI();
-    getDataBrouillons();
-
+    getDataVisit();
   }
 
-  getDataBrouillons() {
+
+  getDataVisit() {
     GetStorage stockage = GetStorage(Utilitaires.STOCKAGE_VERSION);
-    var brouillons_brut = stockage.read("PROSPECT");
-    if (brouillons_brut != null) {
-      var brouillonsMap = json.decode(brouillons_brut) as Map;
-      List toList =
-      brouillonsMap.entries.map((e) {
-        return e.value ;
-      }).toList();
-      var brouillonsList = toList.where((e) => e['state'] == '4').toList();
-      nombreBrouillons = brouillonsList.length;
+    var visit_brut = stockage.read("getAllProspect");
+    if (visit_brut != null) {
+      nombreVisits = visit_brut as int;
     }
     setState(() {});
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +77,7 @@ class _HomePageState extends State<HomePage> {
             children: [
               SizedBox(height: 11),
               Statistique(
-                  nbreBrouillons: nombreBrouillons,),
+                  nbrevisits: nombreVisits),
               SevenLastDays(),
               DayToDate(),
             ],
