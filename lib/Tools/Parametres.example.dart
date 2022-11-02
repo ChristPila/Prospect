@@ -18,6 +18,8 @@ class Parametres{
   static const String endThreeLastWeeks = "/api/reporting/last_three_weeks";
   static const String endDayToDate = "/api/reporting/day_to_date";
   static const String endPointGetAllProspects = "/api/count/all_prospects";
+  static const String loginUser = "";
+  static const String loginPassword = "";
 
   static const String scheme = "http";
   static const String endPointLogin = "/api/login/";

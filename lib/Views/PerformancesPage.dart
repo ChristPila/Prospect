@@ -31,20 +31,16 @@ class _PerformancesPagesState extends State<PerformancesPages> {
           backgroundColor:Colors.deepOrange,
           centerTitle: true,
           automaticallyImplyLeading: false,
-          actions: [
-            IconButton(
-                onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (_) {
-                    return HomePage();
-                  }));
-                },
-                iconSize: 40,
-                icon: Icon(
-                  Icons.home,
-                  size: 30,color: Colors.white,
-                )
-            )
-          ],
+          leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) => HomePage()));
+            },
+          ),
         ),
         body: Column(
           children: [
