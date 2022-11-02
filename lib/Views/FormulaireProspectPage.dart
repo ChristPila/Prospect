@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:geolocator/geolocator.dart' as g;
 import 'package:get_storage/get_storage.dart';
 
 //import 'package:image_picker/image_picker.dart';
@@ -21,7 +21,6 @@ import 'package:prospect/Models/ProvinceModel.dart';
 import 'package:prospect/Models/VilleModel.dart';
 import 'package:prospect/Models/ZoneModel.dart';
 import 'package:provider/provider.dart';
-
 import '../Controllers/FormulaireProspectController.dart';
 import '../Models/prosModel.dart';
 
@@ -29,14 +28,15 @@ import '../Models/prosModel.dart';
 //import 'package:file_picker/file_picker.dart';
 
 class FormulaireProspectPage extends StatefulWidget {
-  const FormulaireProspectPage({Key? key}) : super(key: key);
+  const FormulaireProspectPage({this.recup,});
+  final recup;
 
   @override
   State<FormulaireProspectPage> createState() => _FormulaireProspectPageState();
 }
 
 class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
-  Position? _position;
+  g.Position? _position;
   Uint8List? exportedImage;
   bool isLoad = false;
 
@@ -71,6 +71,8 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
   TextEditingController company_adress = TextEditingController();
   TextEditingController company_type = TextEditingController();
   TextEditingController company_phone = TextEditingController();
+
+  int timestamp = DateTime.now().millisecondsSinceEpoch;
 
   @override
   void initState() {
@@ -399,24 +401,24 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
   }
 
   void _getCurrentPosition() async {
-    Position position = await _determinePosition();
+    g.Position position = await _determinePosition();
     setState(() {
       _position = position;
     });
   }
 
-  Future<Position> _determinePosition() async {
-    LocationPermission permission;
+  Future<g.Position> _determinePosition() async {
+    g.LocationPermission permission;
 
-    permission = await Geolocator.checkPermission();
+    permission = await g.Geolocator.checkPermission();
 
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
+    if (permission == g.LocationPermission.denied) {
+      permission = await g.Geolocator.requestPermission();
+      if (permission == g.LocationPermission.denied) {
         return Future.error("Location permission are denied");
       }
     }
-    return await Geolocator.getCurrentPosition();
+    return await g.Geolocator.getCurrentPosition();
   }
 
   localisation() {
@@ -1290,7 +1292,7 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
     var data = ProsModel(
       longitude: _position?.longitude.toString(),
       latitude: _position?.latitude.toString(),
-      agentId: user!["id"],
+      agentId: user?["id"],
       communeId: int.parse(communeSelect!),
       zoneId: int.parse(zoneSelect!),
       villeId: int.parse(villeSelect!),
@@ -1301,7 +1303,7 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
       companyPhone: company_phone.text.toString(),
       offerId: 1,
       state: "1",
-      remoteId: "12RT567",
+      remoteId: timestamp.toString(),
     );
     debugPrint('DONNEE: $data');
     if(save){

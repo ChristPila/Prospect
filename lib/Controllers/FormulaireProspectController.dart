@@ -11,14 +11,14 @@ import 'package:prospect/Models/OffresModel.dart';
 import 'package:prospect/Models/ProspectModel.dart';
 import 'package:prospect/Models/VilleModel.dart';
 import 'package:prospect/Models/ZoneModel.dart';
-import 'package:prospect/Tools/Utilitaires.dart';
+
 
 import '../Models/ProvinceModel.dart';
 import '../Models/prosModel.dart';
 import '../Tools/Parametres.dart';
 
 class FormulaireProspectController with ChangeNotifier {
-  var stockage = GetStorage(Utilitaires.STOCKAGE_VERSION);
+  var stockage = GetStorage(Parametres.STOCKAGE_VERSION);
   List<ProvinceModel> provinces = [];
   List<VilleModel> villes = [];
   List<ZoneModel> zones = [];
@@ -94,15 +94,15 @@ class FormulaireProspectController with ChangeNotifier {
   }
 
   lectureAPIstockage(String key, endPoints) async{
-    var mapProvince = lecturestockageLocale(key);
-    var provinces = mapProvince.entries
+    var mapData = lecturestockageLocale(key);
+    var data = mapData.entries
         .map((e) => e.value)
         .toList();
-    if(provinces.length == 0){
-      provinces = await recupererDonneesAPI(
+    if(data.length == 0){
+      data = await recupererDonneesAPI(
           key, endPoints);
     }
-    return provinces;
+    return data;
   }
 }
 /*main(){

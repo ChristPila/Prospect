@@ -3,12 +3,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import '../Tools/Parametres.dart';
-import '../Tools/Utilitaires.dart';
 
 class GetAllProspectsController with ChangeNotifier {
 
   var numbreAllProspects;
-  GetStorage stockage = GetStorage(Utilitaires.STOCKAGE_VERSION);
+  GetStorage stockage = GetStorage(Parametres.STOCKAGE_VERSION);
   String? token;
 
   getReportData() async {

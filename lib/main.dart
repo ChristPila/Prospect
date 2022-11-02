@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:prospect/Controllers/FormulaireProspectController.dart';
+import 'package:prospect/Tools/Parametres.dart';
 import 'package:provider/provider.dart';
 import 'Controllers/AuthentifacationController.dart';
 import 'Controllers/DayToDateController.dart';
@@ -9,13 +10,12 @@ import 'Controllers/LastThreeDayController.dart';
 import 'Controllers/LastThreeMonthsController.dart';
 import 'Controllers/LastThreeWeeksController.dart';
 import 'Controllers/sevenLastDaysController.dart';
-import 'Tools/Utilitaires.dart';
 import 'Views/IntroPage.dart';
 import 'Controllers/ProspectController.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await GetStorage.init(Utilitaires.STOCKAGE_VERSION);
+  await GetStorage.init(Parametres.STOCKAGE_VERSION);
   runApp(MyApp());
 }
 
