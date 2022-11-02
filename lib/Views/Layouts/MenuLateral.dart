@@ -35,7 +35,7 @@ class _MenuLateralState extends State<MenuLateral> {
           leading: Icon(
             Icons.people,
           ),
-          title: const Text('Visites'),
+          title: const Text('Créer Une visite'),
           onTap: () {
            naviguerVersVisite(context);
           },
@@ -44,7 +44,7 @@ class _MenuLateralState extends State<MenuLateral> {
           leading: Icon(
             Icons.drafts_outlined,
           ),
-          title: const Text('Brouillons'),
+          title: const Text('Mes Prospects'),
           onTap: () {
             naviguerVersBrouillons(context);
           },
@@ -53,7 +53,7 @@ class _MenuLateralState extends State<MenuLateral> {
           leading: Icon(
             Icons.work_history,
           ),
-          title: const Text('Perfomances'),
+          title: const Text('Mes Perfomances'),
           onTap: () {
             naviguerVersPerformance(context);
           },
