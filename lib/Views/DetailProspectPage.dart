@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:prospect/Models/ProspectModel.dart';
-import 'package:prospect/models/ProspectModel.dart';
+import 'package:prospect/Models/prosModel.dart';
 import 'package:provider/provider.dart';
 import 'package:prospect/Controllers/ProspectController.dart';
 import '../Tools/Parametres.dart';
@@ -10,7 +9,7 @@ import 'FormulaireProspectPage.dart';
 class DetailProspectPage extends StatefulWidget {
   const DetailProspectPage({super.key, required this.data,});
 
-  final ProspectModel data;
+  final ProsModel data;
 
   @override
   State<DetailProspectPage> createState() => _DetailProspectPageState();
@@ -204,7 +203,7 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
                   fontSize: 15,
                   decoration: TextDecoration.none)),
           Spacer(),
-          Text("${clientrecup.TypeActivities!.name}",
+          Text("${clientrecup.typeActivitiesId}",
               style: const TextStyle(
                   color: Colors.black87,
                   fontSize: 15,
@@ -273,7 +272,7 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
                   fontSize: 15,
                   decoration: TextDecoration.none)),
           Spacer(),
-          Text("${clientrecup.offres}",
+          Text("${clientrecup.offerId}",
               style: const TextStyle(
                   color: Colors.black87,
                   fontSize: 15,
@@ -296,7 +295,7 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
                   fontSize: 15,
                   decoration: TextDecoration.none)),
           Spacer(),
-          Text("${clientrecup.commune!.zone!.ville!.province!.name}",
+          Text("${clientrecup.provinceId}",
               style: const TextStyle(
                   color: Colors.black87,
                   fontSize: 15,
@@ -319,7 +318,7 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
                   fontSize: 15,
                   decoration: TextDecoration.none)),
           Spacer(),
-          Text("${clientrecup.commune!.zone!.ville!.name}",
+          Text("${clientrecup.villeId}",
               style: const TextStyle(
                   color: Colors.black87,
                   fontSize: 15,
@@ -342,7 +341,7 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
                   fontSize: 15,
                   decoration: TextDecoration.none)),
           Spacer(),
-          Text("${clientrecup.commune!.name}",
+          Text("${clientrecup.communeId}",
               style: const TextStyle(
                   color: Colors.black87,
                   fontSize: 15,
@@ -365,7 +364,7 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
                   fontSize: 15,
                   decoration: TextDecoration.none)),
           Spacer(),
-          Text("${clientrecup.commune!.zone!.name}",
+          Text("${clientrecup.zoneId}",
               style: const TextStyle(
                   color: Colors.black87,
                   fontSize: 15,
@@ -420,7 +419,7 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
                   fontSize: 15,
                   decoration: TextDecoration.none)),
           Spacer(),
-          Text("${clientrecup.agent!.id}",
+          Text("${clientrecup.agentId}",
               style: const TextStyle(
                   color: Colors.black87,
                   fontSize: 15,

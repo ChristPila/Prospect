@@ -20,7 +20,6 @@ import 'package:prospect/models/ProvinceModel.dart';
 import 'package:prospect/models/VilleModel.dart';
 import 'package:prospect/models/ZoneModel.dart';
 import 'package:provider/provider.dart';
-
 import '../Controllers/FormulaireProspectController.dart';
 import '../Models/prosModel.dart';
 //import 'package:signature/signature.dart';
