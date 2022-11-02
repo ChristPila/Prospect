@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:prospect/Models/ProspectModel.dart';
+import 'package:prospect/Tools/Parametres.dart';
 import 'package:provider/provider.dart';
 import 'package:prospect/Controllers/ProspectController.dart';
-import '../Tools/Utilitaires.dart';
 import 'DetailProspectPage.dart';
 import 'ProgressPage.dart';
 
@@ -32,12 +31,12 @@ class _ProspectState extends State<ListeProspectPage> {
   String typeStatutSelectionne = 'Tous';
   String typeStatutSelectionne_int = '0';
 
-  List<ProspectModel> dataProspectCopie = [];
+  var dataProspectCopie = [];
   bool isapicallprocess = false;
 
   intdata() async {
     // await context.read<ProspectController>().recupererDonneesAPI();
-    List<ProspectModel> listOriginalProspect =
+    var listOriginalProspect =
         context.read<ProspectController>().data;
     dataProspectCopie = listOriginalProspect;
     print(dataProspectCopie.length);
@@ -49,7 +48,7 @@ class _ProspectState extends State<ListeProspectPage> {
     // TODO: implement initState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await context.read<ProspectController>().recupererDonneesAPI();
+     // await context.read<ProspectController>().recupererDonneesAPI();
       //context.read<ProspectController>().verifierStatusDonneeAPI("remoteId");
       intdata();
     });
@@ -67,12 +66,12 @@ class _ProspectState extends State<ListeProspectPage> {
   @override
   Widget build2(BuildContext context) {
     // context.read<ProspectController>().statut();
-    List<ProspectModel> listProspect = context.watch<ProspectController>().data;
+    var listProspect = context.watch<ProspectController>().data;
 
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
-        backgroundColor: Utilitaires.DEFAULT_COLOR,
+        backgroundColor: Parametres.DEFAULT_COLOR,
         title: Text("Liste des prospects (${listProspect.length})"),
         actions: [
           IconButton(
@@ -96,9 +95,9 @@ class _ProspectState extends State<ListeProspectPage> {
               },
               iconSize: 40,
               icon: Icon(Icons.refresh_outlined)),
-        ],
-      ),
-      body: Column(
+         ],
+        ),
+         body: Column(
         children: <Widget>[
           selectionTypeStatut(context),
           listProspectVue(context),
@@ -154,7 +153,7 @@ class _ProspectState extends State<ListeProspectPage> {
               ),
             ),
             subtitle: Text(
-              'Companie: ${prospect.companyName}\nZone: ${prospect.commune?.zone?.name}',
+              'Companie: ${prospect.companyName}\nZone: ${prospect.commune}',
               style: const TextStyle(fontSize: 15, color: Colors.black87),
             ),
           );
@@ -255,7 +254,7 @@ class _ProspectState extends State<ListeProspectPage> {
           print('$typeStatutSelectionne');
           print(listeTypesStatut[newValue]);
           typeStatutSelectionne_int = listeTypesStatut[newValue]!;
-          List<ProspectModel> listOriginalProspect =
+          var listOriginalProspect =
               context.read<ProspectController>().data;
           if (typeStatutSelectionne_int == "0") {
             dataProspectCopie = listOriginalProspect;

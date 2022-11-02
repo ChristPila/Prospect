@@ -37,7 +37,7 @@ class _MenuLateralState extends State<MenuLateral> {
           ),
           title: const Text('Visites'),
           onTap: () {
-            naviguerVersVisite(context);
+           naviguerVersVisite(context);
           },
         ),
         ListTile(

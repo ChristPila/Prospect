@@ -4,12 +4,12 @@ import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import '../Models/LastThreeDaysModel.dart';
 import '../Tools/Parametres.dart';
-import '../Tools/Utilitaires.dart';
+
 
 class LastThreeDayController with ChangeNotifier {
 
   List<LastThreeDaysModel> LastThreeDaysList=[];
-  GetStorage userToken = GetStorage(Utilitaires.STOCKAGE_VERSION);
+  GetStorage userToken = GetStorage(Parametres.STOCKAGE_VERSION);
   String? token;
 
   getReportData() async {

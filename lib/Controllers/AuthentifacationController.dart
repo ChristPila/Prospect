@@ -4,11 +4,11 @@ import 'package:flutter/cupertino.dart';
 import '../Models/UserModel.dart';
 import '../Tools/Parametres.dart';
 import 'package:get_storage/get_storage.dart';
-import '../Tools/Utilitaires.dart';
+
 
 class AuthentificationController with ChangeNotifier {
 
-  GetStorage stockage = GetStorage(Utilitaires.STOCKAGE_VERSION);
+  GetStorage stockage = GetStorage(Parametres.STOCKAGE_VERSION);
   Map<String, dynamic> temp = {};
   UserModel user = UserModel();
   String? token;

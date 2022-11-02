@@ -2,12 +2,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:prospect/Tools/Parametres.dart';
 import 'package:provider/provider.dart';
 import '../Controllers/DayToDateController.dart';
 import '../Controllers/GetAllProspectsController.dart';
 import '../Controllers/ProspectController.dart';
 import '../Controllers/sevenLastDaysController.dart';
-import '../Tools/Utilitaires.dart';
 import 'Layouts/DayToDate.dart';
 import 'Layouts/MenuLateral.dart';
 import 'Layouts/SevenLastDays.dart';
@@ -40,7 +40,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   getDataBrouillons() {
-    GetStorage stockage = GetStorage(Utilitaires.STOCKAGE_VERSION);
+    GetStorage stockage = GetStorage(Parametres.STOCKAGE_VERSION);
     var brouillons_brut = stockage.read("PROSPECT");
     if (brouillons_brut != null) {
       var brouillonsMap = json.decode(brouillons_brut) as Map;
@@ -56,7 +56,7 @@ class _HomePageState extends State<HomePage> {
 
 
   getDataVisit() {
-    GetStorage stockage = GetStorage(Utilitaires.STOCKAGE_VERSION);
+    GetStorage stockage = GetStorage(Parametres.STOCKAGE_VERSION);
     var visit_brut = stockage.read("getAllProspect");
     if (visit_brut != null) {
       nombreVisits = visit_brut as int;

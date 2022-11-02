@@ -5,12 +5,10 @@ import '../Models/SevenLastDaysModel.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../Tools/Parametres.dart';
-import '../Tools/Utilitaires.dart';
-
 class SevenLastDaysController with ChangeNotifier {
 
   List<SevenLastDaysModel> SevenLastDaysList=[];
-  GetStorage userToken = GetStorage(Utilitaires.STOCKAGE_VERSION);
+  GetStorage userToken = GetStorage(Parametres.STOCKAGE_VERSION);
   String? token;
 
   getReportData() async {
