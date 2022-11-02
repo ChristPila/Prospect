@@ -51,7 +51,6 @@ class _StatistiqueState extends State<Statistique> {
               children: [
                 IconButton(
                     onPressed: () {
-                      Navigator.pop(context);
                       Navigator.push(context, MaterialPageRoute(builder: (_) {
                         return FormulaireProspectPage();
                       }));
@@ -110,7 +109,6 @@ class _StatistiqueState extends State<Statistique> {
               children: [
                 IconButton(
                     onPressed: () {
-                      Navigator.pop(context);
                       Navigator.push(context, MaterialPageRoute(builder: (_) {
                         return ListeProspectPage();
                       }));
