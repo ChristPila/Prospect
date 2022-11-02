@@ -5,10 +5,11 @@ import 'package:http/http.dart' as http;
 import '../Models/LastThreeMonthsModel.dart';
 import '../Tools/Parametres.dart';
 
+
 class LastThreeMonthsController with ChangeNotifier {
 
   List<LastThreeMonthsModel> lastThreeMonthsList=[];
-  GetStorage userToken = GetStorage();
+  GetStorage userToken = GetStorage(Parametres.STOCKAGE_VERSION);
   String? token;
 
   getReportMonthData() async {

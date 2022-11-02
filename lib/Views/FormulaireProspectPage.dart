@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get_storage/get_storage.dart';
+
 //import 'package:image_picker/image_picker.dart';
 import 'package:prospect/Controllers/ActiviteController.dart';
 import 'package:prospect/Controllers/CommuneController.dart';
@@ -12,16 +13,17 @@ import 'package:prospect/Controllers/ProvinceController.dart';
 import 'package:prospect/Controllers/VilleController.dart';
 import 'package:prospect/Controllers/ZoneController.dart';
 import 'package:prospect/Models/UserModel.dart';
-import 'package:prospect/models/ActiviteModel.dart';
-import 'package:prospect/models/CommuneModel.dart';
-import 'package:prospect/models/OffresModel.dart';
-import 'package:prospect/models/ProspectModel.dart';
-import 'package:prospect/models/ProvinceModel.dart';
-import 'package:prospect/models/VilleModel.dart';
-import 'package:prospect/models/ZoneModel.dart';
+import 'package:prospect/Tools/Parametres.dart';
+import 'package:prospect/Models/ActiviteModel.dart';
+import 'package:prospect/Models/CommuneModel.dart';
+import 'package:prospect/Models/OffresModel.dart';
+import 'package:prospect/Models/ProvinceModel.dart';
+import 'package:prospect/Models/VilleModel.dart';
+import 'package:prospect/Models/ZoneModel.dart';
 import 'package:provider/provider.dart';
 import '../Controllers/FormulaireProspectController.dart';
 import '../Models/prosModel.dart';
+
 //import 'package:signature/signature.dart';
 //import 'package:file_picker/file_picker.dart';
 
@@ -34,8 +36,6 @@ class FormulaireProspectPage extends StatefulWidget {
 }
 
 class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
-  //TextEditingController company_name = TextEditingController();
-
   Position? _position;
   Uint8List? exportedImage;
   bool isLoad = false;
@@ -45,7 +45,7 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
     penColor: Colors.red,
     exportBackgroundColor: Colors.yellowAccent,
   );*/
-  List<ProvinceModel>? provinces;
+  //List<ProvinceModel>? provinces;
   List<ActiviteModel>? activites;
   List<VilleModel>? villes;
   List<ZoneModel>? zones;
@@ -60,7 +60,9 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
   String? communeSelect;
   String? offreSelect;
   String? typeSelect;
+
   get floatingActionButton => null;
+
   get builder => null;
   int currentStep = 0;
   bool isCompleted = false;
@@ -74,13 +76,86 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getData();
+    //getData();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      recuperationDataForm();
+    });
   }
+
+  recuperationDataForm() async {
+    var formCtrl = context.read<FormulaireProspectController>();
+    provinceRecup();
+
+    villeReccup();
+
+    zoneRecup();
+
+    communeRecup();
+
+    activityRecup();
+
+    offreRecup();
+
+  }
+
+  provinceRecup() async{
+    var formCtrl = context.read<FormulaireProspectController>();
+    var listProvince = await formCtrl.lectureAPIstockage(Parametres.keyProvince, Parametres.endPointProvinces);
+    formCtrl.provinces = listProvince.map<ProvinceModel>((e) => ProvinceModel.fromJson(e)).toList();
+    setState(() {
+
+    });
+  }
+
+  villeReccup() async{
+    var formCtrl = context.read<FormulaireProspectController>();
+    var listVilles = await formCtrl.lectureAPIstockage(Parametres.keyVilles, Parametres.endPointVilles);
+    formCtrl.villes= listVilles.map<VilleModel>((e) => VilleModel.fromJson(e)).toList();
+    setState(() {
+
+    });
+  }
+
+  zoneRecup() async{
+    var formCtrl = context.read<FormulaireProspectController>();
+    var listZones = await formCtrl.lectureAPIstockage(Parametres.keyZones, Parametres.endPointZones);
+    formCtrl.zones= listZones.map<ZoneModel>((e) => ZoneModel.fromJson(e)).toList();
+    setState(() {
+
+    });
+  }
+
+  communeRecup() async {
+    var formCtrl = context.read<FormulaireProspectController>();
+    var listCommunes = await formCtrl.lectureAPIstockage(Parametres.keyCommunes, Parametres.endPointCommunes);
+    formCtrl.communes= listCommunes.map<CommuneModel>((e) => CommuneModel.fromJson(e)).toList();
+    setState(() {
+
+    });
+  }
+
+  activityRecup() async {
+    var formCtrl = context.read<FormulaireProspectController>();
+    var listActivities = await formCtrl.lectureAPIstockage(Parametres.keyActivities, Parametres.endPointAct);
+    formCtrl.activities= listActivities.map<ActiviteModel>((e) => ActiviteModel.fromJson(e)).toList();
+    setState(() {
+
+    });
+  }
+
+  offreRecup() async {
+  var formCtrl = context.read<FormulaireProspectController>();
+  var listOffres = await formCtrl.lectureAPIstockage(Parametres.keyOffres, Parametres.endPointOffres);
+  formCtrl.offres= listOffres.map<OffresModel>((e) => OffresModel.fromJson(e)).toList();
+  print("OFFRES :${formCtrl.offres}");
+  setState(() {
+
+  });
+}
 
   List<Step> stepList() => [
         Step(
-            state:
-                currentStep > 0 ? StepState.complete : StepState.indexed,
+            state: currentStep > 0 ? StepState.complete : StepState.indexed,
             isActive: currentStep >= 0,
             title: const Text(
               "LOCALISATION",
@@ -113,8 +188,7 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
               ),
             )),
         Step(
-            state:
-            currentStep > 1 ? StepState.complete : StepState.indexed,
+            state: currentStep > 1 ? StepState.complete : StepState.indexed,
             isActive: currentStep >= 1,
             title: const Text(
               "IDENTIFICATION",
@@ -154,33 +228,35 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
               ),
             )),
         Step(
-              state:StepState.complete,
-              isActive: currentStep >= 2,
-              title: const Text("RESUMÉ",
-                style: TextStyle(
-                    fontSize: 10,
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold),
+            state: StepState.complete,
+            isActive: currentStep >= 2,
+            title: const Text(
+              "RESUMÉ",
+              style: TextStyle(
+                  fontSize: 10,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold),
+            ),
+            content: Container(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text("Longitude : ${_position?.longitude.toString()}"),
+                  Text("Latitude : ${_position?.latitude.toString()}"),
+                  Text("AgentId : ${user?['id'].toString()}"),
+                  Text("Province : ${provinceselectionner}"),
+                  Text("Ville : ${villeSelect}"),
+                  Text("Zone : ${zoneSelect}"),
+                  Text("Commune : ${communeSelect}"),
+                  Text("Nom de l'entreprise : ${company_name.text}"),
+                  Text("Adresse de l'entreprise : ${company_adress.text}"),
+                  Text("Contact de l'entreprise : ${company_phone.text}"),
+                  Text("Type d'entrprise : ${typeSelect}"),
+                  Text("Offres : ${selectedData}")
+                ],
               ),
-              content: Container(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text("AgentId : ${user!['id'].toString()}"),
-                    Text("Province : ${provinceselectionner}"),
-                    Text("Ville : ${villeSelect}"),
-                    Text("Zone : ${zoneSelect}"),
-                    Text("Commune : ${communeSelect}"),
-                    Text("Nom de l'entreprise : ${company_name.text}"),
-                    Text("Adresse de l'entreprise : ${company_adress.text}"),
-                    Text("Contact de l'entreprise : ${company_phone.text}"),
-                    Text("Type d'entrprise : ${typeSelect}"),
-                    Text("Offres : ${selectedData}")
-                  ],
-                ),
-
-          ))
+            ))
         /*Step(
             state: StepState.editing,
             isActive: _activeStepIndex == 2,
@@ -286,7 +362,6 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
             )),*/
       ];
 
-
   //Liste des images
   /*List<XFile>? imageFileList = [];
   XFile? imageFile1;
@@ -315,16 +390,12 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
   Widget build(BuildContext context) {
     print(selectedData.map((e) => e).toList());
     user = us.read('user');
-    print(user!["id"]);
+    //print(user?["id"]);
     return nouveauProspect();
   }
 
   Widget buildCompleted() {
-    return Container(
-      child: Column(
-
-      )
-    );
+    return Container(child: Column());
   }
 
   void _getCurrentPosition() async {
@@ -339,27 +410,33 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
 
     permission = await Geolocator.checkPermission();
 
-    if(permission == LocationPermission.denied){
+    if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
-      if(permission == LocationPermission.denied){
+      if (permission == LocationPermission.denied) {
         return Future.error("Location permission are denied");
       }
     }
     return await Geolocator.getCurrentPosition();
   }
 
-  localisation(){
+  localisation() {
     return Column(
       children: [
-        _position != null ? Text(_position.toString()) : Text("Cliquer sur l'icone pour recevoir la localisation"),
+        _position != null
+            ? Text(_position.toString())
+            : Text("Cliquer sur l'icone pour recevoir la localisation"),
         IconButton(
-            onPressed: _getCurrentPosition,
-            icon: Icon(Icons.location_on_outlined), color: Colors.orange,)
+          onPressed: _getCurrentPosition,
+          icon: Icon(Icons.location_on_outlined),
+          color: Colors.orange,
+        )
       ],
     );
   }
 
   provinceVue() {
+    var formCtrl = context.read<FormulaireProspectController>();
+    var provinces = formCtrl.provinces;
     return [
       SizedBox(
         height: 20,
@@ -370,8 +447,7 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
-                      fontSize: 20)
-              ),
+                      fontSize: 20)),
               border: OutlineInputBorder(),
               contentPadding: EdgeInsets.only(left: 10)),
           child: DropdownButtonHideUnderline(
@@ -385,72 +461,68 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
                 value: prov.id.toString(),
               );
             }).toList(),
-            onChanged: (String? newValue) {
-              setState(() async {
-                provinceselectionner = newValue!;
-                villes = await RemoteServicesVilles.getVilles(int.parse(provinceselectionner!));
-                if(villes!=null){
-                  setState(() {
-                    isLoad=true;
-                  });
-                }
-              });
+            onChanged: (String? newValue) async{
+              provinceselectionner = newValue!;
+              villes = await RemoteServicesVilles.getVilles(
+                  int.parse(provinceselectionner!));
+              if (villes != null) {
+                setState(() {
+                });
+              }
             },
-          )
-          )
-      ),
+          ))),
     ];
   }
 
   typeVue() {
+    activites = context.watch<FormulaireProspectController>().activities;
     return [
       SizedBox(
         height: 20,
       ),
       InputDecorator(
           decoration: InputDecoration(
-              label: Text(
-                "Type d'activité",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                  fontSize: 20)
-              ),
+              label: Text("Type d'activité",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                      fontSize: 20)),
               border: OutlineInputBorder(),
               contentPadding: EdgeInsets.only(left: 10)),
           child: DropdownButtonHideUnderline(
               child: DropdownButton(
-                isExpanded: true,
-                value: typeSelect,
-                icon: const Icon(Icons.keyboard_arrow_down_rounded),
-                items: activites?.map((activity) {
-                  return DropdownMenuItem(
-                    value: activity.id.toString(),
-                    child: Text(activity.name),
-                  );
-                }).toList(),
-                onChanged: (String? newValue) {
-                  setState(() {
-                    typeSelect = newValue!;
-                  });
-                },
-              ))),
+            isExpanded: true,
+            value: typeSelect,
+            icon: const Icon(Icons.keyboard_arrow_down_rounded),
+            items: activites?.map((activity) {
+              return DropdownMenuItem(
+                value: activity.id.toString(),
+                child: Text(activity.name),
+              );
+            }).toList(),
+            onChanged: (String? newValue) {
+              setState(() {
+                typeSelect = newValue!;
+              });
+            },
+          ))),
     ];
   }
 
   getData() async {
-    provinces = await RemoteServicesProv.getProvinces();
+    //provinces = await RemoteServicesProv.getProvinces();
     offres = await RemoteServicesOf.getOffres();
     activites = await RemoteServicesAct.getActivity();
-    if(provinces!=null || offres!= null || activites!= null)
-    {
+    if (offres != null || activites != null) {
       setState(() {
-        isLoad=true;
+        isLoad = true;
       });
     }
   }
 
   villeVue() {
+    var formCtrl = context.read<FormulaireProspectController>();
+    var villesLocales = formCtrl.villes;
     return [
       SizedBox(
         height: 20,
@@ -461,33 +533,28 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
-                      fontSize: 20)
-              ),
+                      fontSize: 20)),
               border: OutlineInputBorder(),
               contentPadding: EdgeInsets.only(left: 10)),
           child: DropdownButtonHideUnderline(
               child: DropdownButton(
-                isExpanded: true,
-                value: villeSelect,
-                icon: const Icon(Icons.keyboard_arrow_down_rounded),
-                items: villes?.map((city) {
-                  return DropdownMenuItem(
-                    child: Text(city.name),
-                    value: city.id.toString()
-                  );
-                }).toList(),
-                onChanged: (String? newValue) {
-                  setState(() async {
-                    villeSelect = newValue!;
-                    zones = await RemoteServicesZone.getZone(int.parse(villeSelect!));
-                    if(zones!=null){
-                      setState(() {
-                        isLoad=true;
-                      });
-                    }
-                  });
-                },
-              ))),
+            isExpanded: true,
+            value: villeSelect,
+            icon: const Icon(Icons.keyboard_arrow_down_rounded),
+            items: villes?.map((city) {
+              return DropdownMenuItem(
+                  child: Text(city.name), value: city.id.toString());
+            }).toList(),
+            onChanged: (String? newValue) async{
+              villeSelect = newValue!;
+              zones =
+                  await RemoteServicesZone.getZone(int.parse(villeSelect!));
+              if (zones != null) {
+                setState(() {
+                });
+              }
+            },
+          ))),
     ];
   }
 
@@ -502,33 +569,29 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
-                      fontSize: 20)
-              ),
+                      fontSize: 20)),
               border: OutlineInputBorder(),
               contentPadding: EdgeInsets.only(left: 10)),
           child: DropdownButtonHideUnderline(
               child: DropdownButton(
-                isExpanded: true,
-                value: zoneSelect,
-                icon: const Icon(Icons.keyboard_arrow_down_rounded),
-                items: zones?.map((z) {
-                  return DropdownMenuItem(
-                      child: Text(z.name),
-                      value: z.id.toString()
-                  );
-                }).toList(),
-                onChanged: (String? newValue) {
-                  setState(() async {
-                    zoneSelect = newValue!;
-                    communes = await RemoteServicesCommune.getCommune(int.parse(zoneSelect!));
-                    if(communes!=null){
-                      setState(() {
-                        isLoad=true;
-                      });
-                    }
-                  });
-                },
-              ))),
+            isExpanded: true,
+            value: zoneSelect,
+            icon: const Icon(Icons.keyboard_arrow_down_rounded),
+            items: zones?.map((z) {
+              return DropdownMenuItem(
+                  child: Text(z.name), value: z.id.toString());
+            }).toList(),
+            onChanged: (String? newValue) async {
+              zoneSelect = newValue!;
+              communes = await RemoteServicesCommune.getCommune(
+                  int.parse(zoneSelect!));
+              if (communes != null) {
+                setState(() {
+                  isLoad = true;
+                });
+              }
+            },
+          ))),
     ];
   }
 
@@ -543,27 +606,24 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
-                      fontSize: 20)
-              ),
+                      fontSize: 20)),
               border: OutlineInputBorder(),
               contentPadding: EdgeInsets.only(left: 10)),
           child: DropdownButtonHideUnderline(
               child: DropdownButton(
-                isExpanded: true,
-                value: communeSelect,
-                icon: const Icon(Icons.keyboard_arrow_down_rounded),
-                items: communes?.map((com) {
-                  return DropdownMenuItem(
-                      child: Text(com.name),
-                      value: com.id.toString()
-                  );
-                }).toList(),
-                onChanged: (String? newValue) {
-                  setState(() {
-                    communeSelect = newValue!;
-                  });
-                },
-              ))),
+            isExpanded: true,
+            value: communeSelect,
+            icon: const Icon(Icons.keyboard_arrow_down_rounded),
+            items: communes?.map((com) {
+              return DropdownMenuItem(
+                  child: Text(com.name), value: com.id.toString());
+            }).toList(),
+            onChanged: (String? newValue) {
+              setState(() {
+                communeSelect = newValue!;
+              });
+            },
+          ))),
     ];
   }
 
@@ -615,57 +675,66 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
     return [
       Padding(
         padding: const EdgeInsets.all(1.0),
-        child: TextField(
+        child: TextFormField(
           controller: company_phone,
           decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              hintText: 'contact',
-              floatingLabelBehavior: FloatingLabelBehavior.always,
-              label: Text(
-                "Contact Entreprise",
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                    fontSize: 20),
-              )),
+            border: OutlineInputBorder(),
+            hintText: 'contact',
+            floatingLabelBehavior: FloatingLabelBehavior.always,
+            label: Text(
+              "Contact Entreprise",
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                  fontSize: 20),
+            ),
+          ),
+          validator: (value) {
+            if (value!.isEmpty ||
+                !RegExp(r"^\s*([A-Za-z]{1,}([\.,] |[-']| ))+[A-Za-z]+\.?\s*$")
+                    .hasMatch(value!)) {
+              return "Entrez un nom valide";
+            } else {
+              return null;
+            }
+          },
         ),
       ),
     ];
   }
 
   offreVue() {
+    offres = context.watch<FormulaireProspectController>().offres;
     return [
       SizedBox(
         height: 20,
       ),
       InputDecorator(
           decoration: InputDecoration(
-              label: Text(
-                  "Offres",
+              label: Text("Offres",
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
-                      fontSize: 20)
-              ),
+                      fontSize: 20)),
               border: OutlineInputBorder(),
               contentPadding: EdgeInsets.only(left: 10)),
           child: DropdownButtonHideUnderline(
               child: DropdownButton(
-                isExpanded: true,
-                value: offreSelect,
-                icon: const Icon(Icons.keyboard_arrow_down_rounded),
-                items: offres?.map((offer) {
-                  return DropdownMenuItem(
-                    value: offer.id.toString(),
-                    child: Text(offer.name),
-                  );
-                }).toList(),
-                onChanged: (String? newValue) {
-                  setState(() {
-                    offreSelect = newValue!;
-                  });
-                },
-              ))),
+            isExpanded: true,
+            value: offreSelect,
+            icon: const Icon(Icons.keyboard_arrow_down_rounded),
+            items: offres?.map((offer) {
+              return DropdownMenuItem(
+                value: offer.id.toString(),
+                child: Text(offer.name),
+              );
+            }).toList(),
+            onChanged: (String? newValue) {
+              setState(() {
+                offreSelect = newValue!;
+              });
+            },
+          ))),
     ];
   }
 
@@ -1105,10 +1174,10 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
     );
   }
 
-  succesPopUp(BuildContext context){
+  succesPopUp(BuildContext context) {
     showDialog(
         context: context,
-        builder: (BuildContext context){
+        builder: (BuildContext context) {
           return AlertDialog(
             title: Center(child: Text("ENVOI DU PROSPECT")),
             content: Column(
@@ -1126,109 +1195,127 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
                 Text(
                   "Prospects envoyés",
                   style: TextStyle(
-                    fontWeight: FontWeight.bold, color: Colors.green
-                  ),
+                      fontWeight: FontWeight.bold, color: Colors.green),
                 )
               ],
             ),
             actions: <Widget>[
               new TextButton(
-                  onPressed: (){
+                  onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: new Text("OK")
-              )
+                  child: new Text("OK"))
             ],
           );
-        }
-    );
+        });
   }
 
-  nouveauProspect(){
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-            centerTitle: true,
-            backgroundColor: Colors.white10,
-            title: Text(
-              "Nouveau Prospect",
-              style: TextStyle(
-                color: Colors.black87,
-                fontSize: 25,
-              ),
-            )),
-        body: isCompleted ? buildCompleted()
-            : Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(primary: Colors.orange),
-          ),
-          child: Stepper(
-              type: StepperType.horizontal,
-              currentStep: currentStep,
-              steps: stepList(),
-              onStepContinue: () async {
-                final isLastStep =  currentStep == stepList().length - 1;
-                print(isLastStep);
-                if (isLastStep) {
-                  setState(()=> isCompleted = true);
-                  Chargement(context);
-                  var data = ProsModel(
-                    longitude: _position?.longitude.toString(),
-                    latitude: _position?.latitude.toString(),
-                    agentId: user!["id"],
-                    communeId: int.parse(communeSelect!),
-                    zoneId: int.parse(zoneSelect!),
-                    villeId: int.parse(villeSelect!),
-                    provinceId: int.parse(provinceselectionner!),
-                    companyName: company_name.text.toString(),
-                    companyAddress: company_adress.text.toString(),
-                    typeActivitiesId: int.parse(typeSelect!),
-                    companyPhone: company_phone.text.toString(),
-                    offerId: 1,
-                    state: "1",
-                    remoteId: "12RT567",
-                  );
-                  debugPrint('DONNEE: $data');
-                  var response = await context.read<FormulaireProspectController>().submitProspect(data).catchError((err){});
-                  Navigator.pop(context);
-                    succesPopUp(context);
-                  debugPrint("Succès");
-                } else {
-                  setState(() => currentStep +=1);
-                }
-              },
-              onStepTapped: (step) => setState(() => currentStep = step),
-              onStepCancel: currentStep == 0 ? null : () => setState(() => currentStep -=1),
-              controlsBuilder: (BuildContext context, ControlsDetails details) {
-                final isLastStep = currentStep == stepList().length - 1;
-                return Container(
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: ElevatedButton(
-                          child: Text(isLastStep ? "CONFIRMER" : "SUIVANT"),
-                          onPressed: details.onStepContinue,
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      if (currentStep != 0)
-                        Expanded(
-                          child: ElevatedButton(
-                            child: Text("PRECEDENT"),
-                            onPressed: details.onStepCancel,
-                          ),
-                        ),
-                    ],
+  nouveauProspect() {
+    return WillPopScope(
+      onWillPop: () async {
+        await validerFormulaire(true);
+        return Future.value(true);
+      },
+      child: SafeArea(
+        child: Scaffold(
+          appBar: AppBar(
+              centerTitle: true,
+              backgroundColor: Colors.white10,
+              title: Text(
+                "Nouveau Prospect",
+                style: TextStyle(
+                  color: Colors.black87,
+                  fontSize: 25,
+                ),
+              )),
+          body: isCompleted
+              ? buildCompleted()
+              : Theme(
+                  data: Theme.of(context).copyWith(
+                    colorScheme: ColorScheme.light(primary: Colors.orange),
                   ),
-
-                );
-              }
-          ),
+                  child: Stepper(
+                      type: StepperType.horizontal,
+                      currentStep: currentStep,
+                      steps: stepList(),
+                      onStepContinue: () async {
+                        final isLastStep = currentStep == stepList().length - 1;
+                        print(isLastStep);
+                        if (isLastStep) {
+                          setState(() => isCompleted = true);
+                          Chargement(context);
+                          validerFormulaire();
+                          succesPopUp(context);
+                          debugPrint("Succès");
+                        } else {
+                          setState(() => currentStep += 1);
+                        }
+                      },
+                      onStepTapped: (step) => setState(() => currentStep = step),
+                      onStepCancel: currentStep == 0
+                          ? null
+                          : () => setState(() => currentStep -= 1),
+                      controlsBuilder:
+                          (BuildContext context, ControlsDetails details) {
+                        final isLastStep = currentStep == stepList().length - 1;
+                        return Container(
+                          child: Row(
+                            children: <Widget>[
+                              Expanded(
+                                child: ElevatedButton(
+                                  child:
+                                      Text(isLastStep ? "CONFIRMER" : "SUIVANT"),
+                                  onPressed: details.onStepContinue,
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              if (currentStep != 0)
+                                Expanded(
+                                  child: ElevatedButton(
+                                    child: Text("PRECEDENT"),
+                                    onPressed: details.onStepCancel,
+                                  ),
+                                ),
+                            ],
+                          ),
+                        );
+                      }),
+                ),
         ),
       ),
     );
   }
 
+   validerFormulaire([bool save = false]) async {
+    var data = ProsModel(
+      longitude: _position?.longitude.toString(),
+      latitude: _position?.latitude.toString(),
+      agentId: user!["id"],
+      communeId: int.parse(communeSelect!),
+      zoneId: int.parse(zoneSelect!),
+      villeId: int.parse(villeSelect!),
+      provinceId: int.parse(provinceselectionner!),
+      companyName: company_name.text.toString(),
+      companyAddress: company_adress.text.toString(),
+      typeActivitiesId: int.parse(typeSelect!),
+      companyPhone: company_phone.text.toString(),
+      offerId: 1,
+      state: "1",
+      remoteId: "12RT567",
+    );
+    debugPrint('DONNEE: $data');
+    if(save){
+      print("DATA BROUILLON");
+    }else{
+      var response = await context
+          .read<FormulaireProspectController>()
+          .submitProspect(data)
+          .catchError((err) {});
+      Navigator.pop(context);
+    }
+
+
+  }
 
 // User canceled the picker
 

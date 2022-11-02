@@ -1,10 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get_storage/get_storage.dart';
 
+import '../FormulaireProspectPage.dart';
+import '../ListeProspectPage.dart';
 
 class Statistique extends StatefulWidget {
+  final int nbrevisits;
+  final int nbreBrouillons;
 
+  Statistique(
+      {super.key, required this.nbreBrouillons, required this.nbrevisits});
   @override
   State<Statistique> createState() => _StatistiqueState();
 }
@@ -25,10 +30,6 @@ class _StatistiqueState extends State<Statistique> {
   }
 
   cardVisite() {
-
-    GetStorage stockage = GetStorage();
-    var nombreVisite = stockage.read("getAllProspect");
-
     return Expanded(
       child: Card(
         shadowColor: Colors.black,
@@ -48,40 +49,37 @@ class _StatistiqueState extends State<Statistique> {
             padding: const EdgeInsets.all(12.0),
             child: Column(
               children: [
-                SizedBox(height: 7),
-                Icon(
-                  Icons.people,
-                  size: 68,
-                  color: Colors.deepOrange,
-                ),
-                nombreVisite != null
-                    ? Expanded(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              "Visites : ",
-                              style: TextStyle(
-                                  fontSize: 18, color: Colors.deepOrange),
-                            ),
-                            Text(
-                              "${nombreVisite}",
-                              style: TextStyle(
-                                  fontSize: 18,
-                                  color: Colors.deepOrange,
-                                  fontWeight: FontWeight.bold),
-                            )
-                          ],
-                        ),
-                      )
-                    : Text(
-                        "En attente",
+                IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.push(context, MaterialPageRoute(builder: (_) {
+                        return FormulaireProspectPage();
+                      }));
+                    },
+                    iconSize: 55,
+                    icon: Icon(
+                      Icons.people,
+                      color: Colors.deepOrange,
+                    )),
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Visites : ",
+                        style:
+                            TextStyle(fontSize: 18, color: Colors.deepOrange),
+                      ),
+                      Text(
+                        "${widget.nbrevisits}",
                         style: TextStyle(
                             fontSize: 18,
                             color: Colors.deepOrange,
-                            fontWeight: FontWeight.bold
-                        ),
-                      ),
+                            fontWeight: FontWeight.bold),
+                      )
+                    ],
+                  ),
+                )
               ],
             ),
           ),
@@ -110,12 +108,18 @@ class _StatistiqueState extends State<Statistique> {
             padding: const EdgeInsets.all(12.0),
             child: Column(
               children: [
-                SizedBox(height: 7),
-                Icon(
-                  Icons.drafts_outlined,
-                  size: 68,
-                  color: Colors.deepOrange,
-                ),
+                IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.push(context, MaterialPageRoute(builder: (_) {
+                        return ListeProspectPage();
+                      }));
+                    },
+                    iconSize: 55,
+                    icon: Icon(
+                      Icons.drafts_outlined,
+                      color: Colors.deepOrange,
+                    )),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -124,7 +128,7 @@ class _StatistiqueState extends State<Statistique> {
                       style: TextStyle(fontSize: 18, color: Colors.deepOrange),
                     ),
                     Text(
-                      "50",
+                      "${widget.nbreBrouillons}",
                       style: TextStyle(
                           fontSize: 18,
                           color: Colors.deepOrange,

@@ -8,7 +8,7 @@ import '../Tools/Parametres.dart';
 class LastThreeWeeksController with ChangeNotifier {
 
   List<LastThreeWeeksModel> lastThreeWeeksList=[];
-  GetStorage userToken = GetStorage();
+  GetStorage userToken = GetStorage(Parametres.STOCKAGE_VERSION);
   String? token;
 
   getReportWeekData() async {
