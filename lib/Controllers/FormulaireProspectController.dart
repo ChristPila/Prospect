@@ -8,11 +8,8 @@ import 'package:http/http.dart' as http;
 import 'package:prospect/Models/ActiviteModel.dart';
 import 'package:prospect/Models/CommuneModel.dart';
 import 'package:prospect/Models/OffresModel.dart';
-import 'package:prospect/Models/ProspectModel.dart';
 import 'package:prospect/Models/VilleModel.dart';
 import 'package:prospect/Models/ZoneModel.dart';
-
-
 import '../Models/ProvinceModel.dart';
 import '../Models/prosModel.dart';
 import '../Tools/Parametres.dart';
