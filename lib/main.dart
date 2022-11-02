@@ -9,13 +9,13 @@ import 'Controllers/LastThreeDayController.dart';
 import 'Controllers/LastThreeMonthsController.dart';
 import 'Controllers/LastThreeWeeksController.dart';
 import 'Controllers/sevenLastDaysController.dart';
+import 'Tools/Utilitaires.dart';
 import 'Views/IntroPage.dart';
 import 'Controllers/ProspectController.dart';
-import 'Views/UserProfilePage.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await GetStorage.init();
+  await GetStorage.init(Utilitaires.STOCKAGE_VERSION);
   runApp(MyApp());
 }
 

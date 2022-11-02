@@ -3,12 +3,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import '../Tools/Parametres.dart';
+import '../Tools/Utilitaires.dart';
 
 class GetAllProspectsController with ChangeNotifier {
 
   var numbreAllProspects;
-  GetStorage userToken = GetStorage();
-  GetStorage stockage = GetStorage();
+  GetStorage stockage = GetStorage(Utilitaires.STOCKAGE_VERSION);
   String? token;
 
   getReportData() async {
@@ -18,16 +18,16 @@ class GetAllProspectsController with ChangeNotifier {
       port: Parametres.port,
       path: Parametres.endPointGetAllProspects,
     );
-    token = userToken.read("token");
+    token = stockage.read("token");
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
       'Authorization': 'Bearer $token',
     });
-    if (response.statusCode == 200 ){
+    if (response.statusCode == 200){
       String result = response.body;
       var temp = json.decode(result);
-      numbreAllProspects = temp[0]["nombre"].toString();
+      numbreAllProspects = temp[0]["nombre"];
       stockage.write("getAllProspect", numbreAllProspects);
       notifyListeners();
     }

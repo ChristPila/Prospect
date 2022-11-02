@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../../Controllers/LastThreeDayController.dart';
 import '../../Models/LastThreeDaysModel.dart';
 
@@ -29,6 +28,7 @@ class _DayTabState extends State<DayTab> {
       child: listRapportsVue(),
     );
   }
+
   listRapportsVue() {
     List<LastThreeDaysModel> LastThreeDaysList =
         context.watch<LastThreeDayController>().LastThreeDaysList;
@@ -60,16 +60,7 @@ class _DayTabState extends State<DayTab> {
                   padding: const EdgeInsets.all(11.0),
                   child: Column(
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Icon(
-                            Icons.calendar_month_outlined,
-                            color: Colors.white,
-                            size: 60,
-                          ),
-                        ],
-                      ),
+                      logoCard(),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -93,5 +84,18 @@ class _DayTabState extends State<DayTab> {
             ),
           );
         });
+  }
+
+  logoCard(){
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        Icon(
+          Icons.calendar_month_outlined,
+          color: Colors.white,
+          size: 60,
+        ),
+      ],
+    );
   }
 }
