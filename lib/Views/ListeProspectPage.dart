@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:prospect/Models/prosModel.dart';
 import 'package:prospect/Tools/Parametres.dart';
 import 'package:provider/provider.dart';
 import 'package:prospect/Controllers/ProspectController.dart';
+import '../Controllers/FormulaireProspectController.dart';
 import 'DetailProspectPage.dart';
 import 'ProgressPage.dart';
 
 class ListeProspectPage extends StatefulWidget {
-  const ListeProspectPage({Key? key}) : super(key: key);
+  String state;
+
+  ListeProspectPage({Key? key, this.state = "0"}) : super(key: key);
 
   @override
   State<ListeProspectPage> createState() => _ProspectState();
@@ -28,18 +32,46 @@ class _ProspectState extends State<ListeProspectPage> {
     "Rejeté": "3",
     "Brouillon": "4",
   };
-  String typeStatutSelectionne = 'Tous';
-  String typeStatutSelectionne_int = '0';
+
+  Map<String, String> listeTypesStatut2 = {
+    "0": "Tous",
+    '1': 'En attente',
+    "2": "Validé",
+    "3": "Rejeté",
+    "4": "Brouillon",
+  };
+  late String typeStatutSelectionne;
+
+  late String typeStatutSelectionne_int;
 
   var dataProspectCopie = [];
   bool isapicallprocess = false;
 
   intdata() async {
-    // await context.read<ProspectController>().recupererDonneesAPI();
-    var listOriginalProspect =
-        context.read<ProspectController>().data;
-    dataProspectCopie = listOriginalProspect;
+    await context.read<ProspectController>().recupererDonneesLocales();
+    var listOriginalProspect = context.read<ProspectController>().data;
+    //dataProspectCopie = listOriginalProspect;
+    if (typeStatutSelectionne_int == "0") {
+      dataProspectCopie = listOriginalProspect;
+    } else {
+      dataProspectCopie = listOriginalProspect
+          .where((e) => e.state == typeStatutSelectionne_int)
+          .toList();
+    }
     print(dataProspectCopie.length);
+    setState(() {});
+  }
+
+
+  zoneRecup() async {
+    var formCtrl = context.read<FormulaireProspectController>();
+    List listZones = await formCtrl.lectureAPIstockage(
+        Parametres.keyZones, Parametres.endPointZones);
+
+    Map tempmap = Map.fromIterable(listZones,
+        key: (v) => v['name'].toString(), value: (v) => v);
+    context.read<ProspectController>().zones = tempmap;
+    print("tempmap $tempmap");
     setState(() {});
   }
 
@@ -47,8 +79,12 @@ class _ProspectState extends State<ListeProspectPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    print("widget.state ${widget.state}");
+    typeStatutSelectionne_int = widget.state;
+    typeStatutSelectionne = listeTypesStatut2[widget.state] ?? "Tous";
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-     // await context.read<ProspectController>().recupererDonneesAPI();
+      zoneRecup();
+      // await context.read<ProspectController>().recupererDonneesAPI();
       //context.read<ProspectController>().verifierStatusDonneeAPI("remoteId");
       intdata();
     });
@@ -95,9 +131,9 @@ class _ProspectState extends State<ListeProspectPage> {
               },
               iconSize: 40,
               icon: Icon(Icons.refresh_outlined)),
-         ],
-        ),
-         body: Column(
+        ],
+      ),
+          body: Column(
         children: <Widget>[
           selectionTypeStatut(context),
           listProspectVue(context),
@@ -112,7 +148,7 @@ class _ProspectState extends State<ListeProspectPage> {
         itemCount: dataProspectCopie.length,
         shrinkWrap: true,
         itemBuilder: (BuildContext context, int index) {
-          var prospect = dataProspectCopie[index];
+          ProsModel prospect = dataProspectCopie[index];
           var icon = Icons.remove_circle;
           var color = Colors.blue;
 
@@ -133,6 +169,7 @@ class _ProspectState extends State<ListeProspectPage> {
           }
 
           return ListTile(
+
             onTap: () => Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -153,7 +190,7 @@ class _ProspectState extends State<ListeProspectPage> {
               ),
             ),
             subtitle: Text(
-              'Companie: ${prospect.companyName}\nZone: ${prospect.commune}',
+              'Companie: ${prospect.companyName}\nZone: ${prospect.zoneId}',
               style: const TextStyle(fontSize: 15, color: Colors.black87),
             ),
           );
@@ -162,45 +199,6 @@ class _ProspectState extends State<ListeProspectPage> {
     );
   }
 
-  listStatutAtente(BuildContext context, List listAtente) {
-    return ListView.builder(
-      itemCount: listAtente.length,
-      shrinkWrap: true,
-      itemBuilder: (BuildContext context, int index) {
-        return Card(
-            margin: EdgeInsets.symmetric(vertical: 5),
-            child: Container(
-                margin: EdgeInsets.symmetric(horizontal: 5, vertical: 3),
-                padding: EdgeInsets.symmetric(vertical: 2),
-                child: ListTile(
-                  onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => DetailProspectPage(
-                                data: listAtente[index],
-                              ))),
-                  leading: Icon(
-                    Icons.remove_circle,
-                    color: Colors.blue,
-                    size: 35,
-                  ),
-                  title: Text(
-                    'state : ${listAtente[index].state}',
-                    style: const TextStyle(
-                      fontSize: 15,
-                      color: Colors.black87,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  subtitle: Text(
-                    "Companie: ${listAtente[index].companyName}\nZone: ${listAtente[index].zone}",
-                    textAlign: TextAlign.start,
-                    style: const TextStyle(fontSize: 15, color: Colors.black87),
-                  ),
-                )));
-      },
-    );
-  }
 
   dataView(BuildContext context) {
     var data = context.watch<ProspectController>().data;
@@ -225,7 +223,7 @@ class _ProspectState extends State<ListeProspectPage> {
                 style: const TextStyle(fontSize: 15, color: Colors.black87),
               ),
               subtitle: Text(
-                'statut :${prospect.state}\nZone: 1',
+                'statut :${prospect.state}\nZone: zoneId',
                 style: const TextStyle(fontSize: 15, color: Colors.black87),
               ),
               trailing: IconButton(
@@ -236,6 +234,7 @@ class _ProspectState extends State<ListeProspectPage> {
           );
         });
   }
+
 
   selectionTypeStatut(BuildContext context) {
     return Container(
@@ -254,8 +253,7 @@ class _ProspectState extends State<ListeProspectPage> {
           print('$typeStatutSelectionne');
           print(listeTypesStatut[newValue]);
           typeStatutSelectionne_int = listeTypesStatut[newValue]!;
-          var listOriginalProspect =
-              context.read<ProspectController>().data;
+          var listOriginalProspect = context.read<ProspectController>().data;
           if (typeStatutSelectionne_int == "0") {
             dataProspectCopie = listOriginalProspect;
           } else {
