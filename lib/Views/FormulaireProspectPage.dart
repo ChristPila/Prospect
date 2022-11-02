@@ -21,7 +21,6 @@ import 'package:prospect/Models/ProvinceModel.dart';
 import 'package:prospect/Models/VilleModel.dart';
 import 'package:prospect/Models/ZoneModel.dart';
 import 'package:provider/provider.dart';
-
 import '../Controllers/FormulaireProspectController.dart';
 import '../Models/prosModel.dart';
 
@@ -29,7 +28,8 @@ import '../Models/prosModel.dart';
 //import 'package:file_picker/file_picker.dart';
 
 class FormulaireProspectPage extends StatefulWidget {
-  const FormulaireProspectPage({Key? key}) : super(key: key);
+  const FormulaireProspectPage({this.recup,});
+  final recup;
 
   @override
   State<FormulaireProspectPage> createState() => _FormulaireProspectPageState();

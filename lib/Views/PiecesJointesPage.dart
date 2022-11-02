@@ -1,12 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import '../Models/ProspectModel.dart';
+import '../Models/prosModel.dart';
 import 'PhotoViewPage.dart';
 
 class PiecesJointesPage extends StatefulWidget {
   PiecesJointesPage({required this.clientrecup});
 
-  ProspectModel clientrecup;
+  ProsModel clientrecup;
 
   @override
   State<PiecesJointesPage> createState() =>
@@ -14,7 +14,7 @@ class PiecesJointesPage extends StatefulWidget {
 }
 
 class _PiecesJointesPageState extends State<PiecesJointesPage> {
-  ProspectModel clientrecup;
+  ProsModel clientrecup;
 
   _PiecesJointesPageState({required this.clientrecup});
 

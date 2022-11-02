@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:prospect/Tools/Parametres.dart';
 import 'package:prospect/Views/HomePage.dart';
-import '../Tools/Utilitaires.dart';
 
 class UserProfilePage extends StatefulWidget {
   @override
@@ -10,7 +10,7 @@ class UserProfilePage extends StatefulWidget {
 
 class _UserProfilePageState extends State<UserProfilePage> {
 
-  GetStorage userInfo = GetStorage(Utilitaires.STOCKAGE_VERSION);
+  GetStorage userInfo = GetStorage(Parametres.STOCKAGE_VERSION);
   Map<String, dynamic> userInfoMap = {};
   String? nomComplet;
   String? Email;
