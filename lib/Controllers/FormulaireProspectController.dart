@@ -91,15 +91,15 @@ class FormulaireProspectController with ChangeNotifier {
   }
 
   lectureAPIstockage(String key, endPoints) async{
-    var mapProvince = lecturestockageLocale(key);
-    var provinces = mapProvince.entries
+    var mapData = lecturestockageLocale(key);
+    var data = mapData.entries
         .map((e) => e.value)
         .toList();
-    if(provinces.length == 0){
-      provinces = await recupererDonneesAPI(
+    if(data.length == 0){
+      data = await recupererDonneesAPI(
           key, endPoints);
     }
-    return provinces;
+    return data;
   }
 }
 /*main(){
