@@ -192,6 +192,11 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
   }
 
   companytype() {
+   var activity = context.watch<ProspectController>().activity;
+    var activityId = clientrecup.typeActivitiesId;
+    Map activity_data = activity["$activityId"];
+    var activity_name = activity_data["name"];
+
     return Container(
       padding: const EdgeInsets.all(10),
       child: Row(
@@ -203,7 +208,7 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
                   fontSize: 15,
                   decoration: TextDecoration.none)),
           Spacer(),
-          Text("${clientrecup.typeActivitiesId}",
+          Text("${activity_name}",
               style: const TextStyle(
                   color: Colors.black87,
                   fontSize: 15,
@@ -261,6 +266,10 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
   }
 
   companyoffre() {
+    var offre = context.watch<ProspectController>().offres;
+    var offresId = clientrecup.offerId;
+    Map offres_data = offre["$offresId"];
+    var offres_name = offres_data["name"];
     return Container(
       padding: const EdgeInsets.all(10),
       child: Row(
@@ -272,7 +281,7 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
                   fontSize: 15,
                   decoration: TextDecoration.none)),
           Spacer(),
-          Text("${clientrecup.offerId}",
+          Text("${offres_name}",
               style: const TextStyle(
                   color: Colors.black87,
                   fontSize: 15,
@@ -284,6 +293,10 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
   }
 
   companyprovince() {
+    var provinces = context.watch<ProspectController>().provinces;
+    var provinceId = clientrecup.provinceId;
+    Map province_data = provinces["$provinceId"];
+    var province_name = province_data["name"];
     return Container(
       padding: const EdgeInsets.all(10),
       child: Row(
@@ -295,7 +308,7 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
                   fontSize: 15,
                   decoration: TextDecoration.none)),
           Spacer(),
-          Text("${clientrecup.provinceId}",
+          Text("${province_name}",
               style: const TextStyle(
                   color: Colors.black87,
                   fontSize: 15,
@@ -307,6 +320,10 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
   }
 
   companyville() {
+    var villes = context.read<ProspectController>().villes;
+    var villeId = clientrecup.villeId;
+    Map ville_data = villes["$villeId"];
+    var ville_name = ville_data["name"];
     return Container(
       padding: const EdgeInsets.all(10),
       child: Row(
@@ -318,7 +335,7 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
                   fontSize: 15,
                   decoration: TextDecoration.none)),
           Spacer(),
-          Text("${clientrecup.villeId}",
+          Text("${ville_name}",
               style: const TextStyle(
                   color: Colors.black87,
                   fontSize: 15,
@@ -330,6 +347,10 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
   }
 
   companycommune() {
+    var communes = context.watch<ProspectController>().communes;
+    var communeId = clientrecup.communeId;
+    Map commune_data = communes["$communeId"];
+    var ville_name = commune_data["name"];
     return Container(
       padding: const EdgeInsets.all(10),
       child: Row(
@@ -341,7 +362,7 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
                   fontSize: 15,
                   decoration: TextDecoration.none)),
           Spacer(),
-          Text("${clientrecup.communeId}",
+          Text("${ville_name}",
               style: const TextStyle(
                   color: Colors.black87,
                   fontSize: 15,
@@ -353,6 +374,10 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
   }
 
   companyzone() {
+    var zones = context.watch<ProspectController>().zones;
+    var zoneid = clientrecup.zoneId;
+    Map commune_data = zones["$zoneid"];
+    var zone_name = commune_data["name"];
     return Container(
       padding: const EdgeInsets.all(10),
       child: Row(
@@ -364,7 +389,7 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
                   fontSize: 15,
                   decoration: TextDecoration.none)),
           Spacer(),
-          Text("${clientrecup.zoneId}",
+          Text("${zone_name}",
               style: const TextStyle(
                   color: Colors.black87,
                   fontSize: 15,
