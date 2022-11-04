@@ -12,6 +12,11 @@ class ProspectController with ChangeNotifier {
   List<ProsModel> data = [];
   Map stockage_data = {};
   Map zones = {};
+  Map provinces =  {};
+  Map villes = {};
+  Map communes = {};
+  Map activity = {};
+  Map offres = {};
   List<ProsModel> listValider = [];
   List<ProsModel> listRejeter = [];
   List<ProsModel> listAtente = [];
