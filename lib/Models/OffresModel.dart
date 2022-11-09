@@ -6,20 +6,20 @@ String offresModelToJson(List<OffresModel> data) => json.encode(List<dynamic>.fr
 
 class OffresModel {
   OffresModel({
-    required this.id,
-    required this.name,
-    required this.code,
+    this.id,
+    this.name,
+    this.code,
     this.value = false,
-    required this.createdAt,
-    required this.updatedAt,
+    this.createdAt,
+    this.updatedAt,
   });
 
-  int id;
-  String name;
-  String code;
-  bool value;
-  DateTime createdAt;
-  DateTime updatedAt;
+  int? id;
+  String? name;
+  String? code;
+  bool? value;
+  DateTime? createdAt;
+  DateTime? updatedAt;
 
   factory OffresModel.fromJson(Map<String, dynamic> json) => OffresModel(
     id: json["id"],
@@ -33,7 +33,7 @@ class OffresModel {
     "id": id,
     "name": name,
     "code": code,
-    "created_at": createdAt.toIso8601String(),
-    "updated_at": updatedAt.toIso8601String(),
+    "created_at": createdAt?.toIso8601String(),
+    "updated_at": updatedAt?.toIso8601String(),
   };
 }
