@@ -12,6 +12,7 @@ class Parametres{
   static const String keyCommunes = "COMMUNES";
   static const String keyActivities = "ACTIVITES";
   static const String keyOffres = "OFFRES";
+  static const String keyProspect = "PROSPECT";
   static const String endPointLogin = "/api/login";
   static const String endSevenLastDays = "/api/reporting/last_seven_days";
   static const String endThreeLastDays = "/api/reporting/last_three_days";
@@ -22,8 +23,8 @@ class Parametres{
   static const String endPointOffres = 'api/offres';
   static const String endPointProvinces = 'api/provinces';
   static const String endPointVilles = 'api/villes';
-  static const String endPointZones = '';
-  static const String endPointCommunes = '';
+  static const String endPointZones = 'api/zones';
+  static const String endPointCommunes = 'api/communes';
   static const String endPointProspect = 'api/prospect';
   static const String endPointAct = 'api/type-activities';
   static const String loginUser = "divinenagonjo@gmail.com";
