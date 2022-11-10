@@ -13,24 +13,28 @@ class LastThreeMonthsController with ChangeNotifier {
   String? token;
 
   getReportMonthData() async {
-    var url = Uri(
-      scheme: Parametres.scheme,
-      host: Parametres.host,
-      port: Parametres.port,
-      path: Parametres.endThreeLastMonths,
-    );
-    token = userToken.read("token");
-    final response = await http.get(url, headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Bearer $token',
-    });
-    if (response.statusCode == 200 ){
-      String result = response.body;
-      var templist = json.decode(result) as List<dynamic>;
-      lastThreeMonthsList=templist.map((e) => LastThreeMonthsModel.fromJson(e)).toList();
-      notifyListeners();
-    }
+    try{
+      var url = Uri(
+        scheme: Parametres.scheme,
+        host: Parametres.host,
+        port: Parametres.port,
+        path: Parametres.endThreeLastMonths,
+      );
+      token = userToken.read("token");
+      final response = await http.get(url, headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      if (response.statusCode == 200 ){
+        String result = response.body;
+        var templist = json.decode(result) as List<dynamic>;
+        lastThreeMonthsList=templist.map((e) => LastThreeMonthsModel.fromJson(e)).toList();
+        notifyListeners();
+      }
+    } on Exception catch (e){
+      print(e.toString());
+    };
   }
 }
 
