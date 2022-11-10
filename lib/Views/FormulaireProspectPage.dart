@@ -1,18 +1,13 @@
-import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:geolocator/geolocator.dart' as g;
 import 'package:get_storage/get_storage.dart';
-
-//import 'package:image_picker/image_picker.dart';
 import 'package:prospect/Controllers/ActiviteController.dart';
 import 'package:prospect/Controllers/CommuneController.dart';
 import 'package:prospect/Controllers/OffresController.dart';
 import 'package:prospect/Controllers/ProspectController.dart';
-import 'package:prospect/Controllers/ProvinceController.dart';
 import 'package:prospect/Controllers/VilleController.dart';
 import 'package:prospect/Controllers/ZoneController.dart';
-import 'package:prospect/Models/UserModel.dart';
 import 'package:prospect/Tools/Parametres.dart';
 import 'package:prospect/Models/ActiviteModel.dart';
 import 'package:prospect/Models/CommuneModel.dart';
@@ -36,7 +31,7 @@ class FormulaireProspectPage extends StatefulWidget {
 }
 
 class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
-  Position? _position;
+  g.Position? _position;
   Uint8List? exportedImage;
   bool isLoad = false;
 
@@ -46,11 +41,11 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
     exportBackgroundColor: Colors.yellowAccent,
   );*/
   //List<ProvinceModel>? provinces;
-  List<ActiviteModel>? activites;
+  List<ActiviteModel> activites = [];
   List<VilleModel>? villes;
   List<ZoneModel>? zones;
   List<CommuneModel>? communes;
-  List<OffresModel>? offres;
+  List<OffresModel> offres = [];
   Map? user;
   GetStorage us = GetStorage();
   List selectedData = [];
@@ -71,6 +66,8 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
   TextEditingController company_adress = TextEditingController();
   TextEditingController company_type = TextEditingController();
   TextEditingController company_phone = TextEditingController();
+
+  int timestamp = DateTime.now().millisecondsSinceEpoch;
 
   @override
   void initState() {
@@ -139,7 +136,7 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
     var listActivities = await formCtrl.lectureAPIstockage(Parametres.keyActivities, Parametres.endPointAct);
     formCtrl.activities= listActivities.map<ActiviteModel>((e) => ActiviteModel.fromJson(e)).toList();
     setState(() {
-
+      activites = context.read<FormulaireProspectController>().activities;
     });
   }
 
@@ -149,7 +146,7 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
   formCtrl.offres= listOffres.map<OffresModel>((e) => OffresModel.fromJson(e)).toList();
   print("OFFRES :${formCtrl.offres}");
   setState(() {
-
+    offres = context.read<FormulaireProspectController>().offres;
   });
 }
 
@@ -214,11 +211,11 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
                     SizedBox(
                       height: 8,
                     ),
-                    ...typeVue(),
+                    ...typeVue(context),
                     SizedBox(
                       height: 8,
                     ),
-                    ...offreVue(),
+                    ...offreVue(context),
                     SizedBox(
                       height: 8,
                     ),
@@ -390,7 +387,7 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
   Widget build(BuildContext context) {
     print(selectedData.map((e) => e).toList());
     user = us.read('user');
-    //print(user?["id"]);
+    print("AGENT ID : ${user?["id"]}");
     return nouveauProspect();
   }
 
@@ -399,24 +396,24 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
   }
 
   void _getCurrentPosition() async {
-    Position position = await _determinePosition();
+    g.Position position = await _determinePosition();
     setState(() {
       _position = position;
     });
   }
 
-  Future<Position> _determinePosition() async {
-    LocationPermission permission;
+  Future<g.Position> _determinePosition() async {
+    g.LocationPermission permission;
 
-    permission = await Geolocator.checkPermission();
+    permission = await g.Geolocator.checkPermission();
 
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
+    if (permission == g.LocationPermission.denied) {
+      permission = await g.Geolocator.requestPermission();
+      if (permission == g.LocationPermission.denied) {
         return Future.error("Location permission are denied");
       }
     }
-    return await Geolocator.getCurrentPosition();
+    return await g.Geolocator.getCurrentPosition();
   }
 
   localisation() {
@@ -474,8 +471,7 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
     ];
   }
 
-  typeVue() {
-    activites = context.watch<FormulaireProspectController>().activities;
+  typeVue(BuildContext context) {
     return [
       SizedBox(
         height: 20,
@@ -494,7 +490,7 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
             isExpanded: true,
             value: typeSelect,
             icon: const Icon(Icons.keyboard_arrow_down_rounded),
-            items: activites?.map((activity) {
+            items: activites.map((activity) {
               return DropdownMenuItem(
                 value: activity.id.toString(),
                 child: Text(activity.name),
@@ -703,8 +699,7 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
     ];
   }
 
-  offreVue() {
-    offres = context.watch<FormulaireProspectController>().offres;
+  offreVue(BuildContext context) {
     return [
       SizedBox(
         height: 20,
@@ -726,7 +721,7 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
             items: offres?.map((offer) {
               return DropdownMenuItem(
                 value: offer.id.toString(),
-                child: Text(offer.name),
+                child: Text(offer.name.toString()),
               );
             }).toList(),
             onChanged: (String? newValue) {
@@ -1158,7 +1153,7 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
     }).toList());
   }
 
-  Chargement(BuildContext context, [int duree = 1500]) async {
+  Chargement(BuildContext context, [int duree = 150]) async {
     ouvrirDialog(context);
   }
 
@@ -1290,22 +1285,24 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
     var data = ProsModel(
       longitude: _position?.longitude.toString(),
       latitude: _position?.latitude.toString(),
-      agentId: user!["id"],
-      communeId: int.parse(communeSelect!),
-      zoneId: int.parse(zoneSelect!),
-      villeId: int.parse(villeSelect!),
-      provinceId: int.parse(provinceselectionner!),
+      agentId: 1,
+      communeId: communeSelect != null ? int.parse(communeSelect!):null,
+      zoneId: zoneSelect != null ? int.parse(zoneSelect!): null,
+      villeId: villeSelect != null ? int.parse(villeSelect!): null,
+      provinceId: provinceselectionner != null ? int.parse(provinceselectionner!):null,
       companyName: company_name.text.toString(),
       companyAddress: company_adress.text.toString(),
-      typeActivitiesId: int.parse(typeSelect!),
+      typeActivitiesId: typeSelect!= null ? int.parse(typeSelect!):null,
       companyPhone: company_phone.text.toString(),
       offerId: 1,
       state: "1",
-      remoteId: "12RT567",
+      remoteId: timestamp.toString(),
     );
-    debugPrint('DONNEE: $data');
+    debugPrint('DONNEE: ${data.toJson()}');
+    print(save);
     if(save){
-      print("DATA BROUILLON");
+      print("DATA BROUILLON ${data.toJson()}");
+      brouillon(data);
     }else{
       var response = await context
           .read<FormulaireProspectController>()
@@ -1314,7 +1311,12 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
       Navigator.pop(context);
     }
 
+  }
 
+  brouillon(ProsModel data){
+    Map a = FormulaireProspectController().lecturestockageLocale(Parametres.keyProspect);
+    a[timestamp.toString()] = data.toJson();
+    FormulaireProspectController().ecritureStockageLocale(Parametres.keyProspect, a);
   }
 
 // User canceled the picker

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:prospect/Controllers/FormulaireProspectController.dart';
 import 'package:prospect/Tools/Parametres.dart';
+import 'package:prospect/Views/FormulaireProspectPage.dart';
 import 'package:provider/provider.dart';
 import 'Controllers/AuthentifacationController.dart';
 import 'Controllers/DayToDateController.dart';

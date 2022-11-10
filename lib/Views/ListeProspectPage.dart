@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:prospect/Models/CommuneModel.dart';
+import 'package:prospect/Models/ProvinceModel.dart';
+import 'package:prospect/Models/VilleModel.dart';
 import 'package:prospect/Models/prosModel.dart';
 import 'package:prospect/Tools/Parametres.dart';
 import 'package:provider/provider.dart';
@@ -68,13 +71,82 @@ class _ProspectState extends State<ListeProspectPage> {
     List listZones = await formCtrl.lectureAPIstockage(
         Parametres.keyZones, Parametres.endPointZones);
 
-    Map tempmap = Map.fromIterable(listZones,
-        key: (v) => v['name'].toString(), value: (v) => v);
-    context.read<ProspectController>().zones = tempmap;
-    print("tempmap $tempmap");
+    Map Zone = Map.fromIterable(listZones,
+        key: (v) => v['id'].toString(), value: (v) => v);
+    context.read<ProspectController>().zones = Zone;
+    print("Zone $Zone");
     setState(() {});
   }
+  communeRecup() async {
+    var formCtrl = context.read<FormulaireProspectController>();
+    List  listCommunes = await formCtrl.lectureAPIstockage(
+        Parametres.keyCommunes, Parametres.endPointCommunes);
 
+    Map Commune = Map.fromIterable(listCommunes,
+        key: (v) => v['id'].toString(), value: (v) => v);
+    context.read<ProspectController>().communes = Commune;
+    print("Commune $Commune");
+    setState(() {
+
+    });
+  }
+  provinceRecup() async{
+    var formCtrl = context.read<FormulaireProspectController>();
+    var listProvince = await formCtrl.lectureAPIstockage(
+        Parametres.keyProvince, Parametres.endPointProvinces);
+
+    Map Province = Map.fromIterable(listProvince,
+        key: (v) => v['id'].toString(), value: (v) => v);
+    context.read<ProspectController>().provinces = Province;
+    print("Province $Province");
+    setState(() {
+
+    });
+  }
+
+  villeReccup() async{
+    var formCtrl = context.read<FormulaireProspectController>();
+    var listVilles = await formCtrl.lectureAPIstockage(
+        Parametres.keyVilles, Parametres.endPointVilles);
+
+
+    Map Ville = Map.fromIterable(listVilles,
+        key: (v) => v['id'].toString(), value: (v) => v);
+    context.read<ProspectController>().villes = Ville;
+    print("Ville $Ville");
+
+    setState(() {
+
+    });
+  }
+
+  activityRecup() async {
+    var formCtrl = context.read<FormulaireProspectController>();
+    var listActivities = await formCtrl.lectureAPIstockage(
+        Parametres.keyActivities, Parametres.endPointAct);
+
+    Map activity = Map.fromIterable(listActivities,
+        key: (v) => v['id'].toString(), value: (v) => v);
+    context.read<ProspectController>().activity = activity;
+    print("activity $activity");
+    setState(() {
+
+    });
+  }
+
+  offreRecup() async {
+    var formCtrl = context.read<FormulaireProspectController>();
+    var listOffres = await formCtrl.lectureAPIstockage(
+        Parametres.keyOffres, Parametres.endPointOffres);
+
+    Map offre = Map.fromIterable(listOffres,
+        key: (v) => v['id'].toString(), value: (v) => v);
+    context.read<ProspectController>().offres = offre;
+    print("offre $offre");
+    setState(() {
+
+    });
+  }
   @override
   void initState() {
     // TODO: implement initState
@@ -84,6 +156,11 @@ class _ProspectState extends State<ListeProspectPage> {
     typeStatutSelectionne = listeTypesStatut2[widget.state] ?? "Tous";
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       zoneRecup();
+      communeRecup();
+      provinceRecup();
+      villeReccup();
+      activityRecup();
+      offreRecup();
       // await context.read<ProspectController>().recupererDonneesAPI();
       //context.read<ProspectController>().verifierStatusDonneeAPI("remoteId");
       intdata();
@@ -103,6 +180,7 @@ class _ProspectState extends State<ListeProspectPage> {
   Widget build2(BuildContext context) {
     // context.read<ProspectController>().statut();
     var listProspect = context.watch<ProspectController>().data;
+
 
     return SafeArea(
         child: Scaffold(
@@ -140,6 +218,7 @@ class _ProspectState extends State<ListeProspectPage> {
         ],
       ),
     ));
+
   }
 
   listProspectVue(BuildContext context) {
@@ -149,6 +228,26 @@ class _ProspectState extends State<ListeProspectPage> {
         shrinkWrap: true,
         itemBuilder: (BuildContext context, int index) {
           ProsModel prospect = dataProspectCopie[index];
+          var zones = context.watch<ProspectController>().zones;
+          var zoneId = prospect.zoneId;
+          Map zone_data = zones["$zoneId"];
+          var zone_name = zone_data["name"];
+
+          var villes = context.watch<ProspectController>().villes;
+          var villeId = prospect.villeId;
+          Map ville_data = villes["$villeId"];
+          var ville_name = ville_data["name"];
+
+          var provinces = context.watch<ProspectController>().provinces;
+          var provinceId = prospect.provinceId;
+          Map province_data = provinces["$provinceId"];
+          var province_name = province_data["name"];
+
+          var communes = context.watch<ProspectController>().communes;
+          var communeId = prospect.communeId;
+          Map commune_data = communes["$communeId"];
+          var commune_name = commune_data["name"];
+
           var icon = Icons.remove_circle;
           var color = Colors.blue;
 
@@ -190,7 +289,7 @@ class _ProspectState extends State<ListeProspectPage> {
               ),
             ),
             subtitle: Text(
-              'Companie: ${prospect.companyName}\nZone: ${prospect.zoneId}',
+              'Companie: ${prospect.companyName}\nZone: ${zone_name}\nCommune: ${commune_name}\nVille: ${ville_name}\nProvince: ${province_name}',
               style: const TextStyle(fontSize: 15, color: Colors.black87),
             ),
           );
