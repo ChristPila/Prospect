@@ -12,25 +12,28 @@ class SevenLastDaysController with ChangeNotifier {
   String? token;
 
   getReportData() async {
-    var url = Uri(
-      scheme: Parametres.scheme,
-      host: Parametres.host,
-      port: Parametres.port,
-      path: Parametres.endSevenLastDays,
-    );
-    token = userToken.read("token");
-    final response = await http.get(url, headers: {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
-    'Authorization': 'Bearer $token',
-    });
-    if (response.statusCode == 200 ){
-      String result = response.body;
-      var templist = json.decode(result) as List<dynamic>;
-      SevenLastDaysList=templist.map((e) => SevenLastDaysModel.fromJson(e)).toList();
-      notifyListeners();
-      print(response.body);
-    }
-
+    try{
+      var url = Uri(
+        scheme: Parametres.scheme,
+        host: Parametres.host,
+        port: Parametres.port,
+        path: Parametres.endSevenLastDays,
+      );
+      token = userToken.read("token");
+      final response = await http.get(url, headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      if (response.statusCode == 200 ){
+        String result = response.body;
+        var templist = json.decode(result) as List<dynamic>;
+        SevenLastDaysList=templist.map((e) => SevenLastDaysModel.fromJson(e)).toList();
+        notifyListeners();
+        print(response.body);
+      }
+    } on Exception catch (e){
+      print(e.toString());
+    };
   }
 }

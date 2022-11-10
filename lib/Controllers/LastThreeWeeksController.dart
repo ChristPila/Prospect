@@ -12,24 +12,28 @@ class LastThreeWeeksController with ChangeNotifier {
   String? token;
 
   getReportWeekData() async {
-    var url = Uri(
-      scheme: Parametres.scheme,
-      host: Parametres.host,
-      port: Parametres.port,
-      path: Parametres.endThreeLastWeeks,
-    );
-    token = userToken.read("token");
-    final response = await http.get(url, headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Bearer $token',
-    });
-    if (response.statusCode == 200 ){
-      String result = response.body;
-      var templist = json.decode(result) as List<dynamic>;
-      lastThreeWeeksList=templist.map((e) => LastThreeWeeksModel.fromJson(e)).toList();
-      notifyListeners();
-    }
+    try{
+      var url = Uri(
+        scheme: Parametres.scheme,
+        host: Parametres.host,
+        port: Parametres.port,
+        path: Parametres.endThreeLastWeeks,
+      );
+      token = userToken.read("token");
+      final response = await http.get(url, headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      if (response.statusCode == 200 ){
+        String result = response.body;
+        var templist = json.decode(result) as List<dynamic>;
+        lastThreeWeeksList=templist.map((e) => LastThreeWeeksModel.fromJson(e)).toList();
+        notifyListeners();
+      }
+    } on Exception catch (e){
+      print(e.toString());
+    };
   }
 }
 
