@@ -7,9 +7,10 @@ import '../Views/PiecesJointesPage.dart';
 import 'FormulaireProspectPage.dart';
 
 class DetailProspectPage extends StatefulWidget {
+  final ProsModel data;
   const DetailProspectPage({super.key, required this.data,});
 
-  final ProsModel data;
+
 
   @override
   State<DetailProspectPage> createState() => _DetailProspectPageState();
@@ -53,24 +54,21 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
           actions: [
             clientrecup.state != "1"
                 ? IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      if(clientrecup.state == "4"){
+                        Navigator.pushReplacement(context,
+                            MaterialPageRoute(builder: (_) {
+                              return FormulaireProspectPage(recup: clientrecup);
+                            }));
+                      };
+
+                    },
                     icon: Icon(
                       states[clientrecup.state]["icon"],
                       color: states[clientrecup.state]["color"],
                       size: 30,
                     ))
-                : clientrecup.state == "4"
-                    ? TextButton.icon(
-                        onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (_) {
-                            return FormulaireProspectPage(
-                              recup: clientrecup);
-                          }));
-                        },
-                        icon: Icon(Icons.edit_note,
-                            color: Colors.white, size: 30),
-                        label: Text(""))
-                    : TextButton.icon(
+                : TextButton.icon(
                         onPressed: () {
                           context
                               .read<ProspectController>()
@@ -194,8 +192,8 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
   companytype() {
    var activity = context.watch<ProspectController>().activity;
     var activityId = clientrecup.typeActivitiesId;
-    Map activity_data = activity["$activityId"];
-    var activity_name = activity_data["name"];
+    Map? activity_data = activityId != null ? activity[activityId]:{};
+    var activity_name = activity_data?["name"];
 
     return Container(
       padding: const EdgeInsets.all(10),
@@ -268,8 +266,8 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
   companyoffre() {
     var offre = context.watch<ProspectController>().offres;
     var offresId = clientrecup.offerId;
-    Map offres_data = offre["$offresId"];
-    var offres_name = offres_data["name"];
+    Map? offres_data = offresId != null ? offre[offresId] : {};
+    var offres_name = offres_data?["name"];
     return Container(
       padding: const EdgeInsets.all(10),
       child: Row(
@@ -295,8 +293,8 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
   companyprovince() {
     var provinces = context.watch<ProspectController>().provinces;
     var provinceId = clientrecup.provinceId;
-    Map province_data = provinces["$provinceId"];
-    var province_name = province_data["name"];
+    Map? province_data = provinceId != null ? provinces[provinceId] : {};
+    var province_name = province_data?["name"];
     return Container(
       padding: const EdgeInsets.all(10),
       child: Row(
@@ -322,8 +320,8 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
   companyville() {
     var villes = context.read<ProspectController>().villes;
     var villeId = clientrecup.villeId;
-    Map ville_data = villes["$villeId"];
-    var ville_name = ville_data["name"];
+    Map? ville_data = villeId != null ? villes[villeId] : {};
+    var ville_name = ville_data?["name"];
     return Container(
       padding: const EdgeInsets.all(10),
       child: Row(
@@ -349,8 +347,8 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
   companycommune() {
     var communes = context.watch<ProspectController>().communes;
     var communeId = clientrecup.communeId;
-    Map commune_data = communes["$communeId"];
-    var ville_name = commune_data["name"];
+    Map? commune_data = communeId != null ? communes[communeId] : {};
+    var ville_name = commune_data?["name"];
     return Container(
       padding: const EdgeInsets.all(10),
       child: Row(
@@ -376,8 +374,8 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
   companyzone() {
     var zones = context.watch<ProspectController>().zones;
     var zoneid = clientrecup.zoneId;
-    Map commune_data = zones["$zoneid"];
-    var zone_name = commune_data["name"];
+    Map? commune_data = zoneid != null ? zones[zoneid] : {};
+    var zone_name = commune_data?["name"];
     return Container(
       padding: const EdgeInsets.all(10),
       child: Row(

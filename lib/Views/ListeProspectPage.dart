@@ -230,23 +230,25 @@ class _ProspectState extends State<ListeProspectPage> {
           ProsModel prospect = dataProspectCopie[index];
           var zones = context.watch<ProspectController>().zones;
           var zoneId = prospect.zoneId;
-          Map zone_data = zones["$zoneId"];
-          var zone_name = zone_data["name"];
+          print(zones);
+          print('$zoneId ====== ${prospect.id}');
+          Map? zone_data = zoneId != null ? zones[zoneId] : {};
+          var zone_name = zone_data?["name"];
 
           var villes = context.watch<ProspectController>().villes;
           var villeId = prospect.villeId;
-          Map ville_data = villes["$villeId"];
-          var ville_name = ville_data["name"];
+          Map? ville_data = villeId != null ? villes[villeId] : {};
+          var ville_name = ville_data?["name"];
 
           var provinces = context.watch<ProspectController>().provinces;
           var provinceId = prospect.provinceId;
-          Map province_data = provinces["$provinceId"];
-          var province_name = province_data["name"];
+          Map? province_data = provinceId != null ? provinces[provinceId] : {};
+          var province_name = province_data?["name"];
 
           var communes = context.watch<ProspectController>().communes;
           var communeId = prospect.communeId;
-          Map commune_data = communes["$communeId"];
-          var commune_name = commune_data["name"];
+          Map? commune_data = communeId != null ? communes[communeId] : {};
+          var commune_name = commune_data?["name"];
 
           var icon = Icons.remove_circle;
           var color = Colors.blue;

@@ -5,7 +5,6 @@ import 'package:http/http.dart' as http;
 import '../Models/DayToDateModel.dart';
 import '../Tools/Parametres.dart';
 
-
 class DayToDateController with ChangeNotifier {
 
   DayToDateModel raportDayToDate= DayToDateModel();
