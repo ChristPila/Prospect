@@ -1324,8 +1324,24 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
     debugPrint('DONNEE: ${data.toJson()}');
     print(save);
     if(save){
-      print("DATA BROUILLON ${data.toJson()}");
-      brouillon(data);
+      var brou = ProsModel(
+        longitude: _position?.longitude.toString(),
+        latitude: _position?.latitude.toString(),
+        agentId: 1,
+        communeId: communeSelect != null ? int.parse(communeSelect!):null,
+        zoneId: zoneSelect != null ? int.parse(zoneSelect!): null,
+        villeId: villeSelect != null ? int.parse(villeSelect!): null,
+        provinceId: provinceselectionner != null ? int.parse(provinceselectionner!):null,
+        companyName: company_name.text.toString(),
+        companyAddress: company_adress.text.toString(),
+        typeActivitiesId: typeSelect!= null ? int.parse(typeSelect!):null,
+        companyPhone: company_phone.text.toString(),
+        offerId: 1,
+        state: "4",
+        remoteId: timestamp.toString(),
+      );
+      print("DATA BROUILLON ${brou.toJson()}");
+      brouillon(brou);
     }else{
       var response = await context
           .read<FormulaireProspectController>()
@@ -1336,9 +1352,9 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
 
   }
 
-  brouillon(ProsModel data){
+  brouillon(ProsModel brou){
     Map a = FormulaireProspectController().lecturestockageLocale(Parametres.keyProspect);
-    a[timestamp.toString()] = data.toJson();
+    a[timestamp.toString()] = brou.toJson();
     FormulaireProspectController().ecritureStockageLocale(Parametres.keyProspect, a);
   }
 
