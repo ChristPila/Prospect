@@ -39,62 +39,75 @@ class ProspectController with ChangeNotifier {
 
   recupererDonneesAPI() async {
     lecturestockageLocale();
-    var url = Uri.parse(
-        '${Parametres.scheme}://${Parametres.host}:${Parametres.port}/${Parametres.rebase}');
+    try{
+      var url = Uri.parse(
+          '${Parametres.scheme}://${Parametres.host}:${Parametres.port}/${Parametres.rebase}');
 
-    var reponse = await http.get(url).timeout(Duration(seconds: 5));
-    String result = reponse.body;
-    print("result $result");
-    if (reponse.statusCode == 200) {
-      var donneesAPImap = json.decode(result) as Map;
-      var donneesAPI = donneesAPImap["response"]
-          as List<dynamic>; //conversion donnees api en liste
-      print("result ${donneesAPI.length}");
-      Map tempmap = Map.fromIterable(donneesAPI,
-          key: (v) => v['remote_id'].toString(),
-          value: (v) => v); // conversion donnees api en map
-      stockage_data = {
-        ...stockage_data,
-        ...tempmap
-      }; //fusion des donnees local et de l'api map
-      var tempmapdata = stockage_data.entries
-          .map((e) => e.value)
-          .toList(); // conversion des donnees fusionnees en liste
-      data = tempmapdata
-          .map((e) => ProsModel.fromJson(e))
-          .toList(); //  conversion des donnees fusionnees en liste de prospect_model
-      notifyListeners();
-      print(reponse.body);
+      var reponse = await http.get(url).timeout(Duration(seconds: 5));
+      String result = reponse.body;
+      print("result $result");
+      if (reponse.statusCode == 200) {
+        var donneesAPImap = json.decode(result) as Map;
+        var donneesAPI = donneesAPImap["response"]
+        as List<dynamic>; //conversion donnees api en liste
+        print("result ${donneesAPI.length}");
+        Map tempmap = Map.fromIterable(donneesAPI,
+            key: (v) => v['remote_id'].toString(),
+            value: (v) => v); // conversion donnees api en map
+        stockage_data = {
+          ...stockage_data,
+          ...tempmap
+        }; //fusion des donnees local et de l'api map
+        var tempmapdata = stockage_data.entries
+            .map((e) => e.value)
+            .toList(); // conversion des donnees fusionnees en liste
+        data = tempmapdata
+            .map((e) => ProsModel.fromJson(e))
+            .toList(); //  conversion des donnees fusionnees en liste de prospect_model
+        notifyListeners();
+        print(reponse.body);
 
-      print("local_data ${data.length}");
-      ecritureStockageLocale();
-    } else {
-      print("Erreur Reception données");
+        print("local_data ${data.length}");
+        ecritureStockageLocale();
+      } else {
+        print("Erreur Reception données");
+      }
+    } catch (e){
+      print(e.toString());
+      // generalement pour gerer les erreurs de connectivité
     }
+
     notifyListeners();
   }
 
   verifierStatusDonneeAPI(String remote_id) async {
-    var url = Uri.parse(
-        '${Parametres.scheme}://${Parametres.host}:${Parametres.port}/${Parametres.rebase}/$remote_id/${Parametres.endPoind}');
+    try{
+      var url = Uri.parse(
+          '${Parametres.scheme}://${Parametres.host}:${Parametres.port}/${Parametres.rebase}/$remote_id/${Parametres.endPoind}');
 
-    print("url $url");
-    var reponse = await http.get(url).timeout(Duration(seconds: 5));
-    String result = reponse.body;
-    print("result $result");
-    if (reponse.statusCode == 200 || reponse.statusCode == 201) {
-      var donneesAPI = json.decode(result) as Map;
-      var newstate = donneesAPI["data"]["state"];
-      stockage_data[remote_id]["state"] = newstate;
-      var tempmapdata = stockage_data.entries
-          .map((e) => e.value)
-          .toList(); // conversion des donnees fusionnees en liste
-      data = tempmapdata.map((e) => ProsModel.fromJson(e)).toList();
-      notifyListeners();
-      ecritureStockageLocale();
-    } else {
-      print("Erreur Reception données");
+      print("url $url");
+      var reponse = await http.get(url).timeout(Duration(seconds: 5));
+      String result = reponse.body;
+      print("result $result");
+      if (reponse.statusCode == 200 || reponse.statusCode == 201) {
+        var donneesAPI = json.decode(result) as Map;
+        var newstate = donneesAPI["data"]["state"];
+        stockage_data[remote_id]["state"] = newstate;
+        var tempmapdata = stockage_data.entries
+            .map((e) => e.value)
+            .toList(); // conversion des donnees fusionnees en liste
+        data = tempmapdata.map((e) => ProsModel.fromJson(e)).toList();
+        notifyListeners();
+        ecritureStockageLocale();
+      } else {
+        print("Erreur Reception données");
+      }
+      //code  requetes http
+    }catch (e){
+      print(e.toString());
+      // generalement pour gerer les erreurs de connectivité
     }
+
   }
 
   Timer? timer;

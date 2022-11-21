@@ -1,6 +1,3 @@
-// To parse this JSON data, do
-//
-//     final activiteModel = activiteModelFromJson(jsonString);
 
 import 'dart:convert';
 

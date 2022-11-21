@@ -23,18 +23,20 @@ import '../Models/prosModel.dart';
 //import 'package:file_picker/file_picker.dart';
 
 class FormulaireProspectPage extends StatefulWidget {
-  const FormulaireProspectPage({this.recup,});
-  final recup;
+  final ProsModel?  recup;
+
+  const FormulaireProspectPage({super.key,  this.recup});
+
 
   @override
   State<FormulaireProspectPage> createState() => _FormulaireProspectPageState();
 }
 
 class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
+  ProsModel? recup = ProsModel();
   g.Position? _position;
   Uint8List? exportedImage;
   bool isLoad = false;
-
   /*SignatureController controller = SignatureController(
     penStrokeWidth: 3,
     penColor: Colors.red,
@@ -68,11 +70,22 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
   TextEditingController company_phone = TextEditingController();
 
   int timestamp = DateTime.now().millisecondsSinceEpoch;
+  var nom = "Nouveau Prospect";
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    recup = widget.recup;
+
+    if(widget.recup != null){
+      nom = "Editer Prospect";
+      company_name.text = widget.recup!.companyName!;
+      company_adress.text = widget.recup!.companyAddress!;
+      company_type.text = widget.recup!.typeActivitiesId!.toString();
+      company_phone.text = widget.recup!.companyPhone!.toString();
+    }
     //getData();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       recuperationDataForm();
@@ -1206,6 +1219,16 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
   }
 
   nouveauProspect() {
+
+   bouton(){
+
+      if(nom == "Editer Prospect"){
+        return "MODIFIER";
+      }else{
+        return "CONFIRMER";
+      }
+    }
+
     return WillPopScope(
       onWillPop: () async {
         await validerFormulaire(true);
@@ -1217,7 +1240,7 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
               centerTitle: true,
               backgroundColor: Colors.white10,
               title: Text(
-                "Nouveau Prospect",
+                nom,
                 style: TextStyle(
                   color: Colors.black87,
                   fontSize: 25,
@@ -1259,7 +1282,7 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
                               Expanded(
                                 child: ElevatedButton(
                                   child:
-                                      Text(isLastStep ? "CONFIRMER" : "SUIVANT"),
+                                      Text(isLastStep ? bouton() : "SUIVANT"),
                                   onPressed: details.onStepContinue,
                                 ),
                               ),
@@ -1295,7 +1318,7 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
       typeActivitiesId: typeSelect!= null ? int.parse(typeSelect!):null,
       companyPhone: company_phone.text.toString(),
       offerId: 1,
-      state: "1",
+      state: "4",
       remoteId: timestamp.toString(),
     );
     debugPrint('DONNEE: ${data.toJson()}');
