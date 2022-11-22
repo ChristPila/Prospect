@@ -1,6 +1,3 @@
-// To parse this JSON data, do
-//
-//     final dayToDateModel = dayToDateModelFromMap(jsonString);
 
 import 'dart:convert';
 import 'package:intl/intl.dart';
