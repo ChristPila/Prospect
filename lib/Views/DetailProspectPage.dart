@@ -229,12 +229,14 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
                   fontSize: 15,
                   decoration: TextDecoration.none)),
           Spacer(),
-          Text("${clientrecup.companyAddress}",
-              style: const TextStyle(
-                  color: Colors.black87,
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.none)),
+          Expanded(
+            child: Text("${clientrecup.companyAddress}",
+                style: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    decoration: TextDecoration.none)),
+          ),
         ],
       ),
     );
@@ -419,12 +421,13 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
                   fontSize: 15,
                   decoration: TextDecoration.none)),
           Spacer(),
-          Text("${clientrecup.latitude};${clientrecup.longitude}",
+          Expanded(child: Text("${clientrecup.latitude};${clientrecup.longitude}",
               style: const TextStyle(
                   color: Colors.black87,
                   fontSize: 15,
                   fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.none)),
+                  decoration: TextDecoration.none)),)
+
         ],
       ),
     );

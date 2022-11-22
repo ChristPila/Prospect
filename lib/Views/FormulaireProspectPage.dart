@@ -23,10 +23,9 @@ import '../Models/prosModel.dart';
 //import 'package:file_picker/file_picker.dart';
 
 class FormulaireProspectPage extends StatefulWidget {
-  final ProsModel?  recup;
+  final ProsModel? recup;
 
-  const FormulaireProspectPage({super.key,  this.recup});
-
+  const FormulaireProspectPage({super.key, this.recup});
 
   @override
   State<FormulaireProspectPage> createState() => _FormulaireProspectPageState();
@@ -37,16 +36,17 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
   g.Position? _position;
   Uint8List? exportedImage;
   bool isLoad = false;
+
   /*SignatureController controller = SignatureController(
     penStrokeWidth: 3,
     penColor: Colors.red,
     exportBackgroundColor: Colors.yellowAccent,
   );*/
-  //List<ProvinceModel>? provinces;
+  List<ProvinceModel> provinces=[];
   List<ActiviteModel> activites = [];
-  List<VilleModel>? villes;
-  List<ZoneModel>? zones;
-  List<CommuneModel>? communes;
+  List<VilleModel> villes= [];
+  List<ZoneModel> zones= [];
+  List<CommuneModel> communes= [];
   List<OffresModel> offres = [];
   Map? user;
   GetStorage us = GetStorage();
@@ -64,6 +64,8 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
   int currentStep = 0;
   bool isCompleted = false;
   int? step;
+
+  // TextEditingController _position = TextEditingController();
   TextEditingController company_name = TextEditingController();
   TextEditingController company_adress = TextEditingController();
   TextEditingController company_type = TextEditingController();
@@ -77,13 +79,13 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
     // TODO: implement initState
     super.initState();
 
-    recup = widget.recup;
+    //recup = widget.recup;
 
-    if(widget.recup != null){
+    if (widget.recup != null) {
       nom = "Editer Prospect";
       company_name.text = widget.recup!.companyName!;
       company_adress.text = widget.recup!.companyAddress!;
-      company_type.text = widget.recup!.typeActivitiesId!.toString();
+      // company_type.text = widget.recup!.typeActivitiesId!.toString();
       company_phone.text = widget.recup!.companyPhone!.toString();
     }
     //getData();
@@ -105,63 +107,72 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
     activityRecup();
 
     offreRecup();
-
   }
 
-  provinceRecup() async{
+  provinceRecup() async {
     var formCtrl = context.read<FormulaireProspectController>();
-    var listProvince = await formCtrl.lectureAPIstockage(Parametres.keyProvince, Parametres.endPointProvinces);
-    formCtrl.provinces = listProvince.map<ProvinceModel>((e) => ProvinceModel.fromJson(e)).toList();
-    setState(() {
-
-    });
+    var listProvince = await formCtrl.lectureAPIstockage(
+        Parametres.keyProvince, Parametres.endPointProvinces);
+    formCtrl.provinces = listProvince
+        .map<ProvinceModel>((e) => ProvinceModel.fromJson(e))
+        .toList();
+    provinces=formCtrl.provinces;
+    setState(() {});
   }
 
-  villeReccup() async{
+  villeReccup() async {
     var formCtrl = context.read<FormulaireProspectController>();
-    var listVilles = await formCtrl.lectureAPIstockage(Parametres.keyVilles, Parametres.endPointVilles);
-    formCtrl.villes= listVilles.map<VilleModel>((e) => VilleModel.fromJson(e)).toList();
-    setState(() {
+    var listVilles = await formCtrl.lectureAPIstockage(
+        Parametres.keyVilles, Parametres.endPointVilles);
 
-    });
+    print("listvilles $listVilles");
+    formCtrl.villes =
+        listVilles.map<VilleModel>((e) => VilleModel.fromJson(e)).toList();
+    setState(() {});
   }
 
-  zoneRecup() async{
+  zoneRecup() async {
     var formCtrl = context.read<FormulaireProspectController>();
-    var listZones = await formCtrl.lectureAPIstockage(Parametres.keyZones, Parametres.endPointZones);
-    formCtrl.zones= listZones.map<ZoneModel>((e) => ZoneModel.fromJson(e)).toList();
-    setState(() {
-
-    });
+    var listZones = await formCtrl.lectureAPIstockage(
+        Parametres.keyZones, Parametres.endPointZones);
+    formCtrl.zones =
+        listZones.map<ZoneModel>((e) => ZoneModel.fromJson(e)).toList();
+    setState(() {});
   }
 
   communeRecup() async {
     var formCtrl = context.read<FormulaireProspectController>();
-    var listCommunes = await formCtrl.lectureAPIstockage(Parametres.keyCommunes, Parametres.endPointCommunes);
-    formCtrl.communes= listCommunes.map<CommuneModel>((e) => CommuneModel.fromJson(e)).toList();
-    setState(() {
-
-    });
+    var listCommunes = await formCtrl.lectureAPIstockage(
+        Parametres.keyCommunes, Parametres.endPointCommunes);
+    formCtrl.communes = listCommunes
+        .map<CommuneModel>((e) => CommuneModel.fromJson(e))
+        .toList();
+    setState(() {});
   }
 
   activityRecup() async {
     var formCtrl = context.read<FormulaireProspectController>();
-    var listActivities = await formCtrl.lectureAPIstockage(Parametres.keyActivities, Parametres.endPointAct);
-    formCtrl.activities= listActivities.map<ActiviteModel>((e) => ActiviteModel.fromJson(e)).toList();
+    var listActivities = await formCtrl.lectureAPIstockage(
+        Parametres.keyActivities, Parametres.endPointAct);
+    formCtrl.activities = listActivities
+        .map<ActiviteModel>((e) => ActiviteModel.fromJson(e))
+        .toList();
     setState(() {
-      activites = context.read<FormulaireProspectController>().activities;
+      activites = formCtrl.activities;
     });
   }
 
   offreRecup() async {
-  var formCtrl = context.read<FormulaireProspectController>();
-  var listOffres = await formCtrl.lectureAPIstockage(Parametres.keyOffres, Parametres.endPointOffres);
-  formCtrl.offres= listOffres.map<OffresModel>((e) => OffresModel.fromJson(e)).toList();
-  print("OFFRES :${formCtrl.offres}");
-  setState(() {
-    offres = context.read<FormulaireProspectController>().offres;
-  });
-}
+    var formCtrl = context.read<FormulaireProspectController>();
+    var listOffres = await formCtrl.lectureAPIstockage(
+        Parametres.keyOffres, Parametres.endPointOffres);
+    formCtrl.offres =
+        listOffres.map<OffresModel>((e) => OffresModel.fromJson(e)).toList();
+    print("OFFRES :${formCtrl.offres}");
+    setState(() {
+      offres = formCtrl.offres;
+    });
+  }
 
   List<Step> stepList() => [
         Step(
@@ -400,7 +411,7 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
   Widget build(BuildContext context) {
     print(selectedData.map((e) => e).toList());
     user = us.read('user');
-    print("AGENT ID : ${user?["id"]}");
+    print("AGENT ID : ${user?['id']}");
     return nouveauProspect();
   }
 
@@ -434,19 +445,24 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
       children: [
         _position != null
             ? Text(_position.toString())
-            : Text("Cliquer sur l'icone pour recevoir la localisation"),
-        IconButton(
-          onPressed: _getCurrentPosition,
-          icon: Icon(Icons.location_on_outlined),
-          color: Colors.orange,
-        )
+            : nom != "Nouveau Prospect"
+                ? Text(
+                    "${widget.recup!.latitude} + ${widget.recup!.longitude} ")
+                : Text("Cliquer sur l'icone pour recevoir la localisation"),
+        nom != "Editer Prospect"
+            ? IconButton(
+                onPressed: _getCurrentPosition,
+                icon: Icon(Icons.location_on_outlined),
+                color: Colors.orange,
+              )
+            : Text("")
       ],
     );
   }
 
   provinceVue() {
-    var formCtrl = context.read<FormulaireProspectController>();
-    var provinces = formCtrl.provinces;
+    // var formCtrl = context.watch<FormulaireProspectController>();
+    // var provinces = formCtrl.provinces;
     return [
       SizedBox(
         height: 20,
@@ -465,20 +481,20 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
             isExpanded: true,
             value: provinceselectionner,
             icon: const Icon(Icons.keyboard_arrow_down_rounded),
-            items: provinces?.map((prov) {
+            items: provinces.map((prov) {
               return DropdownMenuItem(
                 child: Text(prov.name),
                 value: prov.id.toString(),
               );
             }).toList(),
-            onChanged: (String? newValue) async{
+            onChanged: (String? newValue) async {
               provinceselectionner = newValue!;
-              villes = await RemoteServicesVilles.getVilles(
-                  int.parse(provinceselectionner!));
-              if (villes != null) {
-                setState(() {
-                });
-              }
+              var province_id=int.parse(provinceselectionner!);
+               villes =  context.read<FormulaireProspectController>().villes.where((v) => v.provinceId == province_id).toList() ;
+               //   await RemoteServicesVilles.getVilles(
+                  //int.parse(provinceselectionner!));
+                setState(() {});
+
             },
           ))),
     ];
@@ -550,17 +566,16 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
             isExpanded: true,
             value: villeSelect,
             icon: const Icon(Icons.keyboard_arrow_down_rounded),
-            items: villes?.map((city) {
+            items: villes.map((city) {
               return DropdownMenuItem(
                   child: Text(city.name), value: city.id.toString());
             }).toList(),
-            onChanged: (String? newValue) async{
+            onChanged: (String? newValue) async {
               villeSelect = newValue!;
-              zones =
-                  await RemoteServicesZone.getZone(int.parse(villeSelect!));
+              var ville_id = int.parse(villeSelect!);
+              zones =  context.read<FormulaireProspectController>().zones.where((z) => z.villeId == ville_id).toList() ;
               if (zones != null) {
-                setState(() {
-                });
+                setState(() {});
               }
             },
           ))),
@@ -586,14 +601,14 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
             isExpanded: true,
             value: zoneSelect,
             icon: const Icon(Icons.keyboard_arrow_down_rounded),
-            items: zones?.map((z) {
+            items: zones.map((z) {
               return DropdownMenuItem(
                   child: Text(z.name), value: z.id.toString());
             }).toList(),
             onChanged: (String? newValue) async {
               zoneSelect = newValue!;
-              communes = await RemoteServicesCommune.getCommune(
-                  int.parse(zoneSelect!));
+              var zone_id=int.parse(zoneSelect!);
+              communes = context.read<FormulaireProspectController>().communes.where((c) => c.zoneId==zone_id).toList();
               if (communes != null) {
                 setState(() {
                   isLoad = true;
@@ -623,7 +638,7 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
             isExpanded: true,
             value: communeSelect,
             icon: const Icon(Icons.keyboard_arrow_down_rounded),
-            items: communes?.map((com) {
+            items: communes.map((com) {
               return DropdownMenuItem(
                   child: Text(com.name), value: com.id.toString());
             }).toList(),
@@ -701,7 +716,7 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
           validator: (value) {
             if (value!.isEmpty ||
                 !RegExp(r"^\s*([A-Za-z]{1,}([\.,] |[-']| ))+[A-Za-z]+\.?\s*$")
-                    .hasMatch(value!)) {
+                    .hasMatch(value)) {
               return "Entrez un nom valide";
             } else {
               return null;
@@ -731,7 +746,7 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
             isExpanded: true,
             value: offreSelect,
             icon: const Icon(Icons.keyboard_arrow_down_rounded),
-            items: offres?.map((offer) {
+            items: offres.map((offer) {
               return DropdownMenuItem(
                 value: offer.id.toString(),
                 child: Text(offer.name.toString()),
@@ -1219,12 +1234,10 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
   }
 
   nouveauProspect() {
-
-   bouton(){
-
-      if(nom == "Editer Prospect"){
-        return "MODIFIER";
-      }else{
+    bouton() {
+      if (nom == "Editer Prospect") {
+        return "VALIDER";
+      } else {
         return "CONFIRMER";
       }
     }
@@ -1269,7 +1282,8 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
                           setState(() => currentStep += 1);
                         }
                       },
-                      onStepTapped: (step) => setState(() => currentStep = step),
+                      onStepTapped: (step) =>
+                          setState(() => currentStep = step),
                       onStepCancel: currentStep == 0
                           ? null
                           : () => setState(() => currentStep -= 1),
@@ -1304,37 +1318,41 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
     );
   }
 
-   validerFormulaire([bool save = false]) async {
+  validerFormulaire([bool save = false]) async {
     var data = ProsModel(
       longitude: _position?.longitude.toString(),
       latitude: _position?.latitude.toString(),
-      agentId: 1,
-      communeId: communeSelect != null ? int.parse(communeSelect!):null,
-      zoneId: zoneSelect != null ? int.parse(zoneSelect!): null,
-      villeId: villeSelect != null ? int.parse(villeSelect!): null,
-      provinceId: provinceselectionner != null ? int.parse(provinceselectionner!):null,
+      agentId: user?['id'],
+      communeId: communeSelect != null ? int.parse(communeSelect!) : null,
+      zoneId: zoneSelect != null ? int.parse(zoneSelect!) : null,
+      villeId: villeSelect != null ? int.parse(villeSelect!) : null,
+      provinceId: provinceselectionner != null
+          ? int.parse(provinceselectionner!)
+          : null,
       companyName: company_name.text.toString(),
       companyAddress: company_adress.text.toString(),
-      typeActivitiesId: typeSelect!= null ? int.parse(typeSelect!):null,
+      typeActivitiesId: typeSelect != null ? int.parse(typeSelect!) : null,
       companyPhone: company_phone.text.toString(),
       offerId: 1,
-      state: "4",
+      state: "1",
       remoteId: timestamp.toString(),
     );
     debugPrint('DONNEE: ${data.toJson()}');
     print(save);
-    if(save){
+    if (save) {
       var brou = ProsModel(
         longitude: _position?.longitude.toString(),
         latitude: _position?.latitude.toString(),
-        agentId: 1,
-        communeId: communeSelect != null ? int.parse(communeSelect!):null,
-        zoneId: zoneSelect != null ? int.parse(zoneSelect!): null,
-        villeId: villeSelect != null ? int.parse(villeSelect!): null,
-        provinceId: provinceselectionner != null ? int.parse(provinceselectionner!):null,
+        agentId: user?['id'],
+        communeId: communeSelect != null ? int.parse(communeSelect!) : null,
+        zoneId: zoneSelect != null ? int.parse(zoneSelect!) : null,
+        villeId: villeSelect != null ? int.parse(villeSelect!) : null,
+        provinceId: provinceselectionner != null
+            ? int.parse(provinceselectionner!)
+            : null,
         companyName: company_name.text.toString(),
         companyAddress: company_adress.text.toString(),
-        typeActivitiesId: typeSelect!= null ? int.parse(typeSelect!):null,
+        typeActivitiesId: typeSelect != null ? int.parse(typeSelect!) : null,
         companyPhone: company_phone.text.toString(),
         offerId: 1,
         state: "4",
@@ -1342,20 +1360,21 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
       );
       print("DATA BROUILLON ${brou.toJson()}");
       brouillon(brou);
-    }else{
+    } else {
       var response = await context
           .read<FormulaireProspectController>()
           .submitProspect(data)
           .catchError((err) {});
       Navigator.pop(context);
     }
-
   }
 
-  brouillon(ProsModel brou){
-    Map a = FormulaireProspectController().lecturestockageLocale(Parametres.keyProspect);
+  brouillon(ProsModel brou) {
+    Map a = FormulaireProspectController()
+        .lecturestockageLocale(Parametres.keyProspect);
     a[timestamp.toString()] = brou.toJson();
-    FormulaireProspectController().ecritureStockageLocale(Parametres.keyProspect, a);
+    FormulaireProspectController()
+        .ecritureStockageLocale(Parametres.keyProspect, a);
   }
 
 // User canceled the picker
