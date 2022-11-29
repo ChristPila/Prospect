@@ -46,10 +46,13 @@ class _HomePageState extends State<HomePage> {
       var brouillonsMap = json.decode(brouillons_brut) as Map;
       List toList =
       brouillonsMap.entries.map((e) {
-        return e.value ;
+        return e.value;
       }).toList();
-      var brouillonsList = toList.where((e) => e['state'] == '4').toList();
-      nombreBrouillons = brouillonsList.length;
+      var userData = stockage.read('user');
+      var currentId = userData['id'].toString();
+      var brouillonsList = toList.where((e) => e['state'] == '4' ).toList();
+      var brouillonsid = brouillonsList.where((e) => e['agent_id'].toString() == '$currentId').toList();
+      nombreBrouillons = brouillonsid.length;
     }
     setState(() {});
   }

@@ -63,7 +63,6 @@ class AuthentificationController with ChangeNotifier {
     stockage.remove("user");
     stockage.remove("token");
     stockage.remove("getAllProspect");
-    stockage.remove("PROSPECT");
     utilisateur = null;
   }
 }
