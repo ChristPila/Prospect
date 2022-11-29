@@ -27,8 +27,8 @@ class Parametres{
   static const String endPointCommunes = 'api/communes';
   static const String endPointProspect = 'api/prospect';
   static const String endPointAct = 'api/type-activities';
-  static const String loginUser = "divinenagonjo@gmail.com";
-  static const String loginPassword = "123456789";
+  static const String loginUser = "";
+  static const String loginPassword = "";
   static const String rebase =  "api/prospects";
   static const String endPoind = "status";
 
