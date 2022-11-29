@@ -3,8 +3,6 @@ import 'package:http/http.dart' as http;
 import 'package:prospect/Tools/Parametres.dart';
 import 'package:prospect/Models/VilleModel.dart';
 
-
-
 class RemoteServicesVilles{
   static getVilles(int? id) async {
     final dataVille = GetStorage(Parametres.STOCKAGE_VERSION);
