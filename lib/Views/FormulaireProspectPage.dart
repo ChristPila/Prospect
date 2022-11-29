@@ -32,6 +32,7 @@ class FormulaireProspectPage extends StatefulWidget {
 }
 
 class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
+  GetStorage stockage = GetStorage(Parametres.STOCKAGE_VERSION);
   ProsModel? recup = ProsModel();
   g.Position? _position;
   Uint8List? exportedImage;
@@ -48,8 +49,6 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
   List<ZoneModel> zones= [];
   List<CommuneModel> communes= [];
   List<OffresModel> offres = [];
-  Map? user;
-  GetStorage us = GetStorage();
   List selectedData = [];
   static String? provinceselectionner;
   String? villeSelect;
@@ -174,6 +173,7 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
     });
   }
 
+
   List<Step> stepList() => [
         Step(
             state: currentStep > 0 ? StepState.complete : StepState.indexed,
@@ -265,7 +265,7 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
                 children: [
                   Text("Longitude : ${_position?.longitude.toString()}"),
                   Text("Latitude : ${_position?.latitude.toString()}"),
-                  Text("AgentId : ${user?['id'].toString()}"),
+                  Text("Agent Id : ${stockage.read('user')['id']}"),
                   Text("Province : ${provinceselectionner}"),
                   Text("Ville : ${villeSelect}"),
                   Text("Zone : ${zoneSelect}"),
@@ -409,9 +409,10 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
 
   @override
   Widget build(BuildContext context) {
+    var userData = stockage.read('user');
+    var currentId = userData['id'];
     print(selectedData.map((e) => e).toList());
-    user = us.read('user');
-    print("AGENT ID : ${user?['id']}");
+    print("AGENT ID : $currentId");
     return nouveauProspect();
   }
 
@@ -1319,10 +1320,12 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
   }
 
   validerFormulaire([bool save = false]) async {
+    var userData = stockage.read('user');
+    var currentId = userData['id'];
     var data = ProsModel(
       longitude: _position?.longitude.toString(),
       latitude: _position?.latitude.toString(),
-      agentId: user?['id'],
+      agentId: currentId,
       communeId: communeSelect != null ? int.parse(communeSelect!) : null,
       zoneId: zoneSelect != null ? int.parse(zoneSelect!) : null,
       villeId: villeSelect != null ? int.parse(villeSelect!) : null,
@@ -1343,7 +1346,7 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
       var brou = ProsModel(
         longitude: _position?.longitude.toString(),
         latitude: _position?.latitude.toString(),
-        agentId: user?['id'],
+        agentId: currentId,
         communeId: communeSelect != null ? int.parse(communeSelect!) : null,
         zoneId: zoneSelect != null ? int.parse(zoneSelect!) : null,
         villeId: villeSelect != null ? int.parse(villeSelect!) : null,
