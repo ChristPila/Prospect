@@ -82,7 +82,7 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
     }
     //getData();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      recuperationDataForm();
+      //recuperationDataForm();
     });
   }
 
@@ -92,85 +92,6 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
     company_adress.text = widget.recup!.companyAddress!;
     // company_type.text = widget.recup!.typeActivitiesId!.toString();
     company_phone.text = widget.recup!.companyPhone!.toString();
-  }
-
-  recuperationDataForm() async {
-    provinceRecup();
-
-    villeReccup();
-
-    zoneRecup();
-
-    communeRecup();
-
-    activityRecup();
-
-    offreRecup();
-  }
-
-  provinceRecup() async {
-    var formCtrl = context.read<FormulaireProspectController>();
-    var listProvince = await formCtrl.lectureAPIstockage(
-        Parametres.keyProvince, Parametres.endPointProvinces);
-    formCtrl.provinces = listProvince
-        .map<ProvinceModel>((e) => ProvinceModel.fromJson(e))
-        .toList();
-//    provinces = formCtrl.provinces;
-    setState(() {});
-  }
-
-  villeReccup() async {
-    var formCtrl = context.read<FormulaireProspectController>();
-    var listVilles = await formCtrl.lectureAPIstockage(
-        Parametres.keyVilles, Parametres.endPointVilles);
-
-    print("listvilles $listVilles");
-    formCtrl.villes =
-        listVilles.map<VilleModel>((e) => VilleModel.fromJson(e)).toList();
-    setState(() {});
-  }
-
-  zoneRecup() async {
-    var formCtrl = context.read<FormulaireProspectController>();
-    var listZones = await formCtrl.lectureAPIstockage(
-        Parametres.keyZones, Parametres.endPointZones);
-    formCtrl.zones =
-        listZones.map<ZoneModel>((e) => ZoneModel.fromJson(e)).toList();
-    setState(() {});
-  }
-
-  communeRecup() async {
-    var formCtrl = context.read<FormulaireProspectController>();
-    var listCommunes = await formCtrl.lectureAPIstockage(
-        Parametres.keyCommunes, Parametres.endPointCommunes);
-    formCtrl.communes = listCommunes
-        .map<CommuneModel>((e) => CommuneModel.fromJson(e))
-        .toList();
-    setState(() {});
-  }
-
-  activityRecup() async {
-    var formCtrl = context.read<FormulaireProspectController>();
-    var listActivities = await formCtrl.lectureAPIstockage(
-        Parametres.keyActivities, Parametres.endPointAct);
-    formCtrl.activities = listActivities
-        .map<ActiviteModel>((e) => ActiviteModel.fromJson(e))
-        .toList();
-    setState(() {
-      activites = formCtrl.activities;
-    });
-  }
-
-  offreRecup() async {
-    var formCtrl = context.read<FormulaireProspectController>();
-    var listOffres = await formCtrl.lectureAPIstockage(
-        Parametres.keyOffres, Parametres.endPointOffres);
-    formCtrl.offres =
-        listOffres.map<OffresModel>((e) => OffresModel.fromJson(e)).toList();
-    print("OFFRES :${formCtrl.offres}");
-    setState(() {
-      offres = formCtrl.offres;
-    });
   }
 
   List<Step> stepList() => [
