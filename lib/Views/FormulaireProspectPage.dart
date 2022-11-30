@@ -12,6 +12,7 @@ import '../Controllers/FormulaireProspectController.dart';
 import '../Models/prosModel.dart';
 import 'FormulaireWidgets/IdentificationStep.dart';
 import 'FormulaireWidgets/LocalisationStep.dart';
+import 'FormulaireWidgets/ResumeStep.dart';
 
 //import 'package:signature/signature.dart';
 //import 'package:file_picker/file_picker.dart';
@@ -43,11 +44,6 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
   List<OffresModel> offres = [];
   List selectedData = [];
 
-  // String? provinceselectionner;
-  // String? villeSelect;
-  // String? zoneSelect;
-  // int? communeSelect;
-
   get floatingActionButton => null;
 
   get builder => null;
@@ -55,9 +51,11 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
   bool isCompleted = false;
   int? step;
 
+  String lastButtonText = "Confirmer";
+
   // TextEditingController _position = TextEditingController();
 
-  Map formulaireValue = {
+  Map<String, dynamic> formulaireValue = {
     "longitude": null,
     "latitude": null,
     "agent_id": null,
@@ -169,25 +167,8 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
                   color: Colors.black,
                   fontWeight: FontWeight.bold),
             ),
-            content: Container(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text("Longitude : ${_position?.longitude.toString()}"),
-                  Text("Latitude : ${_position?.latitude.toString()}"),
-                  Text("Agent Id : ${stockage.read('user')['id']}"),
-                  /*  Text("Province : ${provinceselectionner}"),
-                  Text("Ville : ${villeSelect}"),
-                  Text("Zone : ${zoneSelect}"),
-                  Text("Commune : ${communeSelect}"),
-                  Text("Nom de l'entreprise : ${company_name.text}"),
-                  Text("Adresse de l'entreprise : ${company_adress.text}"),
-                  Text("Contact de l'entreprise : ${company_phone.text}"),
-                  Text("Type d'entrprise : ${typeSelect}"),*/
-                  Text("Offres : ${selectedData}")
-                ],
-              ),
+            content: ResumeStep(
+              prospect: recup,
             ))
       ];
 
@@ -282,13 +263,6 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
 
   vuePrincipale() {
     print("REBUILD Formulaire");
-    bouton() {
-      if (nom == "Editer Prospect") {
-        return "VALIDER";
-      } else {
-        return "CONFIRMER";
-      }
-    }
 
     return WillPopScope(
       onWillPop: () async {
@@ -334,7 +308,12 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
                       steps: stepList(),
                       onStepContinue: () async {
                         final isLastStep = currentStep == stepList().length - 1;
+                        final isOneBeforeLastStep =
+                            currentStep == stepList().length - 2;
                         print(isLastStep);
+                        if (isOneBeforeLastStep) {
+                          buildProspectModelData();
+                        }
                         if (isLastStep) {
                           setState(() => isCompleted = true);
                           Chargement(context);
@@ -358,19 +337,31 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
                             children: <Widget>[
                               Expanded(
                                 child: ElevatedButton(
-                                  child:
-                                      Text(isLastStep ? bouton() : "SUIVANT"),
-                                  onPressed: details.onStepContinue,
+                                  style: ElevatedButton.styleFrom(
+                                      backgroundColor:
+                                          Colors.grey.withOpacity(.2),
+                                      elevation: 0),
+                                  child: Text(
+                                    "PRECEDENT",
+                                    style: TextStyle(
+                                        color: currentStep != 0
+                                            ? Colors.black
+                                            : Colors.grey.withOpacity(.1)),
+                                  ),
+                                  onPressed: () {
+                                    if (currentStep != 0)
+                                      details.onStepCancel!();
+                                  },
                                 ),
                               ),
                               const SizedBox(width: 12),
-                              if (currentStep != 0)
-                                Expanded(
-                                  child: ElevatedButton(
-                                    child: Text("PRECEDENT"),
-                                    onPressed: details.onStepCancel,
-                                  ),
+                              Expanded(
+                                child: ElevatedButton(
+                                  child: Text(
+                                      isLastStep ? lastButtonText : "SUIVANT"),
+                                  onPressed: details.onStepContinue,
                                 ),
+                              ),
                             ],
                           ),
                         );
@@ -467,5 +458,14 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
         backgroundColor: bgColor,
       ),
     );
+  }
+
+  void buildProspectModelData() {
+    recup = ProsModel.fromJson(formulaireValue);
+    recup!.agentId = stockage.read('user')['id'];
+
+    print("recuperation ${recup?.toJson()}");
+
+    setState(() {});
   }
 }
