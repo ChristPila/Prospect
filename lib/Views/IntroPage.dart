@@ -8,29 +8,25 @@ import 'AuthentificationPage.dart';
 import 'HomePage.dart';
 
 class IntroPage extends StatefulWidget {
-
   @override
   State<IntroPage> createState() => _IntroPageState();
 }
 
 class _IntroPageState extends State<IntroPage> {
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
   }
 
-  verifierSiDejaConnecte(){
+  verifierSiDejaConnecte() {
     context.read<AuthentificationController>().session();
     var session = context.read<AuthentificationController>().utilisateur;
+    print('status session $session');
     if (session != null) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) {
-        return HomePage();
-      }));
-      return null;
+      return HomePage();
     }
+    return null;
   }
 
   @override
@@ -40,8 +36,8 @@ class _IntroPageState extends State<IntroPage> {
       backgroundColor: Colors.white,
       splashIconSize: 150,
       screenFunction: () async {
-        var homeRoute=verifierSiDejaConnecte();
-        if(homeRoute!=null) return homeRoute;
+        var homeRoute = verifierSiDejaConnecte();
+        if (homeRoute != null) return homeRoute;
         return AuthentificationPage();
       },
       splashTransition: SplashTransition.slideTransition,
