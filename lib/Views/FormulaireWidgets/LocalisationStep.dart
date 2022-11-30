@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:geolocator/geolocator.dart' as g;
+import 'package:provider/provider.dart';
 
 import '../../Controllers/FormulaireProspectController.dart';
 import '../../Models/CommuneModel.dart';
@@ -10,9 +10,11 @@ import '../../Models/ZoneModel.dart';
 import '../../Models/prosModel.dart';
 
 class LocalisationStep extends StatefulWidget {
-  final ProsModel? recup ;
+  final ProsModel? recup;
 
-   const LocalisationStep({this.recup}) ;
+  final Function(String key, dynamic newValue) onChanged;
+
+  const LocalisationStep({this.recup, required this.onChanged});
 
   @override
   State<LocalisationStep> createState() => _LocalisationStepState();
@@ -24,18 +26,16 @@ class _LocalisationStepState extends State<LocalisationStep> {
   List<ZoneModel> zones = [];
   List<CommuneModel> communes = [];
 
-  String? villeSelect;
-  String? zoneSelect;
-  String? communeSelect;
-  String? provinceselectionner;
+  int? provinceselectionner;
+  int? villeSelect;
+  int? zoneSelect;
+  int? communeSelect;
 
   g.Position? _position;
 
-
-
   @override
   Widget build(BuildContext context) {
-    return  Container(
+    return Container(
       height: MediaQuery.of(context).size.height - 250,
       child: SingleChildScrollView(
         child: Column(
@@ -66,12 +66,11 @@ class _LocalisationStepState extends State<LocalisationStep> {
         _position != null
             ? Text("Prospect localisé")
             : Text("Cliquer sur l'icone pour recevoir la localisation"),
-     IconButton(
+        IconButton(
           onPressed: demanderLaLocalisation,
           icon: Icon(Icons.location_on_outlined),
-          color: _position != null? Colors.green: Colors.orange,
+          color: _position != null ? Colors.green : Colors.orange,
         )
-
       ],
     );
   }
@@ -82,7 +81,6 @@ class _LocalisationStepState extends State<LocalisationStep> {
       _position = position;
     });
   }
-
 
   Future<g.Position> _determinePosition() async {
     g.LocationPermission permission;
@@ -98,10 +96,9 @@ class _LocalisationStepState extends State<LocalisationStep> {
     return await g.Geolocator.getCurrentPosition();
   }
 
-
   provinceVue() {
-    // var formCtrl = context.watch<FormulaireProspectController>();
-    // var provinces = formCtrl.provinces;
+    var formCtrl = context.watch<FormulaireProspectController>();
+    var provinces = formCtrl.provinces;
     return [
       SizedBox(
         height: 20,
@@ -117,34 +114,31 @@ class _LocalisationStepState extends State<LocalisationStep> {
               contentPadding: EdgeInsets.only(left: 10)),
           child: DropdownButtonHideUnderline(
               child: DropdownButton(
-                isExpanded: true,
-                value: provinceselectionner,
-                icon: const Icon(Icons.keyboard_arrow_down_rounded),
-                items: provinces.map((prov) {
-                  return DropdownMenuItem(
-                    child: Text(prov.name),
-                    value: prov.id.toString(),
-                  );
-                }).toList(),
-                onChanged: (String? newValue) async {
-                  provinceselectionner = newValue!;
-                  var province_id = int.parse(provinceselectionner!);
-                  villes = context
-                      .read<FormulaireProspectController>()
-                      .villes
-                      .where((v) => v.provinceId == province_id)
-                      .toList();
-                  //   await RemoteServicesVilles.getVilles(
-                  //int.parse(provinceselectionner!));
-                  setState(() {});
-                },
-              ))),
+            isExpanded: true,
+            value: provinceselectionner,
+            icon: const Icon(Icons.keyboard_arrow_down_rounded),
+            items: provinces.map((prov) {
+              return DropdownMenuItem(
+                child: Text(prov.name),
+                value: prov.id,
+              );
+            }).toList(),
+            onChanged: (int? newValue) async {
+              provinceselectionner = newValue!;
+              villes = context
+                  .read<FormulaireProspectController>()
+                  .villes
+                  .where((v) => v.provinceId == newValue)
+                  .toList();
+              widget.onChanged("province_id", newValue);
+              setState(() {});
+            },
+          ))),
     ];
   }
 
   villeVue() {
     var formCtrl = context.read<FormulaireProspectController>();
-    var villesLocales = formCtrl.villes;
     return [
       SizedBox(
         height: 20,
@@ -160,30 +154,25 @@ class _LocalisationStepState extends State<LocalisationStep> {
               contentPadding: EdgeInsets.only(left: 10)),
           child: DropdownButtonHideUnderline(
               child: DropdownButton(
-                isExpanded: true,
-                value: villeSelect,
-                icon: const Icon(Icons.keyboard_arrow_down_rounded),
-                items: villes.map((city) {
-                  return DropdownMenuItem(
-                      child: Text(city.name), value: city.id.toString());
-                }).toList(),
-                onChanged: (String? newValue) async {
-                  villeSelect = newValue!;
-                  var ville_id = int.parse(villeSelect!);
-                  zones = context
-                      .read<FormulaireProspectController>()
-                      .zones
-                      .where((z) => z.villeId == ville_id)
-                      .toList();
-                  if (zones != null) {
-                    setState(() {});
-                  }
-                },
-              ))),
+            isExpanded: true,
+            value: villeSelect,
+            icon: const Icon(Icons.keyboard_arrow_down_rounded),
+            items: villes.map((city) {
+              return DropdownMenuItem(child: Text(city.name), value: city.id);
+            }).toList(),
+            onChanged: (int? newValue) async {
+              villeSelect = newValue!;
+              zones =
+                  formCtrl.zones.where((z) => z.villeId == newValue).toList();
+              widget.onChanged("ville_id", newValue);
+              setState(() {});
+            },
+          ))),
     ];
   }
 
   zoneVue() {
+    var formCtrl = context.read<FormulaireProspectController>();
     return [
       SizedBox(
         height: 20,
@@ -199,24 +188,21 @@ class _LocalisationStepState extends State<LocalisationStep> {
               contentPadding: EdgeInsets.only(left: 10)),
           child: DropdownButtonHideUnderline(
               child: DropdownButton(
-                isExpanded: true,
-                value: zoneSelect,
-                icon: const Icon(Icons.keyboard_arrow_down_rounded),
-                items: zones.map((z) {
-                  return DropdownMenuItem(
-                      child: Text(z.name), value: z.id.toString());
-                }).toList(),
-                onChanged: (String? newValue) async {
-                  zoneSelect = newValue!;
-                  var zone_id = int.parse(zoneSelect!);
-                  communes = context
-                      .read<FormulaireProspectController>()
-                      .communes
-                      .where((c) => c.zoneId == zone_id)
-                      .toList();
-
-                },
-              ))),
+            isExpanded: true,
+            value: zoneSelect,
+            icon: const Icon(Icons.keyboard_arrow_down_rounded),
+            items: zones.map((z) {
+              return DropdownMenuItem(child: Text(z.name), value: z.id);
+            }).toList(),
+            onChanged: (int? newValue) async {
+              zoneSelect = newValue!;
+              communes =
+                  formCtrl.communes.where((c) => c.zoneId == newValue).toList();
+              setState(() {});
+              widget.onChanged("zone_id", newValue);
+              setState(() {});
+            },
+          ))),
     ];
   }
 
@@ -235,20 +221,20 @@ class _LocalisationStepState extends State<LocalisationStep> {
               border: OutlineInputBorder(),
               contentPadding: EdgeInsets.only(left: 10)),
           child: DropdownButtonHideUnderline(
-              child: DropdownButton(
-                isExpanded: true,
-                value: communeSelect,
-                icon: const Icon(Icons.keyboard_arrow_down_rounded),
-                items: communes.map((com) {
-                  return DropdownMenuItem(
-                      child: Text(com.name), value: com.id.toString());
-                }).toList(),
-                onChanged: (String? newValue) {
-                  setState(() {
-                    communeSelect = newValue!;
-                  });
-                },
-              ))),
+              child: DropdownButton<int>(
+            isExpanded: true,
+            value: communeSelect,
+            icon: const Icon(Icons.keyboard_arrow_down_rounded),
+            items: communes.map((com) {
+              return DropdownMenuItem(child: Text(com.name), value: com.id);
+            }).toList(),
+            onChanged: (int? newValue) {
+              widget.onChanged("commune_id", newValue);
+              communeSelect = newValue!;
+
+              setState(() {});
+            },
+          ))),
     ];
   }
 }

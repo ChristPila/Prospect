@@ -3,14 +3,8 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart' as g;
 import 'package:get_storage/get_storage.dart';
-import 'package:prospect/Controllers/ActiviteController.dart';
-import 'package:prospect/Controllers/OffresController.dart';
 import 'package:prospect/Models/ActiviteModel.dart';
-import 'package:prospect/Models/CommuneModel.dart';
 import 'package:prospect/Models/OffresModel.dart';
-import 'package:prospect/Models/ProvinceModel.dart';
-import 'package:prospect/Models/VilleModel.dart';
-import 'package:prospect/Models/ZoneModel.dart';
 import 'package:prospect/Tools/Parametres.dart';
 import 'package:provider/provider.dart';
 
@@ -47,10 +41,10 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
 
   List<OffresModel> offres = [];
   List selectedData = [];
-   String? provinceselectionner;
+  String? provinceselectionner;
   String? villeSelect;
   String? zoneSelect;
-  String? communeSelect;
+  int? communeSelect;
   String? offreSelect;
   String? typeSelect;
 
@@ -67,7 +61,27 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
   TextEditingController company_type = TextEditingController();
   TextEditingController company_phone = TextEditingController();
 
-  int timestamp = DateTime.now().millisecondsSinceEpoch;
+  Map formulaireValue = {
+    "longitude": null,
+    "latitude": null,
+    "agent_id": null,
+    "commune_id": null,
+    "zone_id": null,
+    "ville_id": null,
+    "province_id": null,
+    "company_name": null,
+    "company_address": null,
+    "type_activities_id": null,
+    "company_phone": null,
+    "offer_id": null,
+    "state": null,
+    "pieces_jointes_id": null,
+    "remote_id": null,
+  };
+
+  int timestamp = DateTime
+      .now()
+      .millisecondsSinceEpoch;
   var nom = "Nouveau Prospect";
 
   @override
@@ -94,7 +108,8 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
     company_phone.text = widget.recup!.companyPhone!.toString();
   }
 
-  List<Step> stepList() => [
+  List<Step> stepList() =>
+      [
         Step(
             state: currentStep > 0 ? StepState.complete : StepState.indexed,
             isActive: currentStep >= 0,
@@ -105,7 +120,25 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
                   color: Colors.black,
                   fontWeight: FontWeight.bold),
             ),
-            content:LocalisationStep()),
+            content: LocalisationStep(
+              onChanged: (String key, dynamic newValue) {
+                var authorizedKeys = [
+                  "longitude",
+                  "latitude",
+                  "agent_id",
+                  "commune_id",
+                  "zone_id",
+                  "ville_id",
+                  "province_id",
+                ];
+                if (!authorizedKeys.contains(key)) {
+                  affichageSnack(
+                      context, msg: "Cette clé '$key' n'est pas reconnu ");
+                  return;
+                }
+                formulaireValue[key] = newValue;
+              },
+            )),
         Step(
             state: currentStep > 1 ? StepState.complete : StepState.indexed,
             isActive: currentStep >= 1,
@@ -117,7 +150,10 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
                   fontWeight: FontWeight.bold),
             ),
             content: Container(
-              height: MediaQuery.of(context).size.height - 250,
+              height: MediaQuery
+                  .of(context)
+                  .size
+                  .height - 250,
               child: SingleChildScrollView(
                 child: Column(
                   children: [
@@ -215,12 +251,6 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
     return Container(child: Column());
   }
 
-
-
-
-
-
-
   typeVue(BuildContext context) {
     return [
       SizedBox(
@@ -237,25 +267,23 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
               contentPadding: EdgeInsets.only(left: 10)),
           child: DropdownButtonHideUnderline(
               child: DropdownButton(
-            isExpanded: true,
-            value: typeSelect,
-            icon: const Icon(Icons.keyboard_arrow_down_rounded),
-            items: activites.map((activity) {
-              return DropdownMenuItem(
-                value: activity.id.toString(),
-                child: Text(activity.name),
-              );
-            }).toList(),
-            onChanged: (String? newValue) {
-              setState(() {
-                typeSelect = newValue!;
-              });
-            },
-          ))),
+                isExpanded: true,
+                value: typeSelect,
+                icon: const Icon(Icons.keyboard_arrow_down_rounded),
+                items: activites.map((activity) {
+                  return DropdownMenuItem(
+                    value: activity.id.toString(),
+                    child: Text(activity.name),
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    typeSelect = newValue!;
+                  });
+                },
+              ))),
     ];
   }
-
-
 
   nomprospectVue() {
     return [
@@ -349,38 +377,38 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
               contentPadding: EdgeInsets.only(left: 10)),
           child: DropdownButtonHideUnderline(
               child: DropdownButton(
-            isExpanded: true,
-            value: offreSelect,
-            icon: const Icon(Icons.keyboard_arrow_down_rounded),
-            items: offres.map((offer) {
-              return DropdownMenuItem(
-                value: offer.id.toString(),
-                child: Text(offer.name.toString()),
-              );
-            }).toList(),
-            onChanged: (String? newValue) {
-              setState(() {
-                offreSelect = newValue!;
-              });
-            },
-          ))),
+                isExpanded: true,
+                value: offreSelect,
+                icon: const Icon(Icons.keyboard_arrow_down_rounded),
+                items: offres.map((offer) {
+                  return DropdownMenuItem(
+                    value: offer.id.toString(),
+                    child: Text(offer.name.toString()),
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    offreSelect = newValue!;
+                  });
+                },
+              ))),
     ];
   }
 
   visualiseroffre() {
     return Wrap(
         children: selectedData.map((e) {
-      return Container(
-        decoration: BoxDecoration(
-            color: Colors.orange, borderRadius: BorderRadius.circular(5)),
-        margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-        padding: EdgeInsets.symmetric(horizontal: 7, vertical: 7),
-        child: Text(
-          e,
-          style: TextStyle(color: Colors.black),
-        ),
-      );
-    }).toList());
+          return Container(
+            decoration: BoxDecoration(
+                color: Colors.orange, borderRadius: BorderRadius.circular(5)),
+            margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+            padding: EdgeInsets.symmetric(horizontal: 7, vertical: 7),
+            child: Text(
+              e,
+              style: TextStyle(color: Colors.black),
+            ),
+          );
+        }).toList());
   }
 
   Chargement(BuildContext context, [int duree = 150]) async {
@@ -479,57 +507,57 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
           body: isCompleted
               ? buildCompleted()
               : Theme(
-                  data: Theme.of(context).copyWith(
-                    colorScheme: ColorScheme.light(primary: Colors.orange),
-                  ),
-                  child: Stepper(
-                      type: StepperType.horizontal,
-                      currentStep: currentStep,
-                      steps: stepList(),
-                      onStepContinue: () async {
-                        final isLastStep = currentStep == stepList().length - 1;
-                        print(isLastStep);
-                        if (isLastStep) {
-                          setState(() => isCompleted = true);
-                          Chargement(context);
-                          validerFormulaire();
-                          succesPopUp(context);
-                          debugPrint("Succès");
-                        } else {
-                          setState(() => currentStep += 1);
-                        }
-                      },
-                      onStepTapped: (step) =>
-                          setState(() => currentStep = step),
-                      onStepCancel: currentStep == 0
-                          ? null
-                          : () => setState(() => currentStep -= 1),
-                      controlsBuilder:
-                          (BuildContext context, ControlsDetails details) {
-                        final isLastStep = currentStep == stepList().length - 1;
-                        return Container(
-                          child: Row(
-                            children: <Widget>[
-                              Expanded(
-                                child: ElevatedButton(
-                                  child:
-                                      Text(isLastStep ? bouton() : "SUIVANT"),
-                                  onPressed: details.onStepContinue,
-                                ),
-                              ),
-                              const SizedBox(width: 12),
-                              if (currentStep != 0)
-                                Expanded(
-                                  child: ElevatedButton(
-                                    child: Text("PRECEDENT"),
-                                    onPressed: details.onStepCancel,
-                                  ),
-                                ),
-                            ],
+            data: Theme.of(context).copyWith(
+              colorScheme: ColorScheme.light(primary: Colors.orange),
+            ),
+            child: Stepper(
+                type: StepperType.horizontal,
+                currentStep: currentStep,
+                steps: stepList(),
+                onStepContinue: () async {
+                  final isLastStep = currentStep == stepList().length - 1;
+                  print(isLastStep);
+                  if (isLastStep) {
+                    setState(() => isCompleted = true);
+                    Chargement(context);
+                    validerFormulaire();
+                    succesPopUp(context);
+                    debugPrint("Succès");
+                  } else {
+                    setState(() => currentStep += 1);
+                  }
+                },
+                onStepTapped: (step) =>
+                    setState(() => currentStep = step),
+                onStepCancel: currentStep == 0
+                    ? null
+                    : () => setState(() => currentStep -= 1),
+                controlsBuilder:
+                    (BuildContext context, ControlsDetails details) {
+                  final isLastStep = currentStep == stepList().length - 1;
+                  return Container(
+                    child: Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: ElevatedButton(
+                            child:
+                            Text(isLastStep ? bouton() : "SUIVANT"),
+                            onPressed: details.onStepContinue,
                           ),
-                        );
-                      }),
-                ),
+                        ),
+                        const SizedBox(width: 12),
+                        if (currentStep != 0)
+                          Expanded(
+                            child: ElevatedButton(
+                              child: Text("PRECEDENT"),
+                              onPressed: details.onStepCancel,
+                            ),
+                          ),
+                      ],
+                    ),
+                  );
+                }),
+          ),
         ),
       ),
     );
@@ -542,7 +570,7 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
       longitude: _position?.longitude.toString(),
       latitude: _position?.latitude.toString(),
       agentId: currentId,
-      communeId: communeSelect != null ? int.parse(communeSelect!) : null,
+      //communeId: communeSelect != null ? int.parse(communeSelect!) : null,
       zoneId: zoneSelect != null ? int.parse(zoneSelect!) : null,
       villeId: villeSelect != null ? int.parse(villeSelect!) : null,
       provinceId: provinceselectionner != null
@@ -563,7 +591,7 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
         longitude: _position?.longitude.toString(),
         latitude: _position?.latitude.toString(),
         agentId: currentId,
-        communeId: communeSelect != null ? int.parse(communeSelect!) : null,
+        //communeId: communeSelect != null ? int.parse(communeSelect!) : null,
         zoneId: zoneSelect != null ? int.parse(zoneSelect!) : null,
         villeId: villeSelect != null ? int.parse(villeSelect!) : null,
         provinceId: provinceselectionner != null
@@ -597,5 +625,29 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
   }
 
 // User canceled the picker
-
+  affichageSnack(BuildContext context,
+      {required String msg,
+        double duree = 3,
+        Color bgColor = Colors.white,
+        Color textColor = Colors.red}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.info_outline,
+              color: Colors.grey,
+            ),
+            SizedBox(
+              width: 20,
+            ),
+            Text(msg, style: TextStyle(color: textColor)),
+          ],
+        ),
+        duration: Duration(seconds: 5),
+        backgroundColor: bgColor,
+      ),
+    );
+  }
 }
