@@ -5,6 +5,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:prospect/Tools/Parametres.dart';
 import 'package:provider/provider.dart';
 import '../Controllers/DayToDateController.dart';
+import '../Controllers/FormulaireProspectController.dart';
 import '../Controllers/GetAllProspectsController.dart';
 import '../Controllers/ProspectController.dart';
 import '../Controllers/sevenLastDaysController.dart';
@@ -27,10 +28,27 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       refreshAllData();
+
     });
   }
 
+  recuperationDataForm() async {
+    var prosFormCtrl = context.read<FormulaireProspectController>();
+    prosFormCtrl.provinceRecup();
+
+    prosFormCtrl.villeRecup();
+
+    prosFormCtrl.zoneRecup();
+
+    prosFormCtrl.communeRecup();
+
+    prosFormCtrl.activityRecup();
+
+    prosFormCtrl.offreRecup();
+  }
+
   refreshAllData() async {
+    recuperationDataForm();
     context.read<SevenLastDaysController>().getReportData();
     context.read<DayToDateController>().getReportData();
     context.read<GetAllProspectsController>().getReportData();
