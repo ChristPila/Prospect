@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 
 import '../Controllers/FormulaireProspectController.dart';
 import '../Models/prosModel.dart';
+import 'FormulaireWidgets/IdentificationStep.dart';
 import 'FormulaireWidgets/LocalisationStep.dart';
 
 //import 'package:signature/signature.dart';
@@ -41,12 +42,11 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
 
   List<OffresModel> offres = [];
   List selectedData = [];
-  String? provinceselectionner;
-  String? villeSelect;
-  String? zoneSelect;
-  int? communeSelect;
-  String? offreSelect;
-  String? typeSelect;
+
+  // String? provinceselectionner;
+  // String? villeSelect;
+  // String? zoneSelect;
+  // int? communeSelect;
 
   get floatingActionButton => null;
 
@@ -56,10 +56,6 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
   int? step;
 
   // TextEditingController _position = TextEditingController();
-  TextEditingController company_name = TextEditingController();
-  TextEditingController company_adress = TextEditingController();
-  TextEditingController company_type = TextEditingController();
-  TextEditingController company_phone = TextEditingController();
 
   Map formulaireValue = {
     "longitude": null,
@@ -79,9 +75,7 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
     "remote_id": null,
   };
 
-  int timestamp = DateTime
-      .now()
-      .millisecondsSinceEpoch;
+  int timestamp = DateTime.now().millisecondsSinceEpoch;
   var nom = "Nouveau Prospect";
 
   @override
@@ -101,15 +95,14 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
   }
 
   editionFormulaire() {
-    nom = "Editer Prospect";
+    /* nom = "Editer Prospect";
     company_name.text = widget.recup!.companyName!;
     company_adress.text = widget.recup!.companyAddress!;
     // company_type.text = widget.recup!.typeActivitiesId!.toString();
-    company_phone.text = widget.recup!.companyPhone!.toString();
+    company_phone.text = widget.recup!.companyPhone!.toString();*/
   }
 
-  List<Step> stepList() =>
-      [
+  List<Step> stepList() => [
         Step(
             state: currentStep > 0 ? StepState.complete : StepState.indexed,
             isActive: currentStep >= 0,
@@ -132,8 +125,8 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
                   "province_id",
                 ];
                 if (!authorizedKeys.contains(key)) {
-                  affichageSnack(
-                      context, msg: "Cette clé '$key' n'est pas reconnu ");
+                  affichageSnack(context,
+                      msg: "Cette clé '$key' n'est pas reconnu ");
                   return;
                 }
                 formulaireValue[key] = newValue;
@@ -149,38 +142,22 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
                   color: Colors.black,
                   fontWeight: FontWeight.bold),
             ),
-            content: Container(
-              height: MediaQuery
-                  .of(context)
-                  .size
-                  .height - 250,
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    ...nomprospectVue(),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    ...adresseVue(),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    ...contactVue(),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    ...typeVue(context),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    ...offreVue(context),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    visualiseroffre(),
-                  ],
-                ),
-              ),
+            content: IdentificationStep(
+              onChanged: (String key, newValue) {
+                var authorizedKeys = [
+                  "company_name",
+                  "company_address",
+                  "company_phone",
+                  "type_activities_id",
+                  "offer_id"
+                ];
+                if (!authorizedKeys.contains(key)) {
+                  affichageSnack(context,
+                      msg: "Cette clé '$key' n'est pas reconnu ");
+                  return;
+                }
+                formulaireValue[key] = newValue;
+              },
             )),
         Step(
             state: StepState.complete,
@@ -200,14 +177,14 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
                   Text("Longitude : ${_position?.longitude.toString()}"),
                   Text("Latitude : ${_position?.latitude.toString()}"),
                   Text("Agent Id : ${stockage.read('user')['id']}"),
-                  Text("Province : ${provinceselectionner}"),
+                  /*  Text("Province : ${provinceselectionner}"),
                   Text("Ville : ${villeSelect}"),
                   Text("Zone : ${zoneSelect}"),
                   Text("Commune : ${communeSelect}"),
                   Text("Nom de l'entreprise : ${company_name.text}"),
                   Text("Adresse de l'entreprise : ${company_adress.text}"),
                   Text("Contact de l'entreprise : ${company_phone.text}"),
-                  Text("Type d'entrprise : ${typeSelect}"),
+                  Text("Type d'entrprise : ${typeSelect}"),*/
                   Text("Offres : ${selectedData}")
                 ],
               ),
@@ -244,171 +221,11 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
     var currentId = userData['id'];
     print(selectedData.map((e) => e).toList());
     print("AGENT ID : $currentId");
-    return nouveauProspect();
+    return vuePrincipale();
   }
 
   Widget buildCompleted() {
     return Container(child: Column());
-  }
-
-  typeVue(BuildContext context) {
-    return [
-      SizedBox(
-        height: 20,
-      ),
-      InputDecorator(
-          decoration: InputDecoration(
-              label: Text("Type d'activité",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                      fontSize: 20)),
-              border: OutlineInputBorder(),
-              contentPadding: EdgeInsets.only(left: 10)),
-          child: DropdownButtonHideUnderline(
-              child: DropdownButton(
-                isExpanded: true,
-                value: typeSelect,
-                icon: const Icon(Icons.keyboard_arrow_down_rounded),
-                items: activites.map((activity) {
-                  return DropdownMenuItem(
-                    value: activity.id.toString(),
-                    child: Text(activity.name),
-                  );
-                }).toList(),
-                onChanged: (String? newValue) {
-                  setState(() {
-                    typeSelect = newValue!;
-                  });
-                },
-              ))),
-    ];
-  }
-
-  nomprospectVue() {
-    return [
-      Padding(
-        padding: const EdgeInsets.all(1.0),
-        child: TextField(
-          controller: company_name,
-          decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              hintText: 'nom entreprise',
-              floatingLabelBehavior: FloatingLabelBehavior.always,
-              label: Text(
-                "Nom Entreprise",
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                    fontSize: 20),
-              )),
-        ),
-      ),
-    ];
-  }
-
-  adresseVue() {
-    return [
-      Padding(
-        padding: const EdgeInsets.all(1.0),
-        child: TextField(
-          controller: company_adress,
-          decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              hintText: 'adresse',
-              floatingLabelBehavior: FloatingLabelBehavior.always,
-              label: Text(
-                "Adresse Entreprise",
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                    fontSize: 20),
-              )),
-        ),
-      ),
-    ];
-  }
-
-  contactVue() {
-    return [
-      Padding(
-        padding: const EdgeInsets.all(1.0),
-        child: TextFormField(
-          controller: company_phone,
-          decoration: InputDecoration(
-            border: OutlineInputBorder(),
-            hintText: 'contact',
-            floatingLabelBehavior: FloatingLabelBehavior.always,
-            label: Text(
-              "Contact Entreprise",
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                  fontSize: 20),
-            ),
-          ),
-          validator: (value) {
-            if (value!.isEmpty ||
-                !RegExp(r"^\s*([A-Za-z]{1,}([\.,] |[-']| ))+[A-Za-z]+\.?\s*$")
-                    .hasMatch(value)) {
-              return "Entrez un nom valide";
-            } else {
-              return null;
-            }
-          },
-        ),
-      ),
-    ];
-  }
-
-  offreVue(BuildContext context) {
-    return [
-      SizedBox(
-        height: 20,
-      ),
-      InputDecorator(
-          decoration: InputDecoration(
-              label: Text("Offres",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                      fontSize: 20)),
-              border: OutlineInputBorder(),
-              contentPadding: EdgeInsets.only(left: 10)),
-          child: DropdownButtonHideUnderline(
-              child: DropdownButton(
-                isExpanded: true,
-                value: offreSelect,
-                icon: const Icon(Icons.keyboard_arrow_down_rounded),
-                items: offres.map((offer) {
-                  return DropdownMenuItem(
-                    value: offer.id.toString(),
-                    child: Text(offer.name.toString()),
-                  );
-                }).toList(),
-                onChanged: (String? newValue) {
-                  setState(() {
-                    offreSelect = newValue!;
-                  });
-                },
-              ))),
-    ];
-  }
-
-  visualiseroffre() {
-    return Wrap(
-        children: selectedData.map((e) {
-          return Container(
-            decoration: BoxDecoration(
-                color: Colors.orange, borderRadius: BorderRadius.circular(5)),
-            margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-            padding: EdgeInsets.symmetric(horizontal: 7, vertical: 7),
-            child: Text(
-              e,
-              style: TextStyle(color: Colors.black),
-            ),
-          );
-        }).toList());
   }
 
   Chargement(BuildContext context, [int duree = 150]) async {
@@ -463,7 +280,8 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
         });
   }
 
-  nouveauProspect() {
+  vuePrincipale() {
+    print("REBUILD Formulaire");
     bouton() {
       if (nom == "Editer Prospect") {
         return "VALIDER";
@@ -507,57 +325,57 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
           body: isCompleted
               ? buildCompleted()
               : Theme(
-            data: Theme.of(context).copyWith(
-              colorScheme: ColorScheme.light(primary: Colors.orange),
-            ),
-            child: Stepper(
-                type: StepperType.horizontal,
-                currentStep: currentStep,
-                steps: stepList(),
-                onStepContinue: () async {
-                  final isLastStep = currentStep == stepList().length - 1;
-                  print(isLastStep);
-                  if (isLastStep) {
-                    setState(() => isCompleted = true);
-                    Chargement(context);
-                    validerFormulaire();
-                    succesPopUp(context);
-                    debugPrint("Succès");
-                  } else {
-                    setState(() => currentStep += 1);
-                  }
-                },
-                onStepTapped: (step) =>
-                    setState(() => currentStep = step),
-                onStepCancel: currentStep == 0
-                    ? null
-                    : () => setState(() => currentStep -= 1),
-                controlsBuilder:
-                    (BuildContext context, ControlsDetails details) {
-                  final isLastStep = currentStep == stepList().length - 1;
-                  return Container(
-                    child: Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: ElevatedButton(
-                            child:
-                            Text(isLastStep ? bouton() : "SUIVANT"),
-                            onPressed: details.onStepContinue,
+                  data: Theme.of(context).copyWith(
+                    colorScheme: ColorScheme.light(primary: Colors.orange),
+                  ),
+                  child: Stepper(
+                      type: StepperType.horizontal,
+                      currentStep: currentStep,
+                      steps: stepList(),
+                      onStepContinue: () async {
+                        final isLastStep = currentStep == stepList().length - 1;
+                        print(isLastStep);
+                        if (isLastStep) {
+                          setState(() => isCompleted = true);
+                          Chargement(context);
+                          validerFormulaire();
+                          succesPopUp(context);
+                          debugPrint("Succès");
+                        } else {
+                          setState(() => currentStep += 1);
+                        }
+                      },
+                      onStepTapped: (step) =>
+                          setState(() => currentStep = step),
+                      onStepCancel: currentStep == 0
+                          ? null
+                          : () => setState(() => currentStep -= 1),
+                      controlsBuilder:
+                          (BuildContext context, ControlsDetails details) {
+                        final isLastStep = currentStep == stepList().length - 1;
+                        return Container(
+                          child: Row(
+                            children: <Widget>[
+                              Expanded(
+                                child: ElevatedButton(
+                                  child:
+                                      Text(isLastStep ? bouton() : "SUIVANT"),
+                                  onPressed: details.onStepContinue,
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              if (currentStep != 0)
+                                Expanded(
+                                  child: ElevatedButton(
+                                    child: Text("PRECEDENT"),
+                                    onPressed: details.onStepCancel,
+                                  ),
+                                ),
+                            ],
                           ),
-                        ),
-                        const SizedBox(width: 12),
-                        if (currentStep != 0)
-                          Expanded(
-                            child: ElevatedButton(
-                              child: Text("PRECEDENT"),
-                              onPressed: details.onStepCancel,
-                            ),
-                          ),
-                      ],
-                    ),
-                  );
-                }),
-          ),
+                        );
+                      }),
+                ),
         ),
       ),
     );
@@ -571,7 +389,7 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
       latitude: _position?.latitude.toString(),
       agentId: currentId,
       //communeId: communeSelect != null ? int.parse(communeSelect!) : null,
-      zoneId: zoneSelect != null ? int.parse(zoneSelect!) : null,
+      /* zoneId: zoneSelect != null ? int.parse(zoneSelect!) : null,
       villeId: villeSelect != null ? int.parse(villeSelect!) : null,
       provinceId: provinceselectionner != null
           ? int.parse(provinceselectionner!)
@@ -579,7 +397,7 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
       companyName: company_name.text.toString(),
       companyAddress: company_adress.text.toString(),
       typeActivitiesId: typeSelect != null ? int.parse(typeSelect!) : null,
-      companyPhone: company_phone.text.toString(),
+      companyPhone: company_phone.text.toString(),*/
       offerId: 1,
       state: "1",
       remoteId: timestamp.toString(),
@@ -592,7 +410,7 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
         latitude: _position?.latitude.toString(),
         agentId: currentId,
         //communeId: communeSelect != null ? int.parse(communeSelect!) : null,
-        zoneId: zoneSelect != null ? int.parse(zoneSelect!) : null,
+        /*  zoneId: zoneSelect != null ? int.parse(zoneSelect!) : null,
         villeId: villeSelect != null ? int.parse(villeSelect!) : null,
         provinceId: provinceselectionner != null
             ? int.parse(provinceselectionner!)
@@ -600,7 +418,7 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
         companyName: company_name.text.toString(),
         companyAddress: company_adress.text.toString(),
         typeActivitiesId: typeSelect != null ? int.parse(typeSelect!) : null,
-        companyPhone: company_phone.text.toString(),
+        companyPhone: company_phone.text.toString(),*/
         offerId: 1,
         state: "4",
         remoteId: timestamp.toString(),
@@ -627,9 +445,9 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
 // User canceled the picker
   affichageSnack(BuildContext context,
       {required String msg,
-        double duree = 3,
-        Color bgColor = Colors.white,
-        Color textColor = Colors.red}) {
+      double duree = 3,
+      Color bgColor = Colors.white,
+      Color textColor = Colors.red}) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Row(
