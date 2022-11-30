@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../Controllers/AuthentifacationController.dart';
 import '../Tools/Parametres.dart';
 import 'HomePage.dart';
@@ -12,8 +13,10 @@ class AuthentificationPage extends StatefulWidget {
 }
 
 class _AuthentificationPageState extends State<AuthentificationPage> {
-  TextEditingController email = TextEditingController(text: Parametres.loginUser);
-  TextEditingController password = TextEditingController(text: Parametres.loginPassword);
+  TextEditingController email =
+      TextEditingController(text: Parametres.loginUser);
+  TextEditingController password =
+      TextEditingController(text: Parametres.loginPassword);
 
   bool hidePassword = true;
   bool isApiCallProcess = false;
@@ -23,18 +26,7 @@ class _AuthentificationPageState extends State<AuthentificationPage> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      context.read<AuthentificationController>().session();
-      var session = context.read<AuthentificationController>().utilisateur;
-      if (session != null) {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) {
-          return HomePage();
-        }));
-        return;
-      }
-    });
   }
-
 
   @override
   void dispose() {
@@ -71,25 +63,15 @@ class _AuthentificationPageState extends State<AuthentificationPage> {
                     blurRadius: 20)
               ],
             ),
-            child :formulaireAuthentification(),
+            child: formulaireAuthentification(),
           ),
         ],
       ),
     );
   }
 
-  bool validateAndSave() {
-    final form = globalFormKey.currentState;
-    print(form!.validate());
-    if (form.validate()) {
-      form.save();
-      return true;
-    }
-    return false;
-  }
-
   /* Voici le formulaire pour l'authentificatio de l'utilisateur */
-  formulaireAuthentification(){
+  formulaireAuthentification() {
     return Form(
       key: globalFormKey,
       child: SingleChildScrollView(
@@ -112,7 +94,7 @@ class _AuthentificationPageState extends State<AuthentificationPage> {
 
   /* Voici l'entête de l'appplication
    * qui est appelé dans la fonction formulaire authentification */
-  titreFormulaire(){
+  titreFormulaire() {
     return Text(
       "PROSPECT",
       style: Theme.of(context).textTheme.headline1,
@@ -121,26 +103,21 @@ class _AuthentificationPageState extends State<AuthentificationPage> {
 
   /* Voici les codes pour la constuction de champ de saisie EMAIL
    * qui est appelé dans la fonction formulaire authentification */
-  champDeSaisieEmail(){
+  champDeSaisieEmail() {
     return new TextFormField(
       controller: email,
       keyboardType: TextInputType.emailAddress,
-      validator: (input) => !input!.contains('@')
-          ? "Votre adresse email est invalide"
-          : null,
+      validator: (input) =>
+          !input!.contains('@') ? "Votre adresse email est invalide" : null,
       decoration: new InputDecoration(
         hintText: "Entrez votre adresse email",
         enabledBorder: UnderlineInputBorder(
             borderSide: BorderSide(
-                color: Theme.of(context)
-                    .colorScheme
-                    .secondary
-                    .withOpacity(0.2))),
+                color:
+                    Theme.of(context).colorScheme.secondary.withOpacity(0.2))),
         focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(
-                color: Theme.of(context)
-                    .colorScheme
-                    .secondary)),
+            borderSide:
+                BorderSide(color: Theme.of(context).colorScheme.secondary)),
         prefixIcon: Icon(
           Icons.email,
           color: Theme.of(context).colorScheme.secondary,
@@ -151,11 +128,10 @@ class _AuthentificationPageState extends State<AuthentificationPage> {
 
   /* Voici les codes pour la constuction de champ de saisie MOT DE PASSE
    * qui est appelé dans la fonction formulaire authentification */
-  champDeSaisiePassword(){
+  champDeSaisiePassword() {
     return new TextFormField(
       controller: password,
-      style: TextStyle(
-          color: Theme.of(context).colorScheme.secondary),
+      style: TextStyle(color: Theme.of(context).colorScheme.secondary),
       keyboardType: TextInputType.text,
       validator: (input) => input!.length < 5
           ? "Le mot de passe doit contenir plus de 5 caractères"
@@ -165,15 +141,11 @@ class _AuthentificationPageState extends State<AuthentificationPage> {
         hintText: "Entrez votre mot de passe",
         enabledBorder: UnderlineInputBorder(
             borderSide: BorderSide(
-                color: Theme.of(context)
-                    .colorScheme
-                    .secondary
-                    .withOpacity(0.2))),
+                color:
+                    Theme.of(context).colorScheme.secondary.withOpacity(0.2))),
         focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(
-                color: Theme.of(context)
-                    .colorScheme
-                    .secondary)),
+            borderSide:
+                BorderSide(color: Theme.of(context).colorScheme.secondary)),
         prefixIcon: Icon(
           Icons.lock,
           color: Theme.of(context).colorScheme.secondary,
@@ -184,13 +156,8 @@ class _AuthentificationPageState extends State<AuthentificationPage> {
               hidePassword = !hidePassword;
             });
           },
-          color: Theme.of(context)
-              .colorScheme
-              .secondary
-              .withOpacity(0.4),
-          icon: Icon(hidePassword
-              ? Icons.visibility_off
-              : Icons.visibility),
+          color: Theme.of(context).colorScheme.secondary.withOpacity(0.4),
+          icon: Icon(hidePassword ? Icons.visibility_off : Icons.visibility),
         ),
       ),
     );
@@ -198,7 +165,7 @@ class _AuthentificationPageState extends State<AuthentificationPage> {
 
   /* Voici les codes pour la constuction du button validation
    * qui est appelé dans la fonction formulaire authentification */
-  buttonDeValidation(){
+  buttonDeValidation() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 60),
       child: Row(
@@ -211,9 +178,10 @@ class _AuthentificationPageState extends State<AuthentificationPage> {
                 style: TextStyle(fontSize: 15, color: Colors.white),
               ),
               style: ElevatedButton.styleFrom(
-                // important de mettre à jour flutter pour que cette propriété fonctionne
-                // commande à executer: flutter upgrade
-                  backgroundColor: Colors.deepOrange, shadowColor: Colors.black),
+                  // important de mettre à jour flutter pour que cette propriété fonctionne
+                  // commande à executer: flutter upgrade
+                  backgroundColor: Colors.deepOrange,
+                  shadowColor: Colors.black),
             ),
           ),
         ],
@@ -221,48 +189,54 @@ class _AuthentificationPageState extends State<AuthentificationPage> {
     );
   }
 
+  bool validateAndSave() {
+    final form = globalFormKey.currentState;
+    print(form!.validate());
+    if (form.validate()) {
+      form.save();
+      return true;
+    }
+    return false;
+  }
+
   validatationFormulaire(BuildContext context) async {
     if (validateAndSave()) {
-      Map data = {
-        "email": email.text,
-        "password": password.text
-      };
+      Map data = {"email": email.text, "password": password.text};
       print(data);
       // return ;
+      lancerChargement(true);
+      var status =
+          await context.read<AuthentificationController>().authentifier(data);
+      lancerChargement(false);
 
-      setState(() {
-        isApiCallProcess = true;
-      });
+      if (status == null) {
+        affichageSnack(context, message: 'Problème de connexion !');
+        return;
+      }
 
-      var status = await context
-          .read<AuthentificationController>()
-          .authentifier(data);
-      setState(() {
-        isApiCallProcess = false;
-      });
-      if (status != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content:Text('Authentification réussie !'),
-            duration: Duration(seconds: 5),
-          ),
-        );
-        var session = context
-            .read<AuthentificationController>()
-            .session();
-
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (_) {
-              return HomePage();
-            }));
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content:Text('Problème de connexion !'),
-            duration: Duration(seconds: 10),
-          ),
-        );
-      };
+      affichageSnack(context,
+          message: 'Authentification réussie !', color: Colors.green);
+      await Future.delayed(Duration(milliseconds: 3500));
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) {
+        return HomePage();
+      }));
     }
+  }
+
+  affichageSnack(BuildContext context,
+      {required String message, double duree = 3, Color color = Colors.red}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Authentification réussie !'),
+        duration: Duration(seconds: 5),
+        backgroundColor: color,
+      ),
+    );
+  }
+
+  lancerChargement(bool status) {
+    setState(() {
+      isApiCallProcess = status;
+    });
   }
 }
