@@ -77,9 +77,10 @@ class _LocalisationStepState extends State<LocalisationStep> {
 
   void demanderLaLocalisation() async {
     g.Position position = await _determinePosition();
-    setState(() {
-      _position = position;
-    });
+    _position = position;
+    widget.onChanged("longitude", position.longitude.toString());
+    widget.onChanged("latitude", position.latitude.toString());
+    setState(() {});
   }
 
   Future<g.Position> _determinePosition() async {
