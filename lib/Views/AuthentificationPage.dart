@@ -49,21 +49,23 @@ class _AuthentificationPageState extends State<AuthentificationPage> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Container(
-            width: double.infinity,
-            padding: EdgeInsets.symmetric(vertical: 30, horizontal: 20),
-            margin: EdgeInsets.symmetric(vertical: 85, horizontal: 50),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: Theme.of(context).primaryColor,
-              boxShadow: [
-                BoxShadow(
-                    color: Theme.of(context).hintColor.withOpacity(0.2),
-                    offset: Offset(0, 10),
-                    blurRadius: 20)
-              ],
+          Flexible(
+            child: Container(
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(vertical: 40, horizontal: 20),
+              margin: EdgeInsets.symmetric(vertical: 5, horizontal: 50),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Theme.of(context).primaryColor,
+                boxShadow: [
+                  BoxShadow(
+                      color: Theme.of(context).hintColor.withOpacity(0.2),
+                      offset: Offset(0, 10),
+                      blurRadius: 20)
+                ],
+              ),
+              child: formulaireAuthentification(),
             ),
-            child: formulaireAuthentification(),
           ),
         ],
       ),
@@ -210,12 +212,12 @@ class _AuthentificationPageState extends State<AuthentificationPage> {
       lancerChargement(false);
 
       if (status == null) {
-        affichageSnack(context, message: 'Problème de connexion !');
+        affichageSnack(context, msg: 'Problème de connexion !');
         return;
       }
 
       affichageSnack(context,
-          message: 'Authentification réussie !', color: Colors.green);
+          msg: 'Authentification réussie !', textColor: Colors.deepOrange);
       await Future.delayed(Duration(milliseconds: 3500));
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) {
         return HomePage();
@@ -224,12 +226,27 @@ class _AuthentificationPageState extends State<AuthentificationPage> {
   }
 
   affichageSnack(BuildContext context,
-      {required String message, double duree = 3, Color color = Colors.red}) {
+      {required String msg,
+      double duree = 3,
+      Color bgColor = Colors.white,
+      Color textColor = Colors.red}) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Authentification réussie !'),
+        content: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.info_outline,
+              color: Colors.grey,
+            ),
+            SizedBox(
+              width: 20,
+            ),
+            Text(msg, style: TextStyle(color: textColor)),
+          ],
+        ),
         duration: Duration(seconds: 5),
-        backgroundColor: color,
+        backgroundColor: bgColor,
       ),
     );
   }
