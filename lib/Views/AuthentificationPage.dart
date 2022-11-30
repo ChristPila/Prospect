@@ -35,6 +35,7 @@ class _AuthentificationPageState extends State<AuthentificationPage> {
     });
   }
 
+
   @override
   void dispose() {
     super.dispose();
@@ -43,38 +44,36 @@ class _AuthentificationPageState extends State<AuthentificationPage> {
   @override
   Widget build(BuildContext context) {
     return ProgressHUD(
-      child: _uiSetup(context),
+      child: vuePrincipale(context),
       inAsyncCall: isApiCallProcess,
       opacity: 0.3,
     );
   }
 
-  Widget _uiSetup(BuildContext context) {
+  Widget vuePrincipale(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: Theme.of(context).colorScheme.secondary,
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.symmetric(vertical: 30, horizontal: 20),
-              margin: EdgeInsets.symmetric(vertical: 85, horizontal: 20),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                color: Theme.of(context).primaryColor,
-                boxShadow: [
-                  BoxShadow(
-                      color: Theme.of(context).hintColor.withOpacity(0.2),
-                      offset: Offset(0, 10),
-                      blurRadius: 20)
-                ],
-              ),
-              child :formulaireAuthentification(),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+            margin: EdgeInsets.symmetric(vertical: 85, horizontal: 50),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: Theme.of(context).primaryColor,
+              boxShadow: [
+                BoxShadow(
+                    color: Theme.of(context).hintColor.withOpacity(0.2),
+                    offset: Offset(0, 10),
+                    blurRadius: 20)
+              ],
             ),
-          ],
-        ),
+            child :formulaireAuthentification(),
+          ),
+        ],
       ),
     );
   }
@@ -95,9 +94,10 @@ class _AuthentificationPageState extends State<AuthentificationPage> {
       key: globalFormKey,
       child: SingleChildScrollView(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SizedBox(height: 25),
-            entete(),
+            titreFormulaire(),
             SizedBox(height: 20),
             champDeSaisieEmail(),
             SizedBox(height: 20),
@@ -112,7 +112,7 @@ class _AuthentificationPageState extends State<AuthentificationPage> {
 
   /* Voici l'entête de l'appplication
    * qui est appelé dans la fonction formulaire authentification */
-  entete(){
+  titreFormulaire(){
     return Text(
       "PROSPECT",
       style: Theme.of(context).textTheme.headline1,
@@ -126,7 +126,7 @@ class _AuthentificationPageState extends State<AuthentificationPage> {
       controller: email,
       keyboardType: TextInputType.emailAddress,
       validator: (input) => !input!.contains('@')
-          ? "Votre adresse email est un valide"
+          ? "Votre adresse email est invalide"
           : null,
       decoration: new InputDecoration(
         hintText: "Entrez votre adresse email",
@@ -158,7 +158,7 @@ class _AuthentificationPageState extends State<AuthentificationPage> {
           color: Theme.of(context).colorScheme.secondary),
       keyboardType: TextInputType.text,
       validator: (input) => input!.length < 5
-          ? "le mot de passe doit avoir plus de 5 caractères"
+          ? "Le mot de passe doit contenir plus de 5 caractères"
           : null,
       obscureText: hidePassword,
       decoration: new InputDecoration(
@@ -211,7 +211,9 @@ class _AuthentificationPageState extends State<AuthentificationPage> {
                 style: TextStyle(fontSize: 15, color: Colors.white),
               ),
               style: ElevatedButton.styleFrom(
-                  primary: Colors.deepOrange, shadowColor: Colors.black),
+                // important de mettre à jour flutter pour que cette propriété fonctionne
+                // commande à executer: flutter upgrade
+                  backgroundColor: Colors.deepOrange, shadowColor: Colors.black),
             ),
           ),
         ],
