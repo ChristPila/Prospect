@@ -1,23 +1,22 @@
 import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart' as g;
 import 'package:get_storage/get_storage.dart';
 import 'package:prospect/Controllers/ActiviteController.dart';
-import 'package:prospect/Controllers/CommuneController.dart';
 import 'package:prospect/Controllers/OffresController.dart';
-import 'package:prospect/Controllers/ProspectController.dart';
-import 'package:prospect/Controllers/VilleController.dart';
-import 'package:prospect/Controllers/ZoneController.dart';
-import 'package:prospect/Tools/Parametres.dart';
 import 'package:prospect/Models/ActiviteModel.dart';
 import 'package:prospect/Models/CommuneModel.dart';
 import 'package:prospect/Models/OffresModel.dart';
 import 'package:prospect/Models/ProvinceModel.dart';
 import 'package:prospect/Models/VilleModel.dart';
 import 'package:prospect/Models/ZoneModel.dart';
+import 'package:prospect/Tools/Parametres.dart';
 import 'package:provider/provider.dart';
+
 import '../Controllers/FormulaireProspectController.dart';
 import '../Models/prosModel.dart';
+import 'FormulaireWidgets/LocalisationStep.dart';
 
 //import 'package:signature/signature.dart';
 //import 'package:file_picker/file_picker.dart';
@@ -43,14 +42,12 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
     penColor: Colors.red,
     exportBackgroundColor: Colors.yellowAccent,
   );*/
-  List<ProvinceModel> provinces=[];
+
   List<ActiviteModel> activites = [];
-  List<VilleModel> villes= [];
-  List<ZoneModel> zones= [];
-  List<CommuneModel> communes= [];
+
   List<OffresModel> offres = [];
   List selectedData = [];
-  static String? provinceselectionner;
+   String? provinceselectionner;
   String? villeSelect;
   String? zoneSelect;
   String? communeSelect;
@@ -81,11 +78,7 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
     //recup = widget.recup;
 
     if (widget.recup != null) {
-      nom = "Editer Prospect";
-      company_name.text = widget.recup!.companyName!;
-      company_adress.text = widget.recup!.companyAddress!;
-      // company_type.text = widget.recup!.typeActivitiesId!.toString();
-      company_phone.text = widget.recup!.companyPhone!.toString();
+      editionFormulaire();
     }
     //getData();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -93,8 +86,15 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
     });
   }
 
+  editionFormulaire() {
+    nom = "Editer Prospect";
+    company_name.text = widget.recup!.companyName!;
+    company_adress.text = widget.recup!.companyAddress!;
+    // company_type.text = widget.recup!.typeActivitiesId!.toString();
+    company_phone.text = widget.recup!.companyPhone!.toString();
+  }
+
   recuperationDataForm() async {
-    var formCtrl = context.read<FormulaireProspectController>();
     provinceRecup();
 
     villeReccup();
@@ -115,7 +115,7 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
     formCtrl.provinces = listProvince
         .map<ProvinceModel>((e) => ProvinceModel.fromJson(e))
         .toList();
-    provinces=formCtrl.provinces;
+//    provinces = formCtrl.provinces;
     setState(() {});
   }
 
@@ -173,7 +173,6 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
     });
   }
 
-
   List<Step> stepList() => [
         Step(
             state: currentStep > 0 ? StepState.complete : StepState.indexed,
@@ -185,29 +184,7 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
                   color: Colors.black,
                   fontWeight: FontWeight.bold),
             ),
-            content: Container(
-              height: MediaQuery.of(context).size.height - 250,
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    localisation(),
-                    ...provinceVue(),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    ...villeVue(),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    ...zoneVue(),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    ...communeVue(),
-                  ],
-                ),
-              ),
-            )),
+            content:LocalisationStep()),
         Step(
             state: currentStep > 1 ? StepState.complete : StepState.indexed,
             isActive: currentStep >= 1,
@@ -278,109 +255,6 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
                 ],
               ),
             ))
-        /*Step(
-            state: StepState.editing,
-            isActive: _activeStepIndex == 2,
-            title: const Text(
-              "Etape3",
-              style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold),
-            ),
-            content: Container(
-              height: MediaQuery.of(context).size.height - 250,
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Container(
-                      height: 40,
-                      child: ListTile(
-                        title: Text(
-                          "Images",
-                          style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    imgVue(),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Container(
-                      height: 40,
-                      child: ListTile(
-                        title: Text(
-                          "Documents",
-                          style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    documentVue(),
-                    Container(
-                      height: 40,
-                      child: ListTile(
-                        title: Text(
-                          "Signature",
-                          style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    //signatureVue(),
-                    Container(
-                      width: double.infinity,
-                      child: Signature(
-                        controller: controller,
-                        width: double.infinity,
-                        height: 150,
-                        backgroundColor: Colors.black12,
-                      ),
-                    ),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        //paddingsi(),
-                        SizedBox(
-                          height: 10,
-                        ),
-                      ],
-                    ),
-                    if (exportedImage != null)
-                      Container(
-                          width: 300,
-                          height: 150,
-                          child: Image.memory(exportedImage!)),
-                    Container(
-                      height: 8,
-                    ),
-                    Container(
-                      child: (Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [],
-                      )),
-                    )
-                  ],
-                ),
-              ),
-            )),*/
       ];
 
   //Liste des images
@@ -420,86 +294,11 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
     return Container(child: Column());
   }
 
-  void _getCurrentPosition() async {
-    g.Position position = await _determinePosition();
-    setState(() {
-      _position = position;
-    });
-  }
 
-  Future<g.Position> _determinePosition() async {
-    g.LocationPermission permission;
 
-    permission = await g.Geolocator.checkPermission();
 
-    if (permission == g.LocationPermission.denied) {
-      permission = await g.Geolocator.requestPermission();
-      if (permission == g.LocationPermission.denied) {
-        return Future.error("Location permission are denied");
-      }
-    }
-    return await g.Geolocator.getCurrentPosition();
-  }
 
-  localisation() {
-    return Column(
-      children: [
-        _position != null
-            ? Text(_position.toString())
-            : nom != "Nouveau Prospect"
-                ? Text(
-                    "${widget.recup!.latitude} + ${widget.recup!.longitude} ")
-                : Text("Cliquer sur l'icone pour recevoir la localisation"),
-        nom != "Editer Prospect"
-            ? IconButton(
-                onPressed: _getCurrentPosition,
-                icon: Icon(Icons.location_on_outlined),
-                color: Colors.orange,
-              )
-            : Text("")
-      ],
-    );
-  }
 
-  provinceVue() {
-    // var formCtrl = context.watch<FormulaireProspectController>();
-    // var provinces = formCtrl.provinces;
-    return [
-      SizedBox(
-        height: 20,
-      ),
-      InputDecorator(
-          decoration: InputDecoration(
-              label: Text("Province",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                      fontSize: 20)),
-              border: OutlineInputBorder(),
-              contentPadding: EdgeInsets.only(left: 10)),
-          child: DropdownButtonHideUnderline(
-              child: DropdownButton(
-            isExpanded: true,
-            value: provinceselectionner,
-            icon: const Icon(Icons.keyboard_arrow_down_rounded),
-            items: provinces.map((prov) {
-              return DropdownMenuItem(
-                child: Text(prov.name),
-                value: prov.id.toString(),
-              );
-            }).toList(),
-            onChanged: (String? newValue) async {
-              provinceselectionner = newValue!;
-              var province_id=int.parse(provinceselectionner!);
-               villes =  context.read<FormulaireProspectController>().villes.where((v) => v.provinceId == province_id).toList() ;
-               //   await RemoteServicesVilles.getVilles(
-                  //int.parse(provinceselectionner!));
-                setState(() {});
-
-            },
-          ))),
-    ];
-  }
 
   typeVue(BuildContext context) {
     return [
@@ -535,122 +334,7 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
     ];
   }
 
-  getData() async {
-    //provinces = await RemoteServicesProv.getProvinces();
-    offres = await RemoteServicesOf.getOffres();
-    activites = await RemoteServicesAct.getActivity();
-    if (offres != null || activites != null) {
-      setState(() {
-        isLoad = true;
-      });
-    }
-  }
 
-  villeVue() {
-    var formCtrl = context.read<FormulaireProspectController>();
-    var villesLocales = formCtrl.villes;
-    return [
-      SizedBox(
-        height: 20,
-      ),
-      InputDecorator(
-          decoration: InputDecoration(
-              label: Text("Ville",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                      fontSize: 20)),
-              border: OutlineInputBorder(),
-              contentPadding: EdgeInsets.only(left: 10)),
-          child: DropdownButtonHideUnderline(
-              child: DropdownButton(
-            isExpanded: true,
-            value: villeSelect,
-            icon: const Icon(Icons.keyboard_arrow_down_rounded),
-            items: villes.map((city) {
-              return DropdownMenuItem(
-                  child: Text(city.name), value: city.id.toString());
-            }).toList(),
-            onChanged: (String? newValue) async {
-              villeSelect = newValue!;
-              var ville_id = int.parse(villeSelect!);
-              zones =  context.read<FormulaireProspectController>().zones.where((z) => z.villeId == ville_id).toList() ;
-              if (zones != null) {
-                setState(() {});
-              }
-            },
-          ))),
-    ];
-  }
-
-  zoneVue() {
-    return [
-      SizedBox(
-        height: 20,
-      ),
-      InputDecorator(
-          decoration: InputDecoration(
-              label: Text("Zone",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                      fontSize: 20)),
-              border: OutlineInputBorder(),
-              contentPadding: EdgeInsets.only(left: 10)),
-          child: DropdownButtonHideUnderline(
-              child: DropdownButton(
-            isExpanded: true,
-            value: zoneSelect,
-            icon: const Icon(Icons.keyboard_arrow_down_rounded),
-            items: zones.map((z) {
-              return DropdownMenuItem(
-                  child: Text(z.name), value: z.id.toString());
-            }).toList(),
-            onChanged: (String? newValue) async {
-              zoneSelect = newValue!;
-              var zone_id=int.parse(zoneSelect!);
-              communes = context.read<FormulaireProspectController>().communes.where((c) => c.zoneId==zone_id).toList();
-              if (communes != null) {
-                setState(() {
-                  isLoad = true;
-                });
-              }
-            },
-          ))),
-    ];
-  }
-
-  communeVue() {
-    return [
-      SizedBox(
-        height: 20,
-      ),
-      InputDecorator(
-          decoration: InputDecoration(
-              label: Text("Commune",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                      fontSize: 20)),
-              border: OutlineInputBorder(),
-              contentPadding: EdgeInsets.only(left: 10)),
-          child: DropdownButtonHideUnderline(
-              child: DropdownButton(
-            isExpanded: true,
-            value: communeSelect,
-            icon: const Icon(Icons.keyboard_arrow_down_rounded),
-            items: communes.map((com) {
-              return DropdownMenuItem(
-                  child: Text(com.name), value: com.id.toString());
-            }).toList(),
-            onChanged: (String? newValue) {
-              setState(() {
-                communeSelect = newValue!;
-              });
-            },
-          ))),
-    ];
-  }
 
   nomprospectVue() {
     return [
@@ -762,410 +446,6 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
     ];
   }
 
-  /*imgVue() {
-    return Container(
-      height: 100,
-      //color: Colors.red,
-      child: Row(
-        //scrollDirection: Axis.horizontal,
-        //shrinkWrap: true,
-        children: [
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              side: BorderSide(color: Colors.grey, width: 2),
-              primary: Colors.transparent,
-              elevation: 0,
-              padding: EdgeInsets.all(35),
-            ),
-            onPressed: () {
-              showModalBottomSheet(
-                context: context,
-                builder: ((builder) => bottomSheet()),
-              );
-            },
-            child: Icon(
-              Icons.camera_alt,
-              color: Colors.blue,
-            ),
-          ),
-          SizedBox(
-            width: 10,
-          ),
-          Expanded(
-            child: ListView.builder(
-                itemCount: imageFileList?.length,
-                scrollDirection: Axis.horizontal,
-                shrinkWrap: true,
-                itemBuilder: (BuildContext context, int index) {
-                  return Padding(
-                    padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-                    child: Container(
-                        width: 140,
-                        height: 200,
-                        child: Image.file(File(imageFileList![index].path),
-                            fit: BoxFit.cover)),
-                  );
-                }),
-          ),
-        ],
-      ),
-    );
-  }
-
-  documentVue() {
-    return Container(
-      height: 100,
-      child: Row(
-        children: [
-          ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                  side: BorderSide(color: Colors.grey, width: 2),
-                  primary: Colors.transparent,
-                  elevation: 0,
-                  padding: EdgeInsets.all(35)),
-              onPressed: () {
-                openFiles();
-              },
-              child: Icon(
-                Icons.file_download,
-                color: Colors.blue,
-              )),
-          SizedBox(
-            width: 8,
-          ),
-          Expanded(
-            child: ListView.builder(
-                itemCount: lisDoc.length,
-                scrollDirection: Axis.horizontal,
-                shrinkWrap: true,
-                itemBuilder: (BuildContext context, int index) {
-                  var fil = lisDoc[index];
-                  print(fil.path);
-                  var completePath = fil.path;
-                  var fileName = (completePath.split('/').last);
-                  var fileExtension = (fileName.split(".").last);
-                  print(completePath);
-                  print(fileName);
-                  print(fileExtension);
-
-                  return Padding(
-                      padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-                      child: Container(
-                        color: Colors.black12,
-                        width: 140,
-                        height: 200,
-                        child: Center(
-                            child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              fileExtension,
-                              style:
-                                  TextStyle(fontSize: 25, color: Colors.white),
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Text(
-                              fileName,
-                              style:
-                                  TextStyle(fontSize: 10, color: Colors.blue),
-                            ),
-                          ],
-                        )),
-                        // child: Text(lisDoc[index].name),
-                      ));
-                }),
-          ),
-        ],
-      ),
-    );
-  }
-
-  signatureVue() {
-    return Container(
-      height: 150,
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        shrinkWrap: true,
-        children: [
-          SizedBox(
-            width: 15,
-          ),
-          sign(),
-          SizedBox(
-            width: 15,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget imageProfile() {
-    return imageFileList == null
-        ? Container(
-            width: 140,
-            height: 180,
-            color: Colors.black12,
-          )
-        : Container(
-            width: 140,
-            height: 180,
-            color: Colors.black12,
-          );
-  }
-
-  /*Widget imageProfile2() {
-    return Stack(
-      children: <Widget>[
-        imageFile1 == null
-            ? Container(
-                width: 140,
-                height: 180,
-                color: Colors.black12,
-              )
-            : Container(
-                width: 140,
-                height: 180,
-              ),
-        //AssetImage(""),
-        Positioned(
-          bottom: 20.0,
-          right: 35.0,
-          child: InkWell(
-            onTap: () {
-              showModalBottomSheet(
-                context: context,
-                builder: ((builder) => bottomSheet()),
-              );
-            },
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget imageProfile3() {
-    return Stack(
-      children: <Widget>[
-        Container(
-          width: 140,
-          height: 180,
-          color: Colors.black12,
-        ),
-        //AssetImage(""),
-        Positioned(
-          bottom: 20.0,
-          right: 35.0,
-          child: InkWell(
-            onTap: () {
-              showModalBottomSheet(
-                context: context,
-                builder: ((builder) => bottomSheet()),
-              );
-            },
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget document1() {
-    return Container(
-      //child: ElevatedButton(onPressed: () {openFiles();}, child: Icon(Icons.file_download)),
-      //child: Icon(Icons.file_download),
-
-      width: 140,
-      height: 180,
-      color: Colors.black26,
-    );
-  }
-
-  Widget document2() {
-    return Stack(
-      children: <Widget>[
-        Container(
-          width: 140,
-          height: 180,
-          color: Colors.black26,
-        ),
-        //AssetImage(""),
-        Positioned(
-          bottom: 20.0,
-          right: 35.0,
-          child: InkWell(
-            onTap: () {
-              showModalBottomSheet(
-                context: context,
-                builder: ((builder) => bottomSheet()),
-              );
-            },
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget document3() {
-    return Stack(
-      children: <Widget>[
-        Container(
-          width: 140,
-          height: 180,
-          color: Colors.black26,
-        ),
-        //AssetImage(""),
-        Positioned(
-          bottom: 20.0,
-          right: 35.0,
-          child: InkWell(
-            onTap: () {
-              showModalBottomSheet(
-                context: context,
-                builder: ((builder) => bottomSheet()),
-              );
-            },
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget sign() {
-    return InkWell(
-      onTap: () {
-        showModalBottomSheet(
-          context: context,
-          builder: ((builder) => bottomSheet()),
-        );
-      },
-      child: Container(
-        width: 280,
-        height: 180,
-        color: Colors.black12,
-      ),
-    );
-  }*/
-
-  /*Widget bottomSheet() {
-    return Container(
-      height: 100.0,
-      width: MediaQuery.of(context).size.width,
-      margin: EdgeInsets.symmetric(
-        horizontal: 20,
-        vertical: 20,
-      ),
-      child: Column(
-        children: <Widget>[
-          Text(
-            "Choisir la photo",
-            style: TextStyle(
-              fontSize: 20.0,
-            ),
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              TextButton(
-                onPressed: () {
-                  _getFromCamera();
-                },
-                child: Icon(Icons.camera),
-              ),
-              Text("camera"),
-              TextButton(
-                onPressed: () {
-                  _getFromGallery();
-                },
-                child: Icon(Icons.image),
-              ),
-              Text("gallery")
-            ],
-          )
-        ],
-      ),
-    );
-  }*/
-
-  /*_getFromGallery() async {
-    List<XFile>? pickedFile = await ImagePicker()
-        .pickMultiImage(maxWidth: 1800, maxHeight: 1800, imageQuality: 12);
-    if (pickedFile!.isNotEmpty) {
-      setState(() {
-        imageFileList!.addAll(pickedFile);
-      });
-    }
-    Navigator.pop(context);
-  }*/
-
-  /*_getFromCamera() async {
-    PickedFile? pickedFile = await ImagePicker().getImage(
-      source: ImageSource.camera,
-      maxWidth: 1800,
-      maxHeight: 1800,
-    );
-    if (pickedFile != null) {
-      setState(() {
-        imageFileList = pickedFile.path as List<XFile>?;
-      });
-    }
-    Navigator.pop(context);
-  }*/
-
-  labelText(String text) {
-    return Text(
-      text,
-      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-    );
-  }
-
-  paddingsi() {
-    return Row(
-      children: [
-        Padding(
-          padding: EdgeInsets.all(5),
-          child: ElevatedButton(
-            onPressed: () async {
-              exportedImage = await controller.toPngBytes();
-              setState(() {});
-            },
-            child: const Text(
-              "save",
-              style: TextStyle(fontSize: 20),
-            ),
-            style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18.0),
-                        side: BorderSide(color: Colors.red)))),
-          ),
-        ),
-        Padding(
-          padding: EdgeInsets.all(10),
-          child: ElevatedButton(
-            onPressed: () {
-              controller.clear();
-            },
-            child: const Text(
-              "clear",
-              style: TextStyle(fontSize: 20),
-            ),
-            style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18.0),
-                        side: BorderSide(color: Colors.red)))),
-          ),
-        ),
-      ],
-    );
-  }*/
-
   visualiseroffre() {
     return Wrap(
         children: selectedData.map((e) {
@@ -1252,6 +532,21 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
         child: Scaffold(
           appBar: AppBar(
               centerTitle: true,
+              elevation: 0,
+              leading: IconButton(
+                onPressed: () {
+                  if (currentStep > 0) {
+                    currentStep--;
+                    setState(() {});
+                    return;
+                  }
+                  Navigator.pop(context);
+                },
+                icon: Icon(
+                  Icons.arrow_back_ios,
+                  color: Colors.black,
+                ),
+              ),
               backgroundColor: Colors.white10,
               title: Text(
                 nom,
