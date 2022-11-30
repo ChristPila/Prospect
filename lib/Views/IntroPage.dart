@@ -1,61 +1,40 @@
+import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
+
 import 'AuthentificationPage.dart';
 
-class IntroPage extends StatefulWidget {
-  const IntroPage({Key? key}) : super(key: key);
-  @override
-  State<IntroPage> createState() => _IntroPageState();
-}
-class _IntroPageState extends State<IntroPage> {
-  bool afficher = false;
+class IntroPage extends StatelessWidget {
 
-  @override
-  void initState() {
-    super.initState();
-    navigationVersAuthentification();
-  }
-  navigationVersAuthentification() async {
-    await Future.delayed(Duration(milliseconds: 500));
-    afficher = true;
-    setState(() {});
-    await Future.delayed(Duration(milliseconds: 3000));
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) {
-      return AuthentificationPage();
-    }));
-  }
   @override
   Widget build(BuildContext context) {
-    return AnimatedOpacity(
-      opacity: afficher ? 1 : 0,
-      duration: Duration(seconds: 2),
-      child: Scaffold(
-          body:Scaffold(
-            appBar: AppBar(
-              elevation: 0,
-              centerTitle: true,
-              backgroundColor: Colors.transparent,
-            ),
-            body: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  iconAplication(),
-                ],
-              ),
-            ),
-          )
-      ),
+    return AnimatedSplashScreen.withScreenFunction(
+      splash: mainView(),
+      backgroundColor: Colors.white,
+      splashIconSize: 150,
+      screenFunction: () async {
+        return AuthentificationPage();
+      },
+      splashTransition: SplashTransition.slideTransition,
+      pageTransitionType: PageTransitionType.leftToRight,
+      duration: 1000,
+      animationDuration: Duration(milliseconds: 2500),
     );
   }
-  iconAplication(){
+
+  mainView() {
+    return Column(
+      children: [
+        Expanded(
+          child: iconAplication(),
+        )
+      ],
+    );
+  }
+
+  iconAplication() {
     return Image.asset(
       'assets/icon_orange.png',
-      width: 200,
     );
   }
 }
-
-
-
-
-
