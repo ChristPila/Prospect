@@ -276,12 +276,13 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
               centerTitle: true,
               elevation: 0,
               leading: IconButton(
-                onPressed: () {
+                onPressed: () async {
                   if (currentStep > 0) {
                     currentStep--;
                     setState(() {});
                     return;
                   }
+                  await validerFormulaire(true);
                   Navigator.pop(context);
                 },
                 icon: Icon(
@@ -416,9 +417,17 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
     debugPrint('DONNEE: ${data.toJson()}');
 
     if (save) {
-      formCtrl.creerCopieLocale(data);
-      affichageSnack(context,
-          msg: 'Brouillon sauvegardé', textColor: Colors.grey);
+      debugPrint("formulaireValue $formulaireValue");
+      recup = ProsModel.fromJson(formulaireValue);
+      recup!.remoteId =
+          recup!.remoteId ?? DateTime.now().millisecondsSinceEpoch.toString();
+      // création Copie locale si au moins la commune est selectionnée
+      if (recup!.communeId != null) {
+        formCtrl.creerCopieLocale(recup!);
+        affichageSnack(context,
+            msg: 'Brouillon sauvegardé', textColor: Colors.grey);
+        await Future.delayed(Duration(seconds: 1));
+      }
     }
 
     if (!save) {
@@ -436,7 +445,7 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
         await Future.delayed(Duration(milliseconds: 3500));
         // await succesPopUp(context);
         debugPrint("Succès");
-        //Navigator.pop(context);
+        Navigator.pop(context);
       } catch (e) {
         debugPrint('failed data ${data.toJson()}');
 
