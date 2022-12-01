@@ -65,6 +65,12 @@ class _IdentificationStepState extends State<IdentificationStep> {
           onChanged: (String newV) {
             widget.onChanged("company_name", newV);
           },
+          validator: (value) {
+            if (value!.isEmpty) {
+              return "Champs obligatoire";
+            }
+            return null;
+          },
           decoration: InputDecoration(
               border: OutlineInputBorder(),
               hintText: 'nom entreprise',
@@ -89,6 +95,12 @@ class _IdentificationStepState extends State<IdentificationStep> {
           controller: company_adress,
           onChanged: (String newV) {
             widget.onChanged("company_address", newV);
+          },
+          validator: (value) {
+            if (value!.isEmpty) {
+              return "Champs obligatoire";
+            }
+            return null;
           },
           decoration: InputDecoration(
               border: OutlineInputBorder(),
@@ -129,20 +141,17 @@ class _IdentificationStepState extends State<IdentificationStep> {
             ),
           ),
           validator: (value) {
-            if (value!.isEmpty ||
-                !RegExp(r"^\s*([A-Za-z]{1,}([\.,] |[-']| ))+[A-Za-z]+\.?\s*$")
-                    .hasMatch(value)) {
-              return "Entrez un nom valide";
-            } else {
-              return null;
+            /*  ||!RegExp(r"^\s*([A-Za-z]{1,}([\.,] |[-']| ))+[A-Za-z]+\.?\s*$")
+                    .hasMatch(value)) {*/
+            if (value!.isEmpty) {
+              return "Entrez un numero valide";
             }
+            return null;
           },
         ),
       ),
     ];
   }
-
-
 
   typeVue(BuildContext context) {
     var formCtrl = context.watch<FormulaireProspectController>();
@@ -164,7 +173,7 @@ class _IdentificationStepState extends State<IdentificationStep> {
             isExpanded: true,
             value: typeSelect,
             icon: const Icon(Icons.keyboard_arrow_down_rounded),
-            items:formCtrl.activities.map((activity) {
+            items: formCtrl.activities.map((activity) {
               return DropdownMenuItem(
                 value: activity.id,
                 child: Text(activity.name),
@@ -198,22 +207,22 @@ class _IdentificationStepState extends State<IdentificationStep> {
               contentPadding: EdgeInsets.only(left: 10)),
           child: DropdownButtonHideUnderline(
               child: DropdownButton(
-                isExpanded: true,
-                value: offreSelect,
-                icon: const Icon(Icons.keyboard_arrow_down_rounded),
-                items: formCtrl.offres.map((offer) {
-                  return DropdownMenuItem(
-                    value: offer.id,
-                    child: Text(offer.name.toString()),
-                  );
-                }).toList(),
-                onChanged: (int? newValue) {
-                  offreSelect = newValue!;
-                  widget.onChanged("offer_id", newValue);
+            isExpanded: true,
+            value: offreSelect,
+            icon: const Icon(Icons.keyboard_arrow_down_rounded),
+            items: formCtrl.offres.map((offer) {
+              return DropdownMenuItem(
+                value: offer.id,
+                child: Text(offer.name.toString()),
+              );
+            }).toList(),
+            onChanged: (int? newValue) {
+              offreSelect = newValue!;
+              widget.onChanged("offer_id", newValue);
 
-                  setState(() {});
-                },
-              ))),
+              setState(() {});
+            },
+          ))),
     ];
   }
 }

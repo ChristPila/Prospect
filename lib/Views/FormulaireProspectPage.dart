@@ -52,6 +52,7 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
   int? step;
 
   String lastButtonText = "Confirmer";
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   // TextEditingController _position = TextEditingController();
 
@@ -73,7 +74,6 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
     "remote_id": null,
   };
 
-  int timestamp = DateTime.now().millisecondsSinceEpoch;
   var nom = "Nouveau Prospect";
 
   @override
@@ -225,8 +225,9 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
     );
   }
 
-  succesPopUp(BuildContext context) {
-    showDialog(
+  succesPopUp(BuildContext context) async {
+    await showDialog(
+        barrierDismissible: false,
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
@@ -262,7 +263,7 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
   }
 
   vuePrincipale() {
-    print("REBUILD Formulaire");
+    print("REBUILD Formulaire $currentStep");
 
     return WillPopScope(
       onWillPop: () async {
@@ -296,147 +297,164 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
                   fontSize: 25,
                 ),
               )),
-          body: isCompleted
+          body: /*isCompleted
               ? buildCompleted()
-              : Theme(
-                  data: Theme.of(context).copyWith(
-                    colorScheme: ColorScheme.light(primary: Colors.orange),
-                  ),
-                  child: Stepper(
-                      type: StepperType.horizontal,
-                      currentStep: currentStep,
-                      steps: stepList(),
-                      onStepContinue: () async {
-                        final isLastStep = currentStep == stepList().length - 1;
-                        final isOneBeforeLastStep =
-                            currentStep == stepList().length - 2;
-                        print(isLastStep);
-                        if (isOneBeforeLastStep) {
-                          buildProspectModelData();
-                        }
-                        if (isLastStep) {
-                          setState(() => isCompleted = true);
-                          Chargement(context);
-                          validerFormulaire();
-                          succesPopUp(context);
-                          debugPrint("Succès");
-                        } else {
-                          setState(() => currentStep += 1);
-                        }
-                      },
-                      onStepTapped: (step) =>
-                          setState(() => currentStep = step),
-                      onStepCancel: currentStep == 0
-                          ? null
-                          : () => setState(() => currentStep -= 1),
-                      controlsBuilder:
-                          (BuildContext context, ControlsDetails details) {
-                        final isLastStep = currentStep == stepList().length - 1;
-                        return Container(
-                          child: Row(
-                            children: <Widget>[
-                              Expanded(
-                                child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                      backgroundColor:
-                                          Colors.grey.withOpacity(.2),
-                                      elevation: 0),
-                                  child: Text(
-                                    "PRECEDENT",
-                                    style: TextStyle(
-                                        color: currentStep != 0
-                                            ? Colors.black
-                                            : Colors.grey.withOpacity(.1)),
-                                  ),
-                                  onPressed: () {
-                                    if (currentStep != 0)
-                                      details.onStepCancel!();
-                                  },
-                                ),
+              : */
+              Theme(
+            data: Theme.of(context).copyWith(
+              colorScheme: ColorScheme.light(primary: Colors.orange),
+            ),
+            child: Form(
+              key: formKey,
+              child: Stepper(
+                  type: StepperType.horizontal,
+                  currentStep: currentStep,
+                  steps: stepList(),
+                  onStepContinue: () async {
+                    final isLastStep = currentStep == stepList().length - 1;
+                    final isOneBeforeLastStep =
+                        currentStep == stepList().length - 2;
+                    debugPrint("isLastStep $isLastStep");
+
+                    if (isLastStep) {
+                      setState(() => isCompleted = true);
+                      validerFormulaire();
+                    } else {
+                      if (isOneBeforeLastStep) {
+                        var res = buildProspectModelData();
+                        if (!res) return;
+                      }
+                      currentStep += 1;
+                      setState(() {});
+                    }
+                  },
+                  onStepTapped: (step) => setState(() => currentStep = step),
+                  onStepCancel: currentStep == 0
+                      ? null
+                      : () => setState(() => currentStep -= 1),
+                  controlsBuilder:
+                      (BuildContext context, ControlsDetails details) {
+                    final isLastStep = currentStep == stepList().length - 1;
+                    return Container(
+                      child: Row(
+                        children: <Widget>[
+                          Expanded(
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.grey.withOpacity(.2),
+                                  elevation: 0),
+                              child: Text(
+                                "PRECEDENT",
+                                style: TextStyle(
+                                    color: currentStep != 0
+                                        ? Colors.black
+                                        : Colors.grey.withOpacity(.1)),
                               ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: ElevatedButton(
-                                  child: Text(
-                                      isLastStep ? lastButtonText : "SUIVANT"),
-                                  onPressed: details.onStepContinue,
-                                ),
-                              ),
-                            ],
+                              onPressed: () {
+                                if (currentStep != 0) details.onStepCancel!();
+                              },
+                            ),
                           ),
-                        );
-                      }),
-                ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: ElevatedButton(
+                              child:
+                                  Text(isLastStep ? lastButtonText : "SUIVANT"),
+                              onPressed: details.onStepContinue,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }),
+            ),
+          ),
         ),
       ),
     );
   }
 
-  validerFormulaire([bool save = false]) async {
-    var userData = stockage.read('user');
-    var currentId = userData['id'];
-    var data = ProsModel(
-      longitude: _position?.longitude.toString(),
-      latitude: _position?.latitude.toString(),
-      agentId: currentId,
-      //communeId: communeSelect != null ? int.parse(communeSelect!) : null,
-      /* zoneId: zoneSelect != null ? int.parse(zoneSelect!) : null,
-      villeId: villeSelect != null ? int.parse(villeSelect!) : null,
-      provinceId: provinceselectionner != null
-          ? int.parse(provinceselectionner!)
-          : null,
-      companyName: company_name.text.toString(),
-      companyAddress: company_adress.text.toString(),
-      typeActivitiesId: typeSelect != null ? int.parse(typeSelect!) : null,
-      companyPhone: company_phone.text.toString(),*/
-      offerId: 1,
-      state: "1",
-      remoteId: timestamp.toString(),
-    );
-    debugPrint('DONNEE: ${data.toJson()}');
-    print(save);
-    if (save) {
-      var brou = ProsModel(
-        longitude: _position?.longitude.toString(),
-        latitude: _position?.latitude.toString(),
-        agentId: currentId,
-        //communeId: communeSelect != null ? int.parse(communeSelect!) : null,
-        /*  zoneId: zoneSelect != null ? int.parse(zoneSelect!) : null,
-        villeId: villeSelect != null ? int.parse(villeSelect!) : null,
-        provinceId: provinceselectionner != null
-            ? int.parse(provinceselectionner!)
-            : null,
-        companyName: company_name.text.toString(),
-        companyAddress: company_adress.text.toString(),
-        typeActivitiesId: typeSelect != null ? int.parse(typeSelect!) : null,
-        companyPhone: company_phone.text.toString(),*/
-        offerId: 1,
-        state: "4",
-        remoteId: timestamp.toString(),
-      );
-      print("DATA BROUILLON ${brou.toJson()}");
-      brouillon(brou);
-    } else {
-      var response = await context
-          .read<FormulaireProspectController>()
-          .submitProspect(data)
-          .catchError((err) {});
-      Navigator.pop(context);
+  buildProspectModelData() {
+    recup = ProsModel.fromJson(formulaireValue);
+    recup!.agentId = stockage.read('user')['id'];
+    print("recuperation ${recup?.toJson()}");
+    recup!.remoteId =
+        recup!.remoteId ?? DateTime.now().millisecondsSinceEpoch.toString();
+    // validation
+    final form = formKey.currentState;
+    if (!form!.validate()) {
+      affichageSnack(context,
+          msg: "Certains champs sont obligatoires", duree: 1);
+      return false;
     }
+
+    if (recup!.latitude == null || recup!.longitude == null) {
+      affichageSnack(context, msg: "Localisation non capturée", duree: 1);
+      return false;
+    }
+
+    if (recup!.communeId == null) {
+      affichageSnack(context, msg: "Commune non selectionnée", duree: 1);
+      return false;
+    }
+    if (recup!.typeActivitiesId == null) {
+      affichageSnack(context, msg: "Type d'activité non selectionné", duree: 1);
+      return false;
+    }
+
+    if (recup!.offerId == null) {
+      affichageSnack(context, msg: "Offre non selectionnée", duree: 1);
+      return false;
+    }
+
+    return true;
   }
 
-  brouillon(ProsModel brou) {
-    Map a = FormulaireProspectController()
-        .lecturestockageLocale(Parametres.keyProspect);
-    a[timestamp.toString()] = brou.toJson();
-    FormulaireProspectController()
-        .ecritureStockageLocale(Parametres.keyProspect, a);
+  validerFormulaire([bool save = false]) async {
+    var formCtrl = context.read<FormulaireProspectController>();
+    ProsModel data = recup!;
+    debugPrint('DONNEE: ${data.toJson()}');
+
+    if (save) {
+      formCtrl.creerCopieLocale(data);
+      affichageSnack(context,
+          msg: 'Brouillon sauvegardé', textColor: Colors.grey);
+    }
+
+    if (!save) {
+      Chargement(context);
+      try {
+        int id = await formCtrl.submitProspect(data);
+        Navigator.pop(context);
+        data.id = id;
+        data.state = "1";
+        formCtrl.creerCopieLocale(data);
+
+        debugPrint('success data ${data.toJson()}');
+        affichageSnack(context,
+            msg: 'Enregistrement réussie !', textColor: Colors.deepOrange);
+        await Future.delayed(Duration(milliseconds: 3500));
+        // await succesPopUp(context);
+        debugPrint("Succès");
+        //Navigator.pop(context);
+      } catch (e) {
+        debugPrint('failed data ${data.toJson()}');
+
+        affichageSnack(context, msg: e.toString());
+        Navigator.pop(context);
+        formCtrl.creerCopieLocale(data);
+        affichageSnack(context,
+            msg: 'Brouillon sauvegardé', textColor: Colors.grey);
+        await Future.delayed(Duration(milliseconds: 3500));
+        //Navigator.pop(context);
+      }
+    }
   }
 
 // User canceled the picker
   affichageSnack(BuildContext context,
       {required String msg,
-      double duree = 3,
+      int duree = 3,
       Color bgColor = Colors.white,
       Color textColor = Colors.red}) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -454,18 +472,9 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
             Text(msg, style: TextStyle(color: textColor)),
           ],
         ),
-        duration: Duration(seconds: 5),
+        duration: Duration(seconds: duree),
         backgroundColor: bgColor,
       ),
     );
-  }
-
-  void buildProspectModelData() {
-    recup = ProsModel.fromJson(formulaireValue);
-    recup!.agentId = stockage.read('user')['id'];
-
-    print("recuperation ${recup?.toJson()}");
-
-    setState(() {});
   }
 }
