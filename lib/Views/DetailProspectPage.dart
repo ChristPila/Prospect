@@ -70,9 +70,9 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
                     ))
                 : TextButton.icon(
                         onPressed: () {
-                          context
+                        /*  context
                               .read<ProspectController>()
-                              .verifierStatusDonneeAPI(clientrecup.remoteId!);
+                              .verifierStatusDonneeAPI(clientrecup.remoteId!);*/
                         },
                         icon: Icon(Icons.rotate_right_sharp,
                             color: Colors.white, size: 30),
