@@ -1,9 +1,11 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
+
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:prospect/Tools/Parametres.dart';
 import 'package:provider/provider.dart';
+
 import '../Controllers/DayToDateController.dart';
 import '../Controllers/FormulaireProspectController.dart';
 import '../Controllers/GetAllProspectsController.dart';
@@ -22,13 +24,13 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   var nombreBrouillons = 0;
   var nombreVisits = 0;
+  GetStorage stockage = GetStorage(Parametres.STOCKAGE_VERSION);
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       refreshAllData();
-
     });
   }
 
@@ -52,38 +54,44 @@ class _HomePageState extends State<HomePage> {
     context.read<SevenLastDaysController>().getReportData();
     context.read<DayToDateController>().getReportData();
     context.read<GetAllProspectsController>().getReportData();
-    await context.read<ProspectController>().recupererDonneesAPI();
-    getDataVisit();
-    getDataBrouillons();
+    // await context.read<ProspectController>().recupererDonneesAPI();
+    // getDataVisit();
+    getLocaleData();
   }
 
-  getDataBrouillons() {
-    GetStorage stockage = GetStorage(Parametres.STOCKAGE_VERSION);
-    var brouillons_brut = stockage.read("PROSPECT");
+  getLocaleData() {
+    var prosCtrl=context.read<ProspectController>();
+    var userData = stockage.read('user');
+    var currentId = userData['id'];
+    prosCtrl.recupererDonneesLocales(currentId);
+    var prospects=prosCtrl.data;
+    // var cle = "${Parametres.keyProspect}_$currentId";
+    nombreVisits=prospects.length;
+    nombreBrouillons= prospects.where((e) => e.state == '4').length;
+
+
+   /* var brouillons_brut = stockage.read(cle);
     if (brouillons_brut != null) {
       var brouillonsMap = json.decode(brouillons_brut) as Map;
-      List toList =
-      brouillonsMap.entries.map((e) {
+      List toList = brouillonsMap.entries.map((e) {
         return e.value;
       }).toList();
-      var userData = stockage.read('user');
-      var currentId = userData['id'].toString();
-      var brouillonsList = toList.where((e) => e['state'] == '4' ).toList();
-      var brouillonsid = brouillonsList.where((e) => e['agent_id'].toString() == '$currentId').toList();
+
+      var brouillonsList = toList.where((e) => e['state'] == '4').toList();
+      var brouillonsid =
+          brouillonsList.where((e) => e['agent_id'] == currentId).toList();
       nombreBrouillons = brouillonsid.length;
-    }
+    }*/
     setState(() {});
   }
 
-
-  getDataVisit() {
-    GetStorage stockage = GetStorage(Parametres.STOCKAGE_VERSION);
+/*  getDataVisit() {
     var visit_brut = stockage.read("getAllProspect");
     if (visit_brut != null) {
       nombreVisits = visit_brut as int;
     }
     setState(() {});
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +99,11 @@ class _HomePageState extends State<HomePage> {
       child: Scaffold(
         backgroundColor: Colors.white,
         drawer: Drawer(
-          child: MenuLateral(),
+          child: MenuLateral(
+            onBrouillonCreated: () {
+              refreshAllData();
+            },
+          ),
         ),
         appBar: AppBar(
           elevation: 0,
@@ -114,8 +126,7 @@ class _HomePageState extends State<HomePage> {
             children: [
               SizedBox(height: 11),
               Statistique(
-                  nbreBrouillons: nombreBrouillons,
-                  nbrevisits: nombreVisits),
+                  nbreBrouillons: nombreBrouillons, nbrevisits: nombreVisits),
               SevenLastDays(),
               DayToDate(),
             ],
