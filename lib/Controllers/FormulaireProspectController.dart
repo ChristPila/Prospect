@@ -44,9 +44,9 @@ class FormulaireProspectController with ChangeNotifier {
 
     try {
       var response = await http.post(url, body: res, headers: header);
-      print(response.statusCode);
-      print(response.reasonPhrase);
-      print(response.body);
+      // print(response.statusCode);
+      // print(response.reasonPhrase);
+      // print(response.body);
       if (response.statusCode == 200 || response.statusCode == 201) {
         var data = json.decode(response.body);
         return data['data']['id'];
@@ -70,7 +70,7 @@ class FormulaireProspectController with ChangeNotifier {
     print("result $result");
     if (reponse.statusCode == 200) {
       var donneesAPI = json.decode(result) as List<dynamic>;
-      print("result ${donneesAPI.length}");
+      // print("result ${donneesAPI.length}");
       Map tempmap = Map.fromIterable(donneesAPI,
           key: (v) => v['id'].toString(),
           value: (v) => v); // conversion donnees api en map
@@ -83,9 +83,9 @@ class FormulaireProspectController with ChangeNotifier {
           .map((e) => e.value)
           .toList(); // conversion des donnees fusionnees en liste
       notifyListeners();
-      print(reponse.body);
+      // print(reponse.body);
 
-      print("local_data ${tempmapdata.length}");
+      // print("local_data ${tempmapdata.length}");
       ecritureStockageLocale(key, localData);
       return tempmapdata;
     } else {
@@ -179,7 +179,6 @@ class FormulaireProspectController with ChangeNotifier {
 
   creerCopieLocale(ProsModel brou) {
     brou.state = brou.state ?? "4";
-
     var cle = "${Parametres.keyProspect}_${brou.agentId}";
     Map a = lecturestockageLocale(cle);
     a[brou.remoteId] = brou.toJson();
