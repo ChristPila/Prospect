@@ -10,17 +10,28 @@ import 'package:prospect/Models/CommuneModel.dart';
 import 'package:prospect/Models/OffresModel.dart';
 import 'package:prospect/Models/VilleModel.dart';
 import 'package:prospect/Models/ZoneModel.dart';
+
 import '../Models/ProvinceModel.dart';
-import '../Models/prosModel.dart';
 import '../Tools/Parametres.dart';
 
 class FormulaireProspectController with ChangeNotifier {
   var stockage = GetStorage(Parametres.STOCKAGE_VERSION);
+  Map mapProvinces = {};
   List<ProvinceModel> provinces = [];
+
+  Map mapVilles = {};
   List<VilleModel> villes = [];
+
+  Map mapZones = {};
   List<ZoneModel> zones = [];
+
+  Map mapCommunes = {};
   List<CommuneModel> communes = [];
+
+  Map mapActivities = {};
   List<ActiviteModel> activities = [];
+
+  Map mapOffres = {};
   List<OffresModel> offres = [];
 
   Future<dynamic> submitProspect(dynamic data) async {
@@ -38,7 +49,7 @@ class FormulaireProspectController with ChangeNotifier {
     return response.statusCode;
   }
 
-    recupererDonneesAPI(String key, rebase) async {
+  recupererDonneesAPI(String key, rebase) async {
     var localData = lecturestockageLocale(key);
     var url = Uri.parse(
         '${Parametres.scheme}://${Parametres.host}:${Parametres.port}/${rebase}');
@@ -71,10 +82,9 @@ class FormulaireProspectController with ChangeNotifier {
       print("Erreur Reception données");
       return [];
     }
-    notifyListeners();
   }
 
-  lecturestockageLocale(String key) {
+  Map lecturestockageLocale(String key) {
     var locale = stockage.read<String>(key);
     if (locale != null) {
       var temp = json.decode(locale) as Map;
@@ -85,21 +95,73 @@ class FormulaireProspectController with ChangeNotifier {
     }
   }
 
-  ecritureStockageLocale(String key, Map stockage_data)  {
+  ecritureStockageLocale(String key, Map stockage_data) {
     //var temp = data.map((e) => e.toJson()).toList();
     stockage.write(key, json.encode(stockage_data));
   }
 
-  lectureAPIstockage(String key, endPoints) async{
+  Future<Map<String, dynamic>> lectureAPIstockage(String key, endPoints) async {
     var mapData = lecturestockageLocale(key);
-    var data = mapData.entries
-        .map((e) => e.value)
-        .toList();
-    if(data.length == 0){
-      data = await recupererDonneesAPI(
-          key, endPoints);
+    var data = mapData.entries.map((e) => e.value).toList();
+    if (data.length == 0) {
+      data = await recupererDonneesAPI(key, endPoints);
     }
-    return data;
+    return {"mapData": mapData, "listData": data};
+  }
+
+  provinceRecup() async {
+    Map res = await lectureAPIstockage(
+        Parametres.keyProvince, Parametres.endPointProvinces);
+    provinces = res['listData']
+        .map<ProvinceModel>((e) => ProvinceModel.fromJson(e))
+        .toList();
+    mapProvinces = res['mapData'];
+    notifyListeners();
+  }
+
+  villeRecup() async {
+    Map res =
+        await lectureAPIstockage(Parametres.keyVilles, Parametres.keyVilles);
+    villes =
+        res['listData'].map<VilleModel>((e) => VilleModel.fromJson(e)).toList();
+    mapVilles = res['mapData'];
+    notifyListeners();
+  }
+
+  zoneRecup() async {
+    Map res =
+        await lectureAPIstockage(Parametres.keyZones, Parametres.endPointZones);
+    zones =
+        res['listData'].map<ZoneModel>((e) => ZoneModel.fromJson(e)).toList();
+    mapZones = res['mapData'];
+    notifyListeners();
+  }
+
+  communeRecup() async {
+    Map res =
+    await lectureAPIstockage(Parametres.keyCommunes, Parametres.endPointCommunes);
+    communes =
+        res['listData'].map<CommuneModel>((e) => CommuneModel.fromJson(e)).toList();
+    mapCommunes = res['mapData'];
+    notifyListeners();
+  }
+
+  activityRecup() async {
+    Map res =
+    await lectureAPIstockage(Parametres.keyActivities, Parametres.endPointAct);
+    activities =
+        res['listData'].map<ActiviteModel>((e) => ActiviteModel.fromJson(e)).toList();
+    mapActivities = res['mapData'];
+    notifyListeners();
+  }
+
+  offreRecup() async {
+    Map res =
+    await lectureAPIstockage(Parametres.keyOffres, Parametres.endPointOffres);
+    offres =
+        res['listData'].map<OffresModel>((e) => OffresModel.fromJson(e)).toList();
+    mapOffres = res['mapData'];
+    notifyListeners();
   }
 }
 /*main(){
