@@ -200,8 +200,8 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
   Widget build(BuildContext context) {
     var userData = stockage.read('user');
     var currentId = userData['id'];
-    print(selectedData.map((e) => e).toList());
-    print("AGENT ID : $currentId");
+    // print(selectedData.map((e) => e).toList());
+    // print("AGENT ID : $currentId");
     return vuePrincipale();
   }
 
@@ -263,11 +263,12 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
   }
 
   vuePrincipale() {
-    print("REBUILD Formulaire $currentStep");
+    // print("REBUILD Formulaire $currentStep");
 
     return WillPopScope(
       onWillPop: () async {
-        await validerFormulaire(true);
+        var res = await sauvegarderLocale();
+        Navigator.pop(context, res);
         return Future.value(true);
       },
       child: SafeArea(
@@ -282,8 +283,8 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
                     setState(() {});
                     return;
                   }
-                  await validerFormulaire(true);
-                  Navigator.pop(context);
+                  var res = await sauvegarderLocale();
+                  Navigator.pop(context, res);
                 },
                 icon: Icon(
                   Icons.arrow_back_ios,
@@ -315,7 +316,6 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
                     final isLastStep = currentStep == stepList().length - 1;
                     final isOneBeforeLastStep =
                         currentStep == stepList().length - 2;
-                    debugPrint("isLastStep $isLastStep");
 
                     if (isLastStep) {
                       setState(() => isCompleted = true);
@@ -377,8 +377,9 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
 
   buildProspectModelData() {
     recup = ProsModel.fromJson(formulaireValue);
-    recup!.agentId = stockage.read('user')['id'];
     print("recuperation ${recup?.toJson()}");
+    recup!.agentId = stockage.read('user')['id'];
+
     recup!.remoteId =
         recup!.remoteId ?? DateTime.now().millisecondsSinceEpoch.toString();
     // validation
@@ -411,52 +412,55 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
     return true;
   }
 
-  validerFormulaire([bool save = false]) async {
+  sauvegarderLocale() async {
+    var formCtrl = context.read<FormulaireProspectController>();
+
+    recup = ProsModel.fromJson(formulaireValue);
+    recup!.agentId = stockage.read('user')['id'];
+    recup!.remoteId =
+        recup!.remoteId ?? DateTime.now().millisecondsSinceEpoch.toString();
+    debugPrint("formulaireValue ${recup!.toJson()}");
+
+    // création Copie locale si au moins la commune est selectionnée
+    if (recup!.communeId != null) {
+      formCtrl.creerCopieLocale(recup!);
+      affichageSnack(context,
+          msg: 'Brouillon sauvegardé', textColor: Colors.grey);
+      await Future.delayed(Duration(seconds: 1));
+      return true;
+    }
+    return false;
+  }
+
+  validerFormulaire() async {
     var formCtrl = context.read<FormulaireProspectController>();
     ProsModel data = recup!;
+
     debugPrint('DONNEE: ${data.toJson()}');
+    Chargement(context);
+    try {
+      int id = await formCtrl.submitProspect(data);
+      Navigator.pop(context);
+      data.id = id;
+      data.state = "1";
+      formCtrl.creerCopieLocale(data);
 
-    if (save) {
-      debugPrint("formulaireValue $formulaireValue");
-      recup = ProsModel.fromJson(formulaireValue);
-      recup!.remoteId =
-          recup!.remoteId ?? DateTime.now().millisecondsSinceEpoch.toString();
-      // création Copie locale si au moins la commune est selectionnée
-      if (recup!.communeId != null) {
-        formCtrl.creerCopieLocale(recup!);
-        affichageSnack(context,
-            msg: 'Brouillon sauvegardé', textColor: Colors.grey);
-        await Future.delayed(Duration(seconds: 1));
-      }
-    }
+      debugPrint('success data ${data.toJson()}');
+      affichageSnack(context,
+          msg: 'Enregistrement réussie !', textColor: Colors.deepOrange);
+      await Future.delayed(Duration(milliseconds: 3500));
+      // await succesPopUp(context);
+      debugPrint("Succès");
+      Navigator.pop(context, true);
+    } catch (e) {
+      debugPrint('failed data ${data.toJson()}');
 
-    if (!save) {
-      Chargement(context);
-      try {
-        int id = await formCtrl.submitProspect(data);
-        Navigator.pop(context);
-        data.id = id;
-        data.state = "1";
-        formCtrl.creerCopieLocale(data);
-
-        debugPrint('success data ${data.toJson()}');
-        affichageSnack(context,
-            msg: 'Enregistrement réussie !', textColor: Colors.deepOrange);
-        await Future.delayed(Duration(milliseconds: 3500));
-        // await succesPopUp(context);
-        debugPrint("Succès");
-        Navigator.pop(context);
-      } catch (e) {
-        debugPrint('failed data ${data.toJson()}');
-
-        affichageSnack(context, msg: e.toString());
-        Navigator.pop(context);
-        formCtrl.creerCopieLocale(data);
-        affichageSnack(context,
-            msg: 'Brouillon sauvegardé', textColor: Colors.grey);
-        await Future.delayed(Duration(milliseconds: 3500));
-        //Navigator.pop(context);
-      }
+      affichageSnack(context, msg: e.toString());
+      Navigator.pop(context);
+      formCtrl.creerCopieLocale(data);
+      affichageSnack(context,
+          msg: 'Brouillon sauvegardé', textColor: Colors.grey);
+      await Future.delayed(Duration(milliseconds: 3500));
     }
   }
 
