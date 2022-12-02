@@ -56,7 +56,7 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
                 ? IconButton(
                     onPressed: () {
                       if(clientrecup.state == "4"){
-                        Navigator.pushReplacement(context,
+                        Navigator.push(context,
                             MaterialPageRoute(builder: (_) {
                               return FormulaireProspectPage(recup: clientrecup);
                             }));
@@ -70,9 +70,9 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
                     ))
                 : TextButton.icon(
                         onPressed: () {
-                          context
+                        /*  context
                               .read<ProspectController>()
-                              .verifierStatusDonneeAPI(clientrecup.remoteId!);
+                              .verifierStatusDonneeAPI(clientrecup.remoteId!);*/
                         },
                         icon: Icon(Icons.rotate_right_sharp,
                             color: Colors.white, size: 30),

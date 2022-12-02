@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:prospect/Views/FormulaireProspectPage.dart';
 import 'package:provider/provider.dart';
+
 import '../../Controllers/AuthentifacationController.dart';
 import '../AuthentificationPage.dart';
 import '../ListeProspectPage.dart';
@@ -9,7 +10,9 @@ import '../PerformancesPage.dart';
 import '../UserProfilePage.dart';
 
 class MenuLateral extends StatefulWidget {
-  const MenuLateral({Key? key}) : super(key: key);
+  final Function? onBrouillonCreated;
+
+  const MenuLateral({Key? key, this.onBrouillonCreated}) : super(key: key);
 
   @override
   State<MenuLateral> createState() => _MenuLateralState();
@@ -37,7 +40,7 @@ class _MenuLateralState extends State<MenuLateral> {
           ),
           title: const Text('Créer Une visite'),
           onTap: () {
-           naviguerVersVisite(context);
+            naviguerVersVisite(context);
           },
         ),
         ListTile(
@@ -111,14 +114,17 @@ class _MenuLateralState extends State<MenuLateral> {
     Navigator.push(context, MaterialPageRoute(builder: (_) {
       return ListeProspectPage();
     }));
-
   }
 
-  naviguerVersVisite(context) {
+  naviguerVersVisite(context) async {
     Navigator.pop(context);
-    Navigator.push(context, MaterialPageRoute(builder: (_) {
+    var res =
+        await Navigator.push<bool>(context, MaterialPageRoute(builder: (_) {
       return FormulaireProspectPage();
     }));
+    print("apres retour $res");
+    if (widget.onBrouillonCreated != null && res != null && res)
+      widget.onBrouillonCreated!();
   }
 
   naviguerVersProfilUser(context) {
