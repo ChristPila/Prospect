@@ -1322,7 +1322,7 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
     var data = ProsModel(
       longitude: _position?.longitude.toString(),
       latitude: _position?.latitude.toString(),
-      agentId: user?['id'],
+      agentId: 1,//user?['id'],
       communeId: communeSelect != null ? int.parse(communeSelect!) : null,
       zoneId: zoneSelect != null ? int.parse(zoneSelect!) : null,
       villeId: villeSelect != null ? int.parse(villeSelect!) : null,
@@ -1333,7 +1333,7 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
       companyAddress: company_adress.text.toString(),
       typeActivitiesId: typeSelect != null ? int.parse(typeSelect!) : null,
       companyPhone: company_phone.text.toString(),
-      offerId: 1,
+      offerId: int.parse(offreSelect!),
       state: "1",
       remoteId: timestamp.toString(),
     );
@@ -1343,7 +1343,7 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
       var brou = ProsModel(
         longitude: _position?.longitude.toString(),
         latitude: _position?.latitude.toString(),
-        agentId: user?['id'],
+        agentId: 1,//user?['id'],
         communeId: communeSelect != null ? int.parse(communeSelect!) : null,
         zoneId: zoneSelect != null ? int.parse(zoneSelect!) : null,
         villeId: villeSelect != null ? int.parse(villeSelect!) : null,
@@ -1354,7 +1354,7 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
         companyAddress: company_adress.text.toString(),
         typeActivitiesId: typeSelect != null ? int.parse(typeSelect!) : null,
         companyPhone: company_phone.text.toString(),
-        offerId: 1,
+        offerId: int.parse(offreSelect!),
         state: "4",
         remoteId: timestamp.toString(),
       );
