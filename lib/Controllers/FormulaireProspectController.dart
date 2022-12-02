@@ -2,8 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
-
-//import 'package:gallery_saver/files.dart';
 import 'package:http/http.dart' as http;
 import 'package:prospect/Models/ActiviteModel.dart';
 import 'package:prospect/Models/CommuneModel.dart';
@@ -12,6 +10,7 @@ import 'package:prospect/Models/VilleModel.dart';
 import 'package:prospect/Models/ZoneModel.dart';
 
 import '../Models/ProvinceModel.dart';
+import '../Models/prosModel.dart';
 import '../Tools/Parametres.dart';
 
 class FormulaireProspectController with ChangeNotifier {
@@ -34,19 +33,30 @@ class FormulaireProspectController with ChangeNotifier {
   Map mapOffres = {};
   List<OffresModel> offres = [];
 
-  Future<dynamic> submitProspect(dynamic data) async {
-    var res = json.encode(data);
+  Future<dynamic> submitProspect(ProsModel data) async {
+    var jsonData = data.toJson();
+    jsonData['state'] = "1";
+    var res = json.encode(jsonData);
     var header = {"Content-Type": "application/json"};
-    var url = Uri.http('10.20.20.150:8081', Parametres.endPointProspect);
-    var response = await http.post(url, body: res, headers: header);
+    var url = Uri.parse(
+        '${Parametres.scheme}://${Parametres.host}:${Parametres.port}/${Parametres.endPointProspect}');
     print(url);
-    print(response.statusCode);
-    print(response.reasonPhrase);
-    print(response.body);
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      return response.body;
+
+    try {
+      var response = await http.post(url, body: res, headers: header);
+      // print(response.statusCode);
+      // print(response.reasonPhrase);
+      // print(response.body);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        var data = json.decode(response.body);
+        return data['data']['id'];
+      }
+      throw Exception("Echec de creation");
+    } on Exception catch (e, trace) {
+      print("Erreur: $e");
+      print("Trace: $trace");
+      throw Exception("Erreur inattendue");
     }
-    return response.statusCode;
   }
 
   recupererDonneesAPI(String key, rebase) async {
@@ -60,7 +70,7 @@ class FormulaireProspectController with ChangeNotifier {
     print("result $result");
     if (reponse.statusCode == 200) {
       var donneesAPI = json.decode(result) as List<dynamic>;
-      print("result ${donneesAPI.length}");
+      // print("result ${donneesAPI.length}");
       Map tempmap = Map.fromIterable(donneesAPI,
           key: (v) => v['id'].toString(),
           value: (v) => v); // conversion donnees api en map
@@ -73,9 +83,9 @@ class FormulaireProspectController with ChangeNotifier {
           .map((e) => e.value)
           .toList(); // conversion des donnees fusionnees en liste
       notifyListeners();
-      print(reponse.body);
+      // print(reponse.body);
 
-      print("local_data ${tempmapdata.length}");
+      // print("local_data ${tempmapdata.length}");
       ecritureStockageLocale(key, localData);
       return tempmapdata;
     } else {
@@ -138,30 +148,41 @@ class FormulaireProspectController with ChangeNotifier {
   }
 
   communeRecup() async {
-    Map res =
-    await lectureAPIstockage(Parametres.keyCommunes, Parametres.endPointCommunes);
-    communes =
-        res['listData'].map<CommuneModel>((e) => CommuneModel.fromJson(e)).toList();
+    Map res = await lectureAPIstockage(
+        Parametres.keyCommunes, Parametres.endPointCommunes);
+    communes = res['listData']
+        .map<CommuneModel>((e) => CommuneModel.fromJson(e))
+        .toList();
     mapCommunes = res['mapData'];
     notifyListeners();
   }
 
   activityRecup() async {
-    Map res =
-    await lectureAPIstockage(Parametres.keyActivities, Parametres.endPointAct);
-    activities =
-        res['listData'].map<ActiviteModel>((e) => ActiviteModel.fromJson(e)).toList();
+    Map res = await lectureAPIstockage(
+        Parametres.keyActivities, Parametres.endPointAct);
+    activities = res['listData']
+        .map<ActiviteModel>((e) => ActiviteModel.fromJson(e))
+        .toList();
     mapActivities = res['mapData'];
     notifyListeners();
   }
 
   offreRecup() async {
-    Map res =
-    await lectureAPIstockage(Parametres.keyOffres, Parametres.endPointOffres);
-    offres =
-        res['listData'].map<OffresModel>((e) => OffresModel.fromJson(e)).toList();
+    Map res = await lectureAPIstockage(
+        Parametres.keyOffres, Parametres.endPointOffres);
+    offres = res['listData']
+        .map<OffresModel>((e) => OffresModel.fromJson(e))
+        .toList();
     mapOffres = res['mapData'];
     notifyListeners();
+  }
+
+  creerCopieLocale(ProsModel brou) {
+    brou.state = brou.state ?? "4";
+    var cle = "${Parametres.keyProspect}_${brou.agentId}";
+    Map a = lecturestockageLocale(cle);
+    a[brou.remoteId] = brou.toJson();
+    ecritureStockageLocale(cle, a);
   }
 }
 /*main(){
