@@ -40,15 +40,9 @@ class FormulaireProspectController with ChangeNotifier {
       var url = Uri.parse(
           '${Parametres.scheme}://${Parametres.host}:${Parametres.port}/${Parametres.endPointProspect}');
       print(url);
-
       try {
         var response;
-        if(jsonData['state'] == "4"){
-
-           response = await http.put(url, body: res, headers: header);
-        }else{
            response = await http.post(url, body: res, headers: header);
-        }
         // print(response.statusCode);
         // print(response.reasonPhrase);
         print(response.body);
@@ -137,7 +131,7 @@ class FormulaireProspectController with ChangeNotifier {
 
   villeRecup() async {
     Map res =
-        await lectureAPIstockage(Parametres.keyVilles, Parametres.keyVilles);
+        await lectureAPIstockage(Parametres.keyVilles, Parametres.endPointVilles);
     villes =
         res['listData'].map<VilleModel>((e) => VilleModel.fromJson(e)).toList();
     mapVilles = res['mapData'];

@@ -417,11 +417,11 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
 
   sauvegarderLocale() async {
     var formCtrl = context.read<FormulaireProspectController>();
-
+  //  DateTime.fromMillisecondsSinceEpoch(int.tryParse(DateTime.now().millisecondsSinceEpoch.toString())! * 1000);
     recup = ProsModel.fromJson(formulaireValue);
     recup!.agentId = stockage.read('user')['id'];
-    recup!.remoteId =
-        recup!.remoteId ?? DateTime.now().millisecondsSinceEpoch.toString();
+    recup!.remoteId = DateTime.now().millisecondsSinceEpoch.toString();
+
     debugPrint("formulaireValue ${recup!.toJson()}");
 
     // création Copie locale si au moins la commune est selectionnée
