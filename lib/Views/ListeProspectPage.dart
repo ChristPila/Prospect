@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:intl/intl.dart';
 import 'package:prospect/Controllers/ProspectController.dart';
 import 'package:prospect/Models/prosModel.dart';
 import 'package:prospect/Tools/Parametres.dart';
@@ -50,6 +51,8 @@ class _ProspectState extends State<ListeProspectPage> {
 
   var dataProspectCopie = [];
   bool isapicallprocess = false;
+  DateTime? Temps;
+
 
   intdata() async {
     var userData = stockage.read('user');
@@ -121,7 +124,9 @@ class _ProspectState extends State<ListeProspectPage> {
                 }
               },
               iconSize: 25,
-              icon: Icon(Icons.refresh_outlined)),
+              icon:   Icon ( Icons.refresh_outlined,
+                  color: Colors.white,
+                  size: 25),),
           IconButton(
               onPressed: () async {
                 Navigator.push(context, MaterialPageRoute(builder: (_) {
@@ -129,7 +134,9 @@ class _ProspectState extends State<ListeProspectPage> {
                 }));
               },
               iconSize: 25,
-              icon: Icon(Icons.add)),
+              icon:   Icon ( Icons.add,
+                  color: Colors.black,
+                  size: 25),),
         ],
       ),
       body: Column(
@@ -148,9 +155,9 @@ class _ProspectState extends State<ListeProspectPage> {
         shrinkWrap: true,
         separatorBuilder: (ctx, i) {
           return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Divider(
-              thickness: 0.7,
+              thickness: 0.5,
               color: Colors.grey,
             ),
           );
@@ -159,6 +166,7 @@ class _ProspectState extends State<ListeProspectPage> {
           ProsModel prospect = dataProspectCopie[index];
           var zones = context.watch<ProspectController>().zones;
           var zoneId = prospect.zoneId;
+          print("${prospect.remoteId}");
           // print(zones);
           // print('$zoneId ====== ${prospect.id}');
           Map? zone_data = zoneId != null ? zones[zoneId] : {};
@@ -205,23 +213,26 @@ class _ProspectState extends State<ListeProspectPage> {
                     builder: (context) => DetailProspectPage(
                           data: prospect,
                         ))),
-            leading: Icon(
-              icon,
-              color: color,
-              size: 35,
-            ),
+             leading:  Icon(
+               icon,
+               color: color,
+               size: 35,
+             ),
             title: Text(
-              'state : ${prospect.state}',
+              'Companie : ${prospect.companyName}',
               style: const TextStyle(
                 fontSize: 15,
                 color: Colors.black87,
-                fontWeight: FontWeight.bold,
               ),
             ),
             subtitle: Text(
-              'Companie: ${prospect.companyName}\nProvince: ${province_name}',
+              'RemoteId: ${prospect.remoteId}\n State :${prospect.state}\n ${chronoDyn((prospect.remoteId).toString())} ',
               style: const TextStyle(fontSize: 15, color: Colors.black87),
             ),
+            trailing: Icon(Icons.date_range, size: 15),
+
+
+
           );
         },
       ),
@@ -257,5 +268,32 @@ class _ProspectState extends State<ListeProspectPage> {
         },
       ),
     );
+  }
+
+  String chronoDyn(String time){
+    var inputFormat = DateFormat('dd-MM-yyyy');
+    var msg="";
+    var now = DateTime.now();
+    print('now $now');
+    var timeConvert=int.parse(time );
+    print('timeConvert $timeConvert');
+    final DateTime dateProspect = DateTime.fromMillisecondsSinceEpoch(timeConvert );
+    print ("dateProspect $dateProspect");
+    Duration diff = now.difference(dateProspect);
+    if (diff.inDays > 7) {
+      var outputDate = inputFormat.format(dateProspect);
+      msg= '${outputDate}';
+    } else if (diff.inDays >= 1) {
+      msg= '${diff.inDays} j';
+    } else if (diff.inHours >= 1) {
+      msg= '${diff.inHours} h';
+    } else if (diff.inMinutes >= 1) {
+      msg= '${diff.inMinutes} min';
+    } else if (diff.inSeconds >= 1) {
+      msg= '${diff.inSeconds} sec';
+    } else {
+      msg= 'maintenant';
+    }
+    return msg;
   }
 }

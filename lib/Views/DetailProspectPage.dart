@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:prospect/Controllers/FormulaireProspectController.dart';
 import 'package:prospect/Models/prosModel.dart';
 import 'package:provider/provider.dart';
 import 'package:prospect/Controllers/ProspectController.dart';
@@ -23,6 +24,7 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
   void initState() {
     super.initState();
     clientrecup = widget.data;
+    print(clientrecup.toJson());
     WidgetsBinding.instance.addPersistentFrameCallback((timeStamp) {
       /*if(!mounted) return;
       var listProspect = context.read<ProspectController>().data;
@@ -56,7 +58,7 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
                 ? IconButton(
                     onPressed: () {
                       if(clientrecup.state == "4"){
-                        Navigator.pushReplacement(context,
+                        Navigator.push(context,
                             MaterialPageRoute(builder: (_) {
                               return FormulaireProspectPage(recup: clientrecup);
                             }));
@@ -70,12 +72,12 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
                     ))
                 : TextButton.icon(
                         onPressed: () {
-                        /*  context
+                          context
                               .read<ProspectController>()
-                              .verifierStatusDonneeAPI(clientrecup.remoteId!);*/
+                              .verifierStatusDonneeAPI(clientrecup.remoteId!,clientrecup.agentId!);
                         },
                         icon: Icon(Icons.rotate_right_sharp,
-                            color: Colors.white, size: 30),
+                            color: Colors.black, size: 30),
                         label: Text(""))
           ]),
       body: SingleChildScrollView(
@@ -172,46 +174,54 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
       padding: const EdgeInsets.all(10),
       child: Row(
         children: [
-          Text("Nom:",
-              style: const TextStyle(
-                  color: Colors.black87,
-                  fontSize: 15,
-                  decoration: TextDecoration.none)),
-          Spacer(),
-          Text("${clientrecup.companyName}",
-              style: const TextStyle(
-                  color: Colors.black87,
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.none)),
+          Flexible(child: Row(children: [
+            Text("Nom: ",
+                style: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 15,
+                    decoration: TextDecoration.none)),],)),
+
+          //Spacer(),
+          Flexible(
+            child: Text("${clientrecup.companyName}",
+                style: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    decoration: TextDecoration.none)),
+          ),
         ],
       ),
     );
   }
 
   companytype() {
-   var activity = context.watch<ProspectController>().activity;
-    var activityId = clientrecup.typeActivitiesId;
-    Map? activity_data = activityId != null ? activity[activityId]:{};
-    var activity_name = activity_data?["name"];
+    var formCtrl = context.watch<FormulaireProspectController>();
+
+    Map typeEntrep = formCtrl.mapActivities;
+    var activitySelectionne = typeEntrep[clientrecup?.typeActivitiesId.toString()];
+    var activityText = activitySelectionne == null ? "Non selectionné" : activitySelectionne['name'];
 
     return Container(
       padding: const EdgeInsets.all(10),
       child: Row(
         children: [
-          //Icon(Icons.type_specimen_outlined),
-          Text("Type:",
-              style: const TextStyle(
-                  color: Colors.black87,
-                  fontSize: 15,
-                  decoration: TextDecoration.none)),
-          Spacer(),
-          Text("${activity_name}",
-              style: const TextStyle(
-                  color: Colors.black87,
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.none)),
+          Flexible(child: Row(children: [
+            Text("Type: ",
+                style: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 15,
+                    decoration: TextDecoration.none)),],)),
+
+          //Spacer(),
+          Flexible(
+            child: Text("${activityText}",
+                style: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    decoration: TextDecoration.none)),
+          ),
         ],
       ),
     );
@@ -222,14 +232,17 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
       padding: const EdgeInsets.all(10),
       child: Row(
         children: [
-          Icon(Icons.house),
-          Text("Adresse:",
-              style: const TextStyle(
-                  color: Colors.black87,
-                  fontSize: 15,
-                  decoration: TextDecoration.none)),
-          Spacer(),
-          Expanded(
+          Flexible(child: Row(children: [Icon( Icons.add_reaction,
+            color: Colors.orange,
+            size: 25),
+            Text("Adresse: ",
+                style: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 15,
+                    decoration: TextDecoration.none)),],)),
+
+          //Spacer(),
+          Flexible(
             child: Text("${clientrecup.companyAddress}",
                 style: const TextStyle(
                     color: Colors.black87,
@@ -247,154 +260,187 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
       padding: const EdgeInsets.all(10),
       child: Row(
         children: [
-          Icon(Icons.phone),
-          Text("Telephone:",
-              style: const TextStyle(
-                  color: Colors.black87,
-                  fontSize: 15,
-                  decoration: TextDecoration.none)),
-          Spacer(),
-          Text("${clientrecup.companyPhone}",
-              style: const TextStyle(
-                  color: Colors.black87,
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.none)),
+          Flexible(child: Row(children: [Icon( Icons.phone,
+              color: Colors.orangeAccent,
+              size: 25),
+            Text("Telephone: ",
+                style: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 15,
+                    decoration: TextDecoration.none)),],)),
+
+          //Spacer(),
+          Flexible(
+            child: Text("${clientrecup.companyPhone}",
+                style: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    decoration: TextDecoration.none)),
+          ),
         ],
       ),
     );
   }
 
   companyoffre() {
-    var offre = context.watch<ProspectController>().offres;
-    var offresId = clientrecup.offerId;
-    Map? offres_data = offresId != null ? offre[offresId] : {};
-    var offres_name = offres_data?["name"];
+    var formCtrl = context.watch<FormulaireProspectController>();
+    Map offres = formCtrl.mapOffres;
+    var offreSelectionne = offres[clientrecup?.offerId.toString()];
+    var offreText = offreSelectionne == null ? "Non selectionné" : offreSelectionne['name'];
     return Container(
       padding: const EdgeInsets.all(10),
       child: Row(
         children: [
-          Icon(Icons.offline_pin_outlined),
-          Text("Offres:",
-              style: const TextStyle(
-                  color: Colors.black87,
-                  fontSize: 15,
-                  decoration: TextDecoration.none)),
-          Spacer(),
-          Text("${offres_name}",
-              style: const TextStyle(
-                  color: Colors.black87,
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.none)),
+          Flexible(child: Row(children: [Icon( Icons.offline_pin_outlined,
+              color: Colors.green,
+              size: 25),
+            Text("Offre: ",
+                style: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 15,
+                    decoration: TextDecoration.none)),],)),
+
+          //Spacer(),
+          Flexible(
+            child: Text("${offreText}",
+                style: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    decoration: TextDecoration.none)),
+          ),
         ],
       ),
     );
   }
 
   companyprovince() {
-    var provinces = context.watch<ProspectController>().provinces;
-    var provinceId = clientrecup.provinceId;
-    Map? province_data = provinceId != null ? provinces[provinceId] : {};
-    var province_name = province_data?["name"];
+    var formCtrl = context.watch<FormulaireProspectController>();
+    Map provinces = formCtrl.mapProvinces;
+    var provinceSelectionne = provinces[clientrecup?.provinceId.toString()];
+    var provinceText = provinceSelectionne == null ? "Non Selectionnée" : provinceSelectionne['name'];
     return Container(
       padding: const EdgeInsets.all(10),
       child: Row(
         children: [
-          Icon(Icons.location_on),
-          Text("Province :",
-              style: const TextStyle(
-                  color: Colors.black87,
-                  fontSize: 15,
-                  decoration: TextDecoration.none)),
-          Spacer(),
-          Text("${province_name}",
-              style: const TextStyle(
-                  color: Colors.black87,
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.none)),
+          Flexible(child: Row(children: [Icon( Icons.local_airport,
+              color: Colors.blueAccent,
+              size: 25),
+            Text("Province: ",
+                style: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 15,
+                    decoration: TextDecoration.none)),],)),
+
+          //Spacer(),
+          Flexible(
+            child: Text("${provinceText}",
+                style: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    decoration: TextDecoration.none)),
+          ),
         ],
       ),
     );
   }
 
   companyville() {
-    var villes = context.read<ProspectController>().villes;
-    var villeId = clientrecup.villeId;
-    Map? ville_data = villeId != null ? villes[villeId] : {};
-    var ville_name = ville_data?["name"];
+    var formCtrl = context.watch<FormulaireProspectController>();
+    Map villes = formCtrl.mapVilles;
+    var villeSelectionne = villes[clientrecup?.villeId.toString()];
+    var villeText = villeSelectionne == null ? "Non Selectionnée" : villeSelectionne['name'];
     return Container(
       padding: const EdgeInsets.all(10),
       child: Row(
         children: [
-          Icon(Icons.location_on),
-          Text("Ville :",
-              style: const TextStyle(
-                  color: Colors.black87,
-                  fontSize: 15,
-                  decoration: TextDecoration.none)),
-          Spacer(),
-          Text("${ville_name}",
-              style: const TextStyle(
-                  color: Colors.black87,
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.none)),
+          Flexible(child: Row(children: [
+           Icon ( Icons.location_city,
+                color: Colors.redAccent,
+                size: 25),
+            Text("Ville :",
+                style: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 15,
+                    decoration: TextDecoration.none)),
+          ],)),
+
+          //Spacer(),
+          Flexible(
+            child: Text("${villeText}",
+                style: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    decoration: TextDecoration.none)),
+          ),
         ],
       ),
     );
   }
 
   companycommune() {
-    var communes = context.watch<ProspectController>().communes;
-    var communeId = clientrecup.communeId;
-    Map? commune_data = communeId != null ? communes[communeId] : {};
-    var ville_name = commune_data?["name"];
+    var formCtrl = context.watch<FormulaireProspectController>();
+    Map communes = formCtrl.mapCommunes;
+    var communeSelectionne = communes[clientrecup?.communeId.toString()];
+    var communeText =    communeSelectionne == null ? "Non Selectionnée" : communeSelectionne['name'];
+
     return Container(
       padding: const EdgeInsets.all(10),
       child: Row(
         children: [
-          Icon(Icons.location_on),
-          Text("Commune: ",
-              style: const TextStyle(
-                  color: Colors.black87,
-                  fontSize: 15,
-                  decoration: TextDecoration.none)),
-          Spacer(),
-          Text("${ville_name}",
-              style: const TextStyle(
-                  color: Colors.black87,
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.none)),
+          Flexible(child: Row(children: [  Icon ( Icons.cabin_outlined,
+              color: Colors.green,
+              size: 25),
+            Text("Commune: ",
+                style: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 15,
+                    decoration: TextDecoration.none)),],)),
+
+          //Spacer(),
+          Flexible(
+            child: Text("${communeText}",
+                style: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    decoration: TextDecoration.none)),
+          ),
         ],
       ),
     );
   }
 
   companyzone() {
-    var zones = context.watch<ProspectController>().zones;
-    var zoneid = clientrecup.zoneId;
-    Map? commune_data = zoneid != null ? zones[zoneid] : {};
-    var zone_name = commune_data?["name"];
+    var formCtrl = context.watch<FormulaireProspectController>();
+    Map zones = formCtrl.mapZones;
+    var communeSelectionne = zones[clientrecup?.zoneId.toString()];
+    var zoneText =    communeSelectionne == null ? "Non Selectionnée" : communeSelectionne['name'];
     return Container(
       padding: const EdgeInsets.all(10),
       child: Row(
         children: [
-          Icon(Icons.location_on),
-          Text("Zone :",
-              style: const TextStyle(
-                  color: Colors.black87,
-                  fontSize: 15,
-                  decoration: TextDecoration.none)),
-          Spacer(),
-          Text("${zone_name}",
-              style: const TextStyle(
-                  color: Colors.black87,
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.none)),
+          Flexible(child: Row(children: [  Icon ( Icons.cable_outlined,
+              color: Colors.red,
+              size: 25),
+            Text("Zone: ",
+                style: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 15,
+                    decoration: TextDecoration.none)),],)),
+
+          //Spacer(),
+          Flexible(
+            child: Text("${zoneText}",
+                style: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    decoration: TextDecoration.none)),
+          ),
         ],
       ),
     );
@@ -414,20 +460,24 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
       padding: const EdgeInsets.all(10),
       child: Row(
         children: [
-          Icon(Icons.map),
-          Text("Latitude , Longitude:",
-              style: const TextStyle(
-                  color: Colors.black87,
-                  fontSize: 15,
-                  decoration: TextDecoration.none)),
-          Spacer(),
-          Expanded(child: Text("${clientrecup.latitude};${clientrecup.longitude}",
-              style: const TextStyle(
-                  color: Colors.black87,
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.none)),)
+          Flexible(child: Row(children: [   Icon ( Icons.map,
+              color: Colors.green,
+              size: 25),
+            Text("Latitude, Longitude: ",
+                style: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 15,
+                    decoration: TextDecoration.none)),],)),
 
+          //Spacer(),
+          Flexible(
+            child: Text("${clientrecup.latitude}; ${clientrecup.longitude}",
+                style: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    decoration: TextDecoration.none)),
+          ),
         ],
       ),
     );
@@ -438,19 +488,24 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
       padding: const EdgeInsets.all(10),
       child: Row(
         children: [
-          Icon(Icons.person),
-          Text("Agent :",
-              style: const TextStyle(
-                  color: Colors.black87,
-                  fontSize: 15,
-                  decoration: TextDecoration.none)),
-          Spacer(),
-          Text("${clientrecup.agentId}",
-              style: const TextStyle(
-                  color: Colors.black87,
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.none)),
+          Flexible(child: Row(children: [   Icon ( Icons.person,
+              color: Colors.lightBlue,
+              size: 25),
+            Text("Agent: ",
+                style: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 15,
+                    decoration: TextDecoration.none)),],)),
+
+          //Spacer(),
+          Flexible(
+            child: Text("${clientrecup.agentId}",
+                style: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    decoration: TextDecoration.none)),
+          ),
         ],
       ),
     );

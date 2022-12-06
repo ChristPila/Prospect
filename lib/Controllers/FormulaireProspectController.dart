@@ -35,29 +35,29 @@ class FormulaireProspectController with ChangeNotifier {
 
   Future<dynamic> submitProspect(ProsModel data) async {
     var jsonData = data.toJson();
-    jsonData['state'] = "1";
-    var res = json.encode(jsonData);
-    var header = {"Content-Type": "application/json"};
-    var url = Uri.parse(
-        '${Parametres.scheme}://${Parametres.host}:${Parametres.port}/${Parametres.endPointProspect}');
-    print(url);
-
-    try {
-      var response = await http.post(url, body: res, headers: header);
-      // print(response.statusCode);
-      // print(response.reasonPhrase);
-      // print(response.body);
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        var data = json.decode(response.body);
-        return data['data']['id'];
+      var res = json.encode(jsonData);
+      var header = {"Content-Type": "application/json"};
+      var url = Uri.parse(
+          '${Parametres.scheme}://${Parametres.host}:${Parametres.port}/${Parametres.endPointProspect}');
+      print(url);
+      try {
+        var response;
+           response = await http.post(url, body: res, headers: header);
+        // print(response.statusCode);
+        // print(response.reasonPhrase);
+        print(response.body);
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          var data = json.decode(response.body);
+          return data['data']['id'];
+        }
+        throw Exception("Echec de creation");
+      } on Exception catch (e, trace) {
+        print("Erreur: $e");
+        print("Trace: $trace");
+        throw Exception("Erreur inattendue");
       }
-      throw Exception("Echec de creation");
-    } on Exception catch (e, trace) {
-      print("Erreur: $e");
-      print("Trace: $trace");
-      throw Exception("Erreur inattendue");
     }
-  }
+
 
   recupererDonneesAPI(String key, rebase) async {
     var localData = lecturestockageLocale(key);
@@ -131,7 +131,7 @@ class FormulaireProspectController with ChangeNotifier {
 
   villeRecup() async {
     Map res =
-        await lectureAPIstockage(Parametres.keyVilles, Parametres.keyVilles);
+        await lectureAPIstockage(Parametres.keyVilles, Parametres.endPointVilles);
     villes =
         res['listData'].map<VilleModel>((e) => VilleModel.fromJson(e)).toList();
     mapVilles = res['mapData'];

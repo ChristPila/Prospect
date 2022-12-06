@@ -24,6 +24,25 @@ class _IdentificationStepState extends State<IdentificationStep> {
   int? typeSelect;
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    var recup = widget.recup;
+    var formCtrl = context
+        .read<FormulaireProspectController>();
+    if(recup!=null){
+      company_name.text = recup.companyName ?? "";
+      company_adress.text = recup.companyAddress ?? "";
+      company_phone.text = recup.companyPhone ?? "";
+
+      offreSelect = recup.offerId;
+      typeSelect = recup.typeActivitiesId;
+
+    }
+
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       height: MediaQuery.of(context).size.height - 250,

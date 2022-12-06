@@ -93,6 +93,7 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
   }
 
   editionFormulaire() {
+    formulaireValue = widget.recup!.toJson();
     /* nom = "Editer Prospect";
     company_name.text = widget.recup!.companyName!;
     company_adress.text = widget.recup!.companyAddress!;
@@ -112,6 +113,7 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
                   fontWeight: FontWeight.bold),
             ),
             content: LocalisationStep(
+              recup: widget.recup,
               onChanged: (String key, dynamic newValue) {
                 var authorizedKeys = [
                   "longitude",
@@ -141,6 +143,7 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
                   fontWeight: FontWeight.bold),
             ),
             content: IdentificationStep(
+              recup: widget.recup,
               onChanged: (String key, newValue) {
                 var authorizedKeys = [
                   "company_name",
@@ -304,7 +307,7 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
               : */
               Theme(
             data: Theme.of(context).copyWith(
-              colorScheme: ColorScheme.light(primary: Colors.orange),
+              colorScheme: ColorScheme.light(primary: Colors.deepOrange),
             ),
             child: Form(
               key: formKey,
@@ -319,7 +322,7 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
 
                     if (isLastStep) {
                       setState(() => isCompleted = true);
-                      validerFormulaire();
+                      envoieFormulaire();
                     } else {
                       if (isOneBeforeLastStep) {
                         var res = buildProspectModelData();
@@ -414,11 +417,11 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
 
   sauvegarderLocale() async {
     var formCtrl = context.read<FormulaireProspectController>();
-
+  //  DateTime.fromMillisecondsSinceEpoch(int.tryParse(DateTime.now().millisecondsSinceEpoch.toString())! * 1000);
     recup = ProsModel.fromJson(formulaireValue);
     recup!.agentId = stockage.read('user')['id'];
-    recup!.remoteId =
-        recup!.remoteId ?? DateTime.now().millisecondsSinceEpoch.toString();
+    recup!.remoteId = DateTime.now().millisecondsSinceEpoch.toString();
+
     debugPrint("formulaireValue ${recup!.toJson()}");
 
     // création Copie locale si au moins la commune est selectionnée
@@ -432,7 +435,7 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
     return false;
   }
 
-  validerFormulaire() async {
+  envoieFormulaire() async {
     var formCtrl = context.read<FormulaireProspectController>();
     ProsModel data = recup!;
 

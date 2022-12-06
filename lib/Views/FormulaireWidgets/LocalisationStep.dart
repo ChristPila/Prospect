@@ -34,6 +34,28 @@ class _LocalisationStepState extends State<LocalisationStep> {
   g.Position? _position;
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    var recup = widget.recup;
+    var formCtrl = context.read<FormulaireProspectController>();
+    if (recup != null) {
+      provinceselectionner = recup.communeId;
+      villes = formCtrl.villes
+          .where((v) => v.provinceId == provinceselectionner)
+          .toList();
+      villeSelect = recup.villeId;
+
+      zones = formCtrl.zones.where((z) => z.villeId == villeSelect).toList();
+      zoneSelect = recup.zoneId;
+      communes =
+          formCtrl.communes.where((c) => c.zoneId == zoneSelect).toList();
+      communeSelect = recup.communeId;
+      //_position.longitude = recup.longitude;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       height: MediaQuery.of(context).size.height - 250,
@@ -61,15 +83,17 @@ class _LocalisationStepState extends State<LocalisationStep> {
   }
 
   localisationVue() {
+    var conditionLocation =
+        _position != null || widget.recup?.longitude != null;
     return Column(
       children: [
-        _position != null
+        conditionLocation
             ? Text("Prospect localisé")
             : Text("Cliquer sur l'icone pour recevoir la localisation"),
         IconButton(
           onPressed: demanderLaLocalisation,
           icon: Icon(Icons.location_on_outlined),
-          color: _position != null ? Colors.green : Colors.orange,
+          color: conditionLocation ? Colors.green : Colors.orange,
         )
       ],
     );
