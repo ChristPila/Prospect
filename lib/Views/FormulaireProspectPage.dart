@@ -20,7 +20,7 @@ import 'FormulaireWidgets/ResumeStep.dart';
 class FormulaireProspectPage extends StatefulWidget {
   final ProsModel? recup;
 
-  const FormulaireProspectPage({super.key, this.recup});
+  const FormulaireProspectPage({super.key, this.recup,});
 
   @override
   State<FormulaireProspectPage> createState() => _FormulaireProspectPageState();
@@ -85,6 +85,10 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
 
     if (widget.recup != null) {
       editionFormulaire();
+      nom = "Editer Prospect";
+    }
+    else{
+      nom = "Nouveau Prospect";
     }
     //getData();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
