@@ -26,7 +26,7 @@ class ProspectController with ChangeNotifier {
   final stockage = GetStorage(Parametres.STOCKAGE_VERSION);
 
   int randomInt() {
-    print(Random().nextInt(100 - 0 + 1) + 0);
+   // print(Random().nextInt(100 - 0 + 1) + 0);
     return Random().nextInt(100 - 0 + 1) + 0;
   }
 
@@ -127,9 +127,9 @@ class ProspectController with ChangeNotifier {
       var temp = json.decode(locale) as Map;
       stockage_data = temp;
       for (var i in stockage_data.keys) {
-        print("$i");
-        print("${stockage_data[i]}");
-        print("=====");
+       // print("$i");
+       // print("${stockage_data[i]}");
+      //  print("=====");
       }
       print("stockage_data $cle ${stockage_data.length}");
       //var temp1 = temp.map((e) => ProspectModel.fromJson(e)).toList();
@@ -177,8 +177,8 @@ class ProspectController with ChangeNotifier {
 void main() async {
   await GetStorage.init();
   var controller = ProspectController();
-  print("1: Longeur liste ${controller.data.length}");
+ // print("1: Longeur liste ${controller.data.length}");
   // controller.recupererDonneesAPI();
-  print("2: Longeur liste ${controller.data.length}");
+ // print("2: Longeur liste ${controller.data.length}");
   repetition();
 }

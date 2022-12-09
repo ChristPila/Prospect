@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:prospect/Controllers/FormulaireProspectController.dart';
 import 'package:prospect/Models/prosModel.dart';
 import 'package:provider/provider.dart';
@@ -9,7 +10,8 @@ import 'FormulaireProspectPage.dart';
 
 class DetailProspectPage extends StatefulWidget {
   final ProsModel data;
-  const DetailProspectPage({super.key, required this.data,});
+
+  const DetailProspectPage({super.key, required this.data});
 
 
 
@@ -58,6 +60,7 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
                 ? IconButton(
                     onPressed: () {
                       if(clientrecup.state == "4"){
+
                         Navigator.push(context,
                             MaterialPageRoute(builder: (_) {
                               return FormulaireProspectPage(recup: clientrecup);
@@ -140,6 +143,11 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
             SizedBox(
               height: 0.5,
             ),
+            time(),
+            Divider(thickness: 1),
+            SizedBox(
+              height: 0.5,
+            ),
             localisation1(),
             localisation2(),
             Divider(
@@ -170,6 +178,7 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
   }
 
   companyNomVue() {
+    var name = clientrecup.companyName == null ?"Nom rempli" : clientrecup.companyName;
     return Container(
       padding: const EdgeInsets.all(10),
       child: Row(
@@ -183,7 +192,7 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
 
           //Spacer(),
           Flexible(
-            child: Text("${clientrecup.companyName}",
+            child: Text("${name}",
                 style: const TextStyle(
                     color: Colors.black87,
                     fontSize: 15,
@@ -197,7 +206,6 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
 
   companytype() {
     var formCtrl = context.watch<FormulaireProspectController>();
-
     Map typeEntrep = formCtrl.mapActivities;
     var activitySelectionne = typeEntrep[clientrecup?.typeActivitiesId.toString()];
     var activityText = activitySelectionne == null ? "Non selectionné" : activitySelectionne['name'];
@@ -228,6 +236,7 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
   }
 
   companyadresse() {
+    var Adresse = clientrecup.companyAddress == null ?"Nom rempli" : clientrecup.companyAddress;
     return Container(
       padding: const EdgeInsets.all(10),
       child: Row(
@@ -243,7 +252,7 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
 
           //Spacer(),
           Flexible(
-            child: Text("${clientrecup.companyAddress}",
+            child: Text("${Adresse}",
                 style: const TextStyle(
                     color: Colors.black87,
                     fontSize: 15,
@@ -256,6 +265,7 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
   }
 
   companyphone() {
+    var Phone = clientrecup.companyPhone == null ?"Nom rempli" : clientrecup.companyPhone;
     return Container(
       padding: const EdgeInsets.all(10),
       child: Row(
@@ -271,7 +281,7 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
 
           //Spacer(),
           Flexible(
-            child: Text("${clientrecup.companyPhone}",
+            child: Text("${Phone}",
                 style: const TextStyle(
                     color: Colors.black87,
                     fontSize: 15,
@@ -423,7 +433,7 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
       padding: const EdgeInsets.all(10),
       child: Row(
         children: [
-          Flexible(child: Row(children: [  Icon ( Icons.cable_outlined,
+          Flexible(child: Row(children: [  Icon ( Icons.location_on,
               color: Colors.red,
               size: 25),
             Text("Zone: ",
@@ -456,6 +466,9 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
   }
 
   localisation2() {
+    var localisation= clientrecup?.longitude != null
+    ? "Capturé"
+        : "Non Capturé";
     return Container(
       padding: const EdgeInsets.all(10),
       child: Row(
@@ -471,7 +484,7 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
 
           //Spacer(),
           Flexible(
-            child: Text("${clientrecup.latitude}; ${clientrecup.longitude}",
+            child: Text("${localisation}",
                 style: const TextStyle(
                     color: Colors.black87,
                     fontSize: 15,
@@ -510,6 +523,33 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
       ),
     );
   }
+  time(){
+    return Container(
+      padding: const EdgeInsets.all(10),
+      child: Row(
+        children: [
+          Flexible(child: Row(children: [   Icon ( Icons.timer,
+              color: Colors.lightBlue,
+              size: 25),
+            Text("Date de création: ",
+                style: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 15,
+                    decoration: TextDecoration.none)),],)),
+
+          //Spacer(),
+          Flexible(
+            child: Text("${chronoDyn((clientrecup.remoteId).toString())}",
+                style: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    decoration: TextDecoration.none)),
+          ),
+        ],
+      ),
+    );
+  }
 
   boutonpiecesjointes() {
     return Row(
@@ -536,5 +576,39 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
         )
       ],
     );
+  }
+  String chronoDyn(String time){
+    var inputFormat = DateFormat('dd-MM-yyyy hh:mm a sss');
+    var msg="";
+    var now = DateTime.now();
+   // print('now $now');
+    var timeConvert=int.parse(time );
+  //  print('timeConvert $timeConvert');
+    final DateTime dateProspect = DateTime.fromMillisecondsSinceEpoch(timeConvert );
+  //  print ("dateProspect $dateProspect");
+    Duration diff = now.difference(dateProspect);
+    if (diff.inDays > 7) {
+      var outputDate = inputFormat.format(dateProspect);
+      msg= '${outputDate}';
+    } else if (diff.inDays >= 1) {
+      msg= '${diff.inDays} j';
+      var outputDate = inputFormat.format(dateProspect);
+      msg= '${outputDate}';
+    } else if (diff.inHours >= 1) {
+      msg= '${diff.inHours} h';
+      var outputDate = inputFormat.format(dateProspect);
+      msg= '${outputDate}';
+    } else if (diff.inMinutes >= 1) {
+      msg= '${diff.inMinutes} min';
+      var outputDate = inputFormat.format(dateProspect);
+      msg= '${outputDate}';
+    } else if (diff.inSeconds >= 1) {
+      msg= '${diff.inSeconds} sec';
+      var outputDate = inputFormat.format(dateProspect);
+      msg= '${outputDate}';
+    } else {
+      msg= 'maintenant';
+    }
+    return msg;
   }
 }

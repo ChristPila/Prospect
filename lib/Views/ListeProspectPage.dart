@@ -67,7 +67,7 @@ class _ProspectState extends State<ListeProspectPage> {
           .where((e) => e.state == typeStatutSelectionne_int)
           .toList();
     }
-    print(dataProspectCopie.length);
+  //  print(dataProspectCopie.length);
     setState(() {});
   }
 
@@ -75,7 +75,7 @@ class _ProspectState extends State<ListeProspectPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    print("widget.state ${widget.state}");
+   // print("widget.state ${widget.state}");
     typeStatutSelectionne_int = widget.state;
     typeStatutSelectionne = listeTypesStatut2[widget.state] ?? "Tous";
     WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -163,10 +163,12 @@ class _ProspectState extends State<ListeProspectPage> {
           );
         },
         itemBuilder: (BuildContext context, int index) {
-          ProsModel prospect = dataProspectCopie[index];
+         // print("la valeur de l'index est ${index}");
+          int taille= dataProspectCopie.length - index -1;
+          ProsModel prospect = dataProspectCopie[taille];
           var zones = context.watch<ProspectController>().zones;
           var zoneId = prospect.zoneId;
-          print("${prospect.remoteId}");
+         // print("2222 ${prospect.companyName}");
           // print(zones);
           // print('$zoneId ====== ${prospect.id}');
           Map? zone_data = zoneId != null ? zones[zoneId] : {};
@@ -222,17 +224,17 @@ class _ProspectState extends State<ListeProspectPage> {
               'Companie : ${prospect.companyName}',
               style: const TextStyle(
                 fontSize: 15,
-                color: Colors.black87,
+                color: Colors.black,
               ),
             ),
             subtitle: Text(
-              'RemoteId: ${prospect.remoteId}\n State :${prospect.state}\n ${chronoDyn((prospect.remoteId).toString())} ',
-              style: const TextStyle(fontSize: 15, color: Colors.black87),
+              'State :${prospect.state}',
+              style: const TextStyle(fontSize: 15, color: Colors.black),
             ),
-            trailing: Icon(Icons.date_range, size: 15),
-
-
-
+              trailing: Text(
+          "${chronoDyn((prospect.remoteId).toString())}",
+          style: TextStyle(color: Colors.black, fontSize: 15),
+              )
           );
         },
       ),
@@ -253,8 +255,8 @@ class _ProspectState extends State<ListeProspectPage> {
         }).toList(),
         onChanged: (String? newValue) {
           typeStatutSelectionne = newValue!;
-          print('$typeStatutSelectionne');
-          print(listeTypesStatut[newValue]);
+         // print('$typeStatutSelectionne');
+         // print(listeTypesStatut[newValue]);
           typeStatutSelectionne_int = listeTypesStatut[newValue]!;
           var listOriginalProspect = context.read<ProspectController>().data;
           if (typeStatutSelectionne_int == "0") {
@@ -274,11 +276,11 @@ class _ProspectState extends State<ListeProspectPage> {
     var inputFormat = DateFormat('dd-MM-yyyy');
     var msg="";
     var now = DateTime.now();
-    print('now $now');
+   // print('now $now');
     var timeConvert=int.parse(time );
-    print('timeConvert $timeConvert');
+   // print('timeConvert $timeConvert');
     final DateTime dateProspect = DateTime.fromMillisecondsSinceEpoch(timeConvert );
-    print ("dateProspect $dateProspect");
+  //  print ("dateProspect $dateProspect");
     Duration diff = now.difference(dateProspect);
     if (diff.inDays > 7) {
       var outputDate = inputFormat.format(dateProspect);
