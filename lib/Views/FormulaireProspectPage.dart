@@ -18,6 +18,7 @@ import 'package:prospect/Models/ZoneModel.dart';
 import 'package:provider/provider.dart';
 import '../Controllers/FormulaireProspectController.dart';
 import '../Models/prosModel.dart';
+import 'HomePage.dart';
 
 //import 'package:signature/signature.dart';
 //import 'package:file_picker/file_picker.dart';
@@ -1256,6 +1257,13 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
                         return Container(
                           child: Row(
                             children: <Widget>[
+                              if (currentStep != 0)
+                                Expanded(
+                                  child: ElevatedButton(
+                                    child: Text("PRECEDENT"),
+                                    onPressed: details.onStepCancel,
+                                  ),
+                                ),
                               Expanded(
                                 child: ElevatedButton(
                                   child:
@@ -1264,13 +1272,6 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
                                 ),
                               ),
                               const SizedBox(width: 12),
-                              if (currentStep != 0)
-                                Expanded(
-                                  child: ElevatedButton(
-                                    child: Text("PRECEDENT"),
-                                    onPressed: details.onStepCancel,
-                                  ),
-                                ),
                             ],
                           ),
                         );
@@ -1294,7 +1295,7 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
       companyAddress: company_adress.text.toString(),
       typeActivitiesId: typeSelect!= null ? int.parse(typeSelect!):null,
       companyPhone: company_phone.text.toString(),
-      offerId: 1,
+      offerId: offreSelect!= null ? int.parse(offreSelect!):null,
       state: "1",
       remoteId: timestamp.toString(),
     );
@@ -1324,7 +1325,10 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
           .read<FormulaireProspectController>()
           .submitProspect(data)
           .catchError((err) {});
-      Navigator.pop(context);
+      succesPopUp(context);
+      Navigator.push(context, MaterialPageRoute(builder: (_){
+        return HomePage();
+      }));
     }
 
   }
