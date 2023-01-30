@@ -1,37 +1,34 @@
 import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart' as g;
 import 'package:get_storage/get_storage.dart';
-import 'package:prospect/Controllers/ActiviteController.dart';
-import 'package:prospect/Controllers/CommuneController.dart';
-import 'package:prospect/Controllers/OffresController.dart';
-import 'package:prospect/Controllers/ProspectController.dart';
-import 'package:prospect/Controllers/VilleController.dart';
-import 'package:prospect/Controllers/ZoneController.dart';
-import 'package:prospect/Tools/Parametres.dart';
 import 'package:prospect/Models/ActiviteModel.dart';
-import 'package:prospect/Models/CommuneModel.dart';
 import 'package:prospect/Models/OffresModel.dart';
-import 'package:prospect/Models/ProvinceModel.dart';
-import 'package:prospect/Models/VilleModel.dart';
-import 'package:prospect/Models/ZoneModel.dart';
+import 'package:prospect/Tools/Parametres.dart';
 import 'package:provider/provider.dart';
+
 import '../Controllers/FormulaireProspectController.dart';
 import '../Models/prosModel.dart';
-import 'HomePage.dart';
+import 'FormulaireWidgets/IdentificationStep.dart';
+import 'FormulaireWidgets/LocalisationStep.dart';
+import 'FormulaireWidgets/ResumeStep.dart';
 
 //import 'package:signature/signature.dart';
 //import 'package:file_picker/file_picker.dart';
 
 class FormulaireProspectPage extends StatefulWidget {
-  const FormulaireProspectPage({this.recup,});
-  final recup;
+  final ProsModel? recup;
+
+  const FormulaireProspectPage({super.key, this.recup,});
 
   @override
   State<FormulaireProspectPage> createState() => _FormulaireProspectPageState();
 }
 
 class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
+  GetStorage stockage = GetStorage(Parametres.STOCKAGE_VERSION);
+  ProsModel? recup = ProsModel();
   g.Position? _position;
   Uint8List? exportedImage;
   bool isLoad = false;
@@ -41,21 +38,11 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
     penColor: Colors.red,
     exportBackgroundColor: Colors.yellowAccent,
   );*/
-  //List<ProvinceModel>? provinces;
+
   List<ActiviteModel> activites = [];
-  List<VilleModel>? villes;
-  List<ZoneModel>? zones;
-  List<CommuneModel>? communes;
+
   List<OffresModel> offres = [];
-  Map? user;
-  GetStorage us = GetStorage();
   List selectedData = [];
-  static String? provinceselectionner;
-  String? villeSelect;
-  String? zoneSelect;
-  String? communeSelect;
-  String? offreSelect;
-  String? typeSelect;
 
   get floatingActionButton => null;
 
@@ -63,93 +50,60 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
   int currentStep = 0;
   bool isCompleted = false;
   int? step;
-  TextEditingController company_name = TextEditingController();
-  TextEditingController company_adress = TextEditingController();
-  TextEditingController company_type = TextEditingController();
-  TextEditingController company_phone = TextEditingController();
 
-  int timestamp = DateTime.now().millisecondsSinceEpoch;
+  String lastButtonText = "Confirmer";
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+  // TextEditingController _position = TextEditingController();
+
+  Map<String, dynamic> formulaireValue = {
+    "longitude": null,
+    "latitude": null,
+    "agent_id": null,
+    "commune_id": null,
+    "zone_id": null,
+    "ville_id": null,
+    "province_id": null,
+    "company_name": null,
+    "company_address": null,
+    "type_activities_id": null,
+    "company_phone": null,
+    "offer_id": null,
+    "state": null,
+    "pieces_jointes_id": null,
+    "remote_id": null,
+  };
+
+  var nom = "Nouveau Prospect";
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    //recup = widget.recup;
+
+    if (widget.recup != null) {
+      editionFormulaire();
+      nom = "Editer Prospect";
+    }
+    else{
+      nom = "Nouveau Prospect";
+    }
     //getData();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      recuperationDataForm();
+      //recuperationDataForm();
     });
   }
 
-  recuperationDataForm() async {
-    var formCtrl = context.read<FormulaireProspectController>();
-    provinceRecup();
-
-    villeReccup();
-
-    zoneRecup();
-
-    communeRecup();
-
-    activityRecup();
-
-    offreRecup();
-
+  editionFormulaire() {
+    formulaireValue = widget.recup!.toJson();
+    /* nom = "Editer Prospect";
+    company_name.text = widget.recup!.companyName!;
+    company_adress.text = widget.recup!.companyAddress!;
+    // company_type.text = widget.recup!.typeActivitiesId!.toString();
+    company_phone.text = widget.recup!.companyPhone!.toString();*/
   }
-
-  provinceRecup() async{
-    var formCtrl = context.read<FormulaireProspectController>();
-    var listProvince = await formCtrl.lectureAPIstockage(Parametres.keyProvince, Parametres.endPointProvinces);
-    formCtrl.provinces = listProvince.map<ProvinceModel>((e) => ProvinceModel.fromJson(e)).toList();
-    setState(() {
-
-    });
-  }
-
-  villeReccup() async{
-    var formCtrl = context.read<FormulaireProspectController>();
-    var listVilles = await formCtrl.lectureAPIstockage(Parametres.keyVilles, Parametres.endPointVilles);
-    formCtrl.villes= listVilles.map<VilleModel>((e) => VilleModel.fromJson(e)).toList();
-    setState(() {
-
-    });
-  }
-
-  zoneRecup() async{
-    var formCtrl = context.read<FormulaireProspectController>();
-    var listZones = await formCtrl.lectureAPIstockage(Parametres.keyZones, Parametres.endPointZones);
-    formCtrl.zones= listZones.map<ZoneModel>((e) => ZoneModel.fromJson(e)).toList();
-    setState(() {
-
-    });
-  }
-
-  communeRecup() async {
-    var formCtrl = context.read<FormulaireProspectController>();
-    var listCommunes = await formCtrl.lectureAPIstockage(Parametres.keyCommunes, Parametres.endPointCommunes);
-    formCtrl.communes= listCommunes.map<CommuneModel>((e) => CommuneModel.fromJson(e)).toList();
-    setState(() {
-
-    });
-  }
-
-  activityRecup() async {
-    var formCtrl = context.read<FormulaireProspectController>();
-    var listActivities = await formCtrl.lectureAPIstockage(Parametres.keyActivities, Parametres.endPointAct);
-    formCtrl.activities= listActivities.map<ActiviteModel>((e) => ActiviteModel.fromJson(e)).toList();
-    setState(() {
-      activites = context.read<FormulaireProspectController>().activities;
-    });
-  }
-
-  offreRecup() async {
-  var formCtrl = context.read<FormulaireProspectController>();
-  var listOffres = await formCtrl.lectureAPIstockage(Parametres.keyOffres, Parametres.endPointOffres);
-  formCtrl.offres= listOffres.map<OffresModel>((e) => OffresModel.fromJson(e)).toList();
-  print("OFFRES :${formCtrl.offres}");
-  setState(() {
-    offres = context.read<FormulaireProspectController>().offres;
-  });
-}
 
   List<Step> stepList() => [
         Step(
@@ -162,28 +116,25 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
                   color: Colors.black,
                   fontWeight: FontWeight.bold),
             ),
-            content: Container(
-              height: MediaQuery.of(context).size.height - 250,
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    localisation(),
-                    ...provinceVue(),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    ...villeVue(),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    ...zoneVue(),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    ...communeVue(),
-                  ],
-                ),
-              ),
+            content: LocalisationStep(
+              recup: widget.recup,
+              onChanged: (String key, dynamic newValue) {
+                var authorizedKeys = [
+                  "longitude",
+                  "latitude",
+                  "agent_id",
+                  "commune_id",
+                  "zone_id",
+                  "ville_id",
+                  "province_id",
+                ];
+                if (!authorizedKeys.contains(key)) {
+                  affichageSnack(context,
+                      msg: "Cette clé '$key' n'est pas reconnu ");
+                  return;
+                }
+                formulaireValue[key] = newValue;
+              },
             )),
         Step(
             state: currentStep > 1 ? StepState.complete : StepState.indexed,
@@ -195,35 +146,23 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
                   color: Colors.black,
                   fontWeight: FontWeight.bold),
             ),
-            content: Container(
-              height: MediaQuery.of(context).size.height - 250,
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    ...nomprospectVue(),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    ...adresseVue(),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    ...contactVue(),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    ...typeVue(context),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    ...offreVue(context),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    visualiseroffre(),
-                  ],
-                ),
-              ),
+            content: IdentificationStep(
+              recup: widget.recup,
+              onChanged: (String key, newValue) {
+                var authorizedKeys = [
+                  "company_name",
+                  "company_address",
+                  "company_phone",
+                  "type_activities_id",
+                  "offer_id"
+                ];
+                if (!authorizedKeys.contains(key)) {
+                  affichageSnack(context,
+                      msg: "Cette clé '$key' n'est pas reconnu ");
+                  return;
+                }
+                formulaireValue[key] = newValue;
+              },
             )),
         Step(
             state: StepState.complete,
@@ -235,129 +174,9 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
                   color: Colors.black,
                   fontWeight: FontWeight.bold),
             ),
-            content: Container(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text("Longitude : ${_position?.longitude.toString()}"),
-                  Text("Latitude : ${_position?.latitude.toString()}"),
-                  Text("AgentId : ${user?['id'].toString()}"),
-                  Text("Province : ${provinceselectionner}"),
-                  Text("Ville : ${villeSelect}"),
-                  Text("Zone : ${zoneSelect}"),
-                  Text("Commune : ${communeSelect}"),
-                  Text("Nom de l'entreprise : ${company_name.text}"),
-                  Text("Adresse de l'entreprise : ${company_adress.text}"),
-                  Text("Contact de l'entreprise : ${company_phone.text}"),
-                  Text("Type d'entrprise : ${typeSelect}"),
-                  Text("Offres : ${selectedData}")
-                ],
-              ),
+            content: ResumeStep(
+              prospect: recup,
             ))
-        /*Step(
-            state: StepState.editing,
-            isActive: _activeStepIndex == 2,
-            title: const Text(
-              "Etape3",
-              style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold),
-            ),
-            content: Container(
-              height: MediaQuery.of(context).size.height - 250,
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Container(
-                      height: 40,
-                      child: ListTile(
-                        title: Text(
-                          "Images",
-                          style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    imgVue(),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Container(
-                      height: 40,
-                      child: ListTile(
-                        title: Text(
-                          "Documents",
-                          style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    documentVue(),
-                    Container(
-                      height: 40,
-                      child: ListTile(
-                        title: Text(
-                          "Signature",
-                          style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    //signatureVue(),
-                    Container(
-                      width: double.infinity,
-                      child: Signature(
-                        controller: controller,
-                        width: double.infinity,
-                        height: 150,
-                        backgroundColor: Colors.black12,
-                      ),
-                    ),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        //paddingsi(),
-                        SizedBox(
-                          height: 10,
-                        ),
-                      ],
-                    ),
-                    if (exportedImage != null)
-                      Container(
-                          width: 300,
-                          height: 150,
-                          child: Image.memory(exportedImage!)),
-                    Container(
-                      height: 8,
-                    ),
-                    Container(
-                      child: (Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [],
-                      )),
-                    )
-                  ],
-                ),
-              ),
-            )),*/
       ];
 
   //Liste des images
@@ -386,772 +205,15 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
 
   @override
   Widget build(BuildContext context) {
-    print(selectedData.map((e) => e).toList());
-    user = us.read('user');
-    print("AGENT ID : ${user?["id"]}");
-    return nouveauProspect();
+    var userData = stockage.read('user');
+    var currentId = userData['id'];
+    // print(selectedData.map((e) => e).toList());
+    // print("AGENT ID : $currentId");
+    return vuePrincipale();
   }
 
   Widget buildCompleted() {
     return Container(child: Column());
-  }
-
-  void _getCurrentPosition() async {
-    g.Position position = await _determinePosition();
-    setState(() {
-      _position = position;
-    });
-  }
-
-  Future<g.Position> _determinePosition() async {
-    g.LocationPermission permission;
-
-    permission = await g.Geolocator.checkPermission();
-
-    if (permission == g.LocationPermission.denied) {
-      permission = await g.Geolocator.requestPermission();
-      if (permission == g.LocationPermission.denied) {
-        return Future.error("Location permission are denied");
-      }
-    }
-    return await g.Geolocator.getCurrentPosition();
-  }
-
-  localisation() {
-    return Column(
-      children: [
-        _position != null
-            ? Text(_position.toString())
-            : Text("Cliquer sur l'icone pour recevoir la localisation"),
-        IconButton(
-          onPressed: _getCurrentPosition,
-          icon: Icon(Icons.location_on_outlined),
-          color: Colors.orange,
-        )
-      ],
-    );
-  }
-
-  provinceVue() {
-    var formCtrl = context.read<FormulaireProspectController>();
-    var provinces = formCtrl.provinces;
-    return [
-      SizedBox(
-        height: 20,
-      ),
-      InputDecorator(
-          decoration: InputDecoration(
-              label: Text("Province",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                      fontSize: 20)),
-              border: OutlineInputBorder(),
-              contentPadding: EdgeInsets.only(left: 10)),
-          child: DropdownButtonHideUnderline(
-              child: DropdownButton(
-            isExpanded: true,
-            value: provinceselectionner,
-            icon: const Icon(Icons.keyboard_arrow_down_rounded),
-            items: provinces?.map((prov) {
-              return DropdownMenuItem(
-                child: Text(prov.name),
-                value: prov.id.toString(),
-              );
-            }).toList(),
-            onChanged: (String? newValue) async{
-              provinceselectionner = newValue!;
-              villes = await RemoteServicesVilles.getVilles(
-                  int.parse(provinceselectionner!));
-              if (villes != null) {
-                setState(() {
-                });
-              }
-            },
-          ))),
-    ];
-  }
-
-  typeVue(BuildContext context) {
-    return [
-      SizedBox(
-        height: 20,
-      ),
-      InputDecorator(
-          decoration: InputDecoration(
-              label: Text("Type d'activité",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                      fontSize: 20)),
-              border: OutlineInputBorder(),
-              contentPadding: EdgeInsets.only(left: 10)),
-          child: DropdownButtonHideUnderline(
-              child: DropdownButton(
-            isExpanded: true,
-            value: typeSelect,
-            icon: const Icon(Icons.keyboard_arrow_down_rounded),
-            items: activites.map((activity) {
-              return DropdownMenuItem(
-                value: activity.id.toString(),
-                child: Text(activity.name),
-              );
-            }).toList(),
-            onChanged: (String? newValue) {
-              setState(() {
-                typeSelect = newValue!;
-              });
-            },
-          ))),
-    ];
-  }
-
-  getData() async {
-    //provinces = await RemoteServicesProv.getProvinces();
-    offres = await RemoteServicesOf.getOffres();
-    activites = await RemoteServicesAct.getActivity();
-    if (offres != null || activites != null) {
-      setState(() {
-        isLoad = true;
-      });
-    }
-  }
-
-  villeVue() {
-    var formCtrl = context.read<FormulaireProspectController>();
-    var villesLocales = formCtrl.villes;
-    return [
-      SizedBox(
-        height: 20,
-      ),
-      InputDecorator(
-          decoration: InputDecoration(
-              label: Text("Ville",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                      fontSize: 20)),
-              border: OutlineInputBorder(),
-              contentPadding: EdgeInsets.only(left: 10)),
-          child: DropdownButtonHideUnderline(
-              child: DropdownButton(
-            isExpanded: true,
-            value: villeSelect,
-            icon: const Icon(Icons.keyboard_arrow_down_rounded),
-            items: villes?.map((city) {
-              return DropdownMenuItem(
-                  child: Text(city.name), value: city.id.toString());
-            }).toList(),
-            onChanged: (String? newValue) async{
-              villeSelect = newValue!;
-              zones =
-                  await RemoteServicesZone.getZone(int.parse(villeSelect!));
-              if (zones != null) {
-                setState(() {
-                });
-              }
-            },
-          ))),
-    ];
-  }
-
-  zoneVue() {
-    return [
-      SizedBox(
-        height: 20,
-      ),
-      InputDecorator(
-          decoration: InputDecoration(
-              label: Text("Zone",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                      fontSize: 20)),
-              border: OutlineInputBorder(),
-              contentPadding: EdgeInsets.only(left: 10)),
-          child: DropdownButtonHideUnderline(
-              child: DropdownButton(
-            isExpanded: true,
-            value: zoneSelect,
-            icon: const Icon(Icons.keyboard_arrow_down_rounded),
-            items: zones?.map((z) {
-              return DropdownMenuItem(
-                  child: Text(z.name), value: z.id.toString());
-            }).toList(),
-            onChanged: (String? newValue) async {
-              zoneSelect = newValue!;
-              communes = await RemoteServicesCommune.getCommune(
-                  int.parse(zoneSelect!));
-              if (communes != null) {
-                setState(() {
-                  isLoad = true;
-                });
-              }
-            },
-          ))),
-    ];
-  }
-
-  communeVue() {
-    return [
-      SizedBox(
-        height: 20,
-      ),
-      InputDecorator(
-          decoration: InputDecoration(
-              label: Text("Commune",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                      fontSize: 20)),
-              border: OutlineInputBorder(),
-              contentPadding: EdgeInsets.only(left: 10)),
-          child: DropdownButtonHideUnderline(
-              child: DropdownButton(
-            isExpanded: true,
-            value: communeSelect,
-            icon: const Icon(Icons.keyboard_arrow_down_rounded),
-            items: communes?.map((com) {
-              return DropdownMenuItem(
-                  child: Text(com.name), value: com.id.toString());
-            }).toList(),
-            onChanged: (String? newValue) {
-              setState(() {
-                communeSelect = newValue!;
-              });
-            },
-          ))),
-    ];
-  }
-
-  nomprospectVue() {
-    return [
-      Padding(
-        padding: const EdgeInsets.all(1.0),
-        child: TextField(
-          controller: company_name,
-          decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              hintText: 'nom entreprise',
-              floatingLabelBehavior: FloatingLabelBehavior.always,
-              label: Text(
-                "Nom Entreprise",
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                    fontSize: 20),
-              )),
-        ),
-      ),
-    ];
-  }
-
-  adresseVue() {
-    return [
-      Padding(
-        padding: const EdgeInsets.all(1.0),
-        child: TextField(
-          controller: company_adress,
-          decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              hintText: 'adresse',
-              floatingLabelBehavior: FloatingLabelBehavior.always,
-              label: Text(
-                "Adresse Entreprise",
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                    fontSize: 20),
-              )),
-        ),
-      ),
-    ];
-  }
-
-  contactVue() {
-    return [
-      Padding(
-        padding: const EdgeInsets.all(1.0),
-        child: TextFormField(
-          controller: company_phone,
-          decoration: InputDecoration(
-            border: OutlineInputBorder(),
-            hintText: 'contact',
-            floatingLabelBehavior: FloatingLabelBehavior.always,
-            label: Text(
-              "Contact Entreprise",
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                  fontSize: 20),
-            ),
-          ),
-          validator: (value) {
-            if (value!.isEmpty ||
-                !RegExp(r"^\s*([A-Za-z]{1,}([\.,] |[-']| ))+[A-Za-z]+\.?\s*$")
-                    .hasMatch(value!)) {
-              return "Entrez un nom valide";
-            } else {
-              return null;
-            }
-          },
-        ),
-      ),
-    ];
-  }
-
-  offreVue(BuildContext context) {
-    return [
-      SizedBox(
-        height: 20,
-      ),
-      InputDecorator(
-          decoration: InputDecoration(
-              label: Text("Offres",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                      fontSize: 20)),
-              border: OutlineInputBorder(),
-              contentPadding: EdgeInsets.only(left: 10)),
-          child: DropdownButtonHideUnderline(
-              child: DropdownButton(
-            isExpanded: true,
-            value: offreSelect,
-            icon: const Icon(Icons.keyboard_arrow_down_rounded),
-            items: offres?.map((offer) {
-              return DropdownMenuItem(
-                value: offer.id.toString(),
-                child: Text(offer.name.toString()),
-              );
-            }).toList(),
-            onChanged: (String? newValue) {
-              setState(() {
-                offreSelect = newValue!;
-              });
-            },
-          ))),
-    ];
-  }
-
-  /*imgVue() {
-    return Container(
-      height: 100,
-      //color: Colors.red,
-      child: Row(
-        //scrollDirection: Axis.horizontal,
-        //shrinkWrap: true,
-        children: [
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              side: BorderSide(color: Colors.grey, width: 2),
-              primary: Colors.transparent,
-              elevation: 0,
-              padding: EdgeInsets.all(35),
-            ),
-            onPressed: () {
-              showModalBottomSheet(
-                context: context,
-                builder: ((builder) => bottomSheet()),
-              );
-            },
-            child: Icon(
-              Icons.camera_alt,
-              color: Colors.blue,
-            ),
-          ),
-          SizedBox(
-            width: 10,
-          ),
-          Expanded(
-            child: ListView.builder(
-                itemCount: imageFileList?.length,
-                scrollDirection: Axis.horizontal,
-                shrinkWrap: true,
-                itemBuilder: (BuildContext context, int index) {
-                  return Padding(
-                    padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-                    child: Container(
-                        width: 140,
-                        height: 200,
-                        child: Image.file(File(imageFileList![index].path),
-                            fit: BoxFit.cover)),
-                  );
-                }),
-          ),
-        ],
-      ),
-    );
-  }
-
-  documentVue() {
-    return Container(
-      height: 100,
-      child: Row(
-        children: [
-          ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                  side: BorderSide(color: Colors.grey, width: 2),
-                  primary: Colors.transparent,
-                  elevation: 0,
-                  padding: EdgeInsets.all(35)),
-              onPressed: () {
-                openFiles();
-              },
-              child: Icon(
-                Icons.file_download,
-                color: Colors.blue,
-              )),
-          SizedBox(
-            width: 8,
-          ),
-          Expanded(
-            child: ListView.builder(
-                itemCount: lisDoc.length,
-                scrollDirection: Axis.horizontal,
-                shrinkWrap: true,
-                itemBuilder: (BuildContext context, int index) {
-                  var fil = lisDoc[index];
-                  print(fil.path);
-                  var completePath = fil.path;
-                  var fileName = (completePath.split('/').last);
-                  var fileExtension = (fileName.split(".").last);
-                  print(completePath);
-                  print(fileName);
-                  print(fileExtension);
-
-                  return Padding(
-                      padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-                      child: Container(
-                        color: Colors.black12,
-                        width: 140,
-                        height: 200,
-                        child: Center(
-                            child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              fileExtension,
-                              style:
-                                  TextStyle(fontSize: 25, color: Colors.white),
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Text(
-                              fileName,
-                              style:
-                                  TextStyle(fontSize: 10, color: Colors.blue),
-                            ),
-                          ],
-                        )),
-                        // child: Text(lisDoc[index].name),
-                      ));
-                }),
-          ),
-        ],
-      ),
-    );
-  }
-
-  signatureVue() {
-    return Container(
-      height: 150,
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        shrinkWrap: true,
-        children: [
-          SizedBox(
-            width: 15,
-          ),
-          sign(),
-          SizedBox(
-            width: 15,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget imageProfile() {
-    return imageFileList == null
-        ? Container(
-            width: 140,
-            height: 180,
-            color: Colors.black12,
-          )
-        : Container(
-            width: 140,
-            height: 180,
-            color: Colors.black12,
-          );
-  }
-
-  /*Widget imageProfile2() {
-    return Stack(
-      children: <Widget>[
-        imageFile1 == null
-            ? Container(
-                width: 140,
-                height: 180,
-                color: Colors.black12,
-              )
-            : Container(
-                width: 140,
-                height: 180,
-              ),
-        //AssetImage(""),
-        Positioned(
-          bottom: 20.0,
-          right: 35.0,
-          child: InkWell(
-            onTap: () {
-              showModalBottomSheet(
-                context: context,
-                builder: ((builder) => bottomSheet()),
-              );
-            },
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget imageProfile3() {
-    return Stack(
-      children: <Widget>[
-        Container(
-          width: 140,
-          height: 180,
-          color: Colors.black12,
-        ),
-        //AssetImage(""),
-        Positioned(
-          bottom: 20.0,
-          right: 35.0,
-          child: InkWell(
-            onTap: () {
-              showModalBottomSheet(
-                context: context,
-                builder: ((builder) => bottomSheet()),
-              );
-            },
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget document1() {
-    return Container(
-      //child: ElevatedButton(onPressed: () {openFiles();}, child: Icon(Icons.file_download)),
-      //child: Icon(Icons.file_download),
-
-      width: 140,
-      height: 180,
-      color: Colors.black26,
-    );
-  }
-
-  Widget document2() {
-    return Stack(
-      children: <Widget>[
-        Container(
-          width: 140,
-          height: 180,
-          color: Colors.black26,
-        ),
-        //AssetImage(""),
-        Positioned(
-          bottom: 20.0,
-          right: 35.0,
-          child: InkWell(
-            onTap: () {
-              showModalBottomSheet(
-                context: context,
-                builder: ((builder) => bottomSheet()),
-              );
-            },
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget document3() {
-    return Stack(
-      children: <Widget>[
-        Container(
-          width: 140,
-          height: 180,
-          color: Colors.black26,
-        ),
-        //AssetImage(""),
-        Positioned(
-          bottom: 20.0,
-          right: 35.0,
-          child: InkWell(
-            onTap: () {
-              showModalBottomSheet(
-                context: context,
-                builder: ((builder) => bottomSheet()),
-              );
-            },
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget sign() {
-    return InkWell(
-      onTap: () {
-        showModalBottomSheet(
-          context: context,
-          builder: ((builder) => bottomSheet()),
-        );
-      },
-      child: Container(
-        width: 280,
-        height: 180,
-        color: Colors.black12,
-      ),
-    );
-  }*/
-
-  /*Widget bottomSheet() {
-    return Container(
-      height: 100.0,
-      width: MediaQuery.of(context).size.width,
-      margin: EdgeInsets.symmetric(
-        horizontal: 20,
-        vertical: 20,
-      ),
-      child: Column(
-        children: <Widget>[
-          Text(
-            "Choisir la photo",
-            style: TextStyle(
-              fontSize: 20.0,
-            ),
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              TextButton(
-                onPressed: () {
-                  _getFromCamera();
-                },
-                child: Icon(Icons.camera),
-              ),
-              Text("camera"),
-              TextButton(
-                onPressed: () {
-                  _getFromGallery();
-                },
-                child: Icon(Icons.image),
-              ),
-              Text("gallery")
-            ],
-          )
-        ],
-      ),
-    );
-  }*/
-
-  /*_getFromGallery() async {
-    List<XFile>? pickedFile = await ImagePicker()
-        .pickMultiImage(maxWidth: 1800, maxHeight: 1800, imageQuality: 12);
-    if (pickedFile!.isNotEmpty) {
-      setState(() {
-        imageFileList!.addAll(pickedFile);
-      });
-    }
-    Navigator.pop(context);
-  }*/
-
-  /*_getFromCamera() async {
-    PickedFile? pickedFile = await ImagePicker().getImage(
-      source: ImageSource.camera,
-      maxWidth: 1800,
-      maxHeight: 1800,
-    );
-    if (pickedFile != null) {
-      setState(() {
-        imageFileList = pickedFile.path as List<XFile>?;
-      });
-    }
-    Navigator.pop(context);
-  }*/
-
-  labelText(String text) {
-    return Text(
-      text,
-      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-    );
-  }
-
-  paddingsi() {
-    return Row(
-      children: [
-        Padding(
-          padding: EdgeInsets.all(5),
-          child: ElevatedButton(
-            onPressed: () async {
-              exportedImage = await controller.toPngBytes();
-              setState(() {});
-            },
-            child: const Text(
-              "save",
-              style: TextStyle(fontSize: 20),
-            ),
-            style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18.0),
-                        side: BorderSide(color: Colors.red)))),
-          ),
-        ),
-        Padding(
-          padding: EdgeInsets.all(10),
-          child: ElevatedButton(
-            onPressed: () {
-              controller.clear();
-            },
-            child: const Text(
-              "clear",
-              style: TextStyle(fontSize: 20),
-            ),
-            style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18.0),
-                        side: BorderSide(color: Colors.red)))),
-          ),
-        ),
-      ],
-    );
-  }*/
-
-  visualiseroffre() {
-    return Wrap(
-        children: selectedData.map((e) {
-      return Container(
-        decoration: BoxDecoration(
-            color: Colors.orange, borderRadius: BorderRadius.circular(5)),
-        margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-        padding: EdgeInsets.symmetric(horizontal: 7, vertical: 7),
-        child: Text(
-          e,
-          style: TextStyle(color: Colors.black),
-        ),
-      );
-    }).toList());
   }
 
   Chargement(BuildContext context, [int duree = 150]) async {
@@ -1170,8 +232,9 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
     );
   }
 
-  succesPopUp(BuildContext context) {
-    showDialog(
+  succesPopUp(BuildContext context) async {
+    await showDialog(
+        barrierDismissible: false,
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
@@ -1206,139 +269,232 @@ class _FormulaireProspectPageState extends State<FormulaireProspectPage> {
         });
   }
 
-  nouveauProspect() {
+  vuePrincipale() {
+    // print("REBUILD Formulaire $currentStep");
+
     return WillPopScope(
       onWillPop: () async {
-        await validerFormulaire(true);
+        var res = await sauvegarderLocale();
+        Navigator.pop(context, res);
         return Future.value(true);
       },
       child: SafeArea(
         child: Scaffold(
           appBar: AppBar(
               centerTitle: true,
+              elevation: 0,
+              leading: IconButton(
+                onPressed: () async {
+                  if (currentStep > 0) {
+                    currentStep--;
+                    setState(() {});
+                    return;
+                  }
+                  var res = await sauvegarderLocale();
+                  Navigator.pop(context, res);
+                },
+                icon: Icon(
+                  Icons.arrow_back_ios,
+                  color: Colors.black,
+                ),
+              ),
               backgroundColor: Colors.white10,
               title: Text(
-                "Nouveau Prospect",
+                nom,
                 style: TextStyle(
                   color: Colors.black87,
                   fontSize: 25,
                 ),
               )),
-          body: isCompleted
+          body: /*isCompleted
               ? buildCompleted()
-              : Theme(
-                  data: Theme.of(context).copyWith(
-                    colorScheme: ColorScheme.light(primary: Colors.orange),
-                  ),
-                  child: Stepper(
-                      type: StepperType.horizontal,
-                      currentStep: currentStep,
-                      steps: stepList(),
-                      onStepContinue: () async {
-                        final isLastStep = currentStep == stepList().length - 1;
-                        print(isLastStep);
-                        if (isLastStep) {
-                          setState(() => isCompleted = true);
-                          Chargement(context);
-                          validerFormulaire();
-                          succesPopUp(context);
-                          debugPrint("Succès");
-                        } else {
-                          setState(() => currentStep += 1);
-                        }
-                      },
-                      onStepTapped: (step) => setState(() => currentStep = step),
-                      onStepCancel: currentStep == 0
-                          ? null
-                          : () => setState(() => currentStep -= 1),
-                      controlsBuilder:
-                          (BuildContext context, ControlsDetails details) {
-                        final isLastStep = currentStep == stepList().length - 1;
-                        return Container(
-                          child: Row(
-                            children: <Widget>[
-                              if (currentStep != 0)
-                                Expanded(
-                                  child: ElevatedButton(
-                                    child: Text("PRECEDENT"),
-                                    onPressed: details.onStepCancel,
-                                  ),
-                                ),
-                              Expanded(
-                                child: ElevatedButton(
-                                  child:
-                                      Text(isLastStep ? "CONFIRMER" : "SUIVANT"),
-                                  onPressed: details.onStepContinue,
-                                ),
+              : */
+              Theme(
+            data: Theme.of(context).copyWith(
+              colorScheme: ColorScheme.light(primary: Colors.deepOrange),
+            ),
+            child: Form(
+              key: formKey,
+              child: Stepper(
+                  type: StepperType.horizontal,
+                  currentStep: currentStep,
+                  steps: stepList(),
+                  onStepContinue: () async {
+                    final isLastStep = currentStep == stepList().length - 1;
+                    final isOneBeforeLastStep =
+                        currentStep == stepList().length - 2;
+
+                    if (isLastStep) {
+                      setState(() => isCompleted = true);
+                      envoieFormulaire();
+                    } else {
+                      if (isOneBeforeLastStep) {
+                        var res = buildProspectModelData();
+                        if (!res) return;
+                      }
+                      currentStep += 1;
+                      setState(() {});
+                    }
+                  },
+                  onStepTapped: (step) => setState(() => currentStep = step),
+                  onStepCancel: currentStep == 0
+                      ? null
+                      : () => setState(() => currentStep -= 1),
+                  controlsBuilder:
+                      (BuildContext context, ControlsDetails details) {
+                    final isLastStep = currentStep == stepList().length - 1;
+                    return Container(
+                      child: Row(
+                        children: <Widget>[
+                          Expanded(
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.grey.withOpacity(.2),
+                                  elevation: 0),
+                              child: Text(
+                                "PRECEDENT",
+                                style: TextStyle(
+                                    color: currentStep != 0
+                                        ? Colors.black
+                                        : Colors.grey.withOpacity(.1)),
                               ),
-                              const SizedBox(width: 12),
-                            ],
+                              onPressed: () {
+                                if (currentStep != 0) details.onStepCancel!();
+                              },
+                            ),
                           ),
-                        );
-                      }),
-                ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: ElevatedButton(
+                              child:
+                                  Text(isLastStep ? lastButtonText : "SUIVANT"),
+                              onPressed: details.onStepContinue,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }),
+            ),
+          ),
         ),
       ),
     );
   }
 
-   validerFormulaire([bool save = false]) async {
-    var data = ProsModel(
-      longitude: _position?.longitude.toString(),
-      latitude: _position?.latitude.toString(),
-      agentId: 1,
-      communeId: communeSelect != null ? int.parse(communeSelect!):null,
-      zoneId: zoneSelect != null ? int.parse(zoneSelect!): null,
-      villeId: villeSelect != null ? int.parse(villeSelect!): null,
-      provinceId: provinceselectionner != null ? int.parse(provinceselectionner!):null,
-      companyName: company_name.text.toString(),
-      companyAddress: company_adress.text.toString(),
-      typeActivitiesId: typeSelect!= null ? int.parse(typeSelect!):null,
-      companyPhone: company_phone.text.toString(),
-      offerId: offreSelect!= null ? int.parse(offreSelect!):null,
-      state: "1",
-      remoteId: timestamp.toString(),
-    );
-    debugPrint('DONNEE: ${data.toJson()}');
-    print(save);
-    if(save){
-      var brou = ProsModel(
-        longitude: _position?.longitude.toString(),
-        latitude: _position?.latitude.toString(),
-        agentId: 1,
-        communeId: communeSelect != null ? int.parse(communeSelect!):null,
-        zoneId: zoneSelect != null ? int.parse(zoneSelect!): null,
-        villeId: villeSelect != null ? int.parse(villeSelect!): null,
-        provinceId: provinceselectionner != null ? int.parse(provinceselectionner!):null,
-        companyName: company_name.text.toString(),
-        companyAddress: company_adress.text.toString(),
-        typeActivitiesId: typeSelect!= null ? int.parse(typeSelect!):null,
-        companyPhone: company_phone.text.toString(),
-        offerId: 1,
-        state: "4",
-        remoteId: timestamp.toString(),
-      );
-      print("DATA BROUILLON ${brou.toJson()}");
-      brouillon(brou);
-    }else{
-      var response = await context
-          .read<FormulaireProspectController>()
-          .submitProspect(data)
-          .catchError((err) {});
-      succesPopUp(context);
-      Navigator.push(context, MaterialPageRoute(builder: (_){
-        return HomePage();
-      }));
+  buildProspectModelData() {
+    recup = ProsModel.fromJson(formulaireValue);
+    print("recuperation ${recup?.toJson()}");
+    recup!.agentId = stockage.read('user')['id'];
+
+    recup!.remoteId =
+        recup!.remoteId ?? DateTime.now().millisecondsSinceEpoch.toString();
+    // validation
+    final form = formKey.currentState;
+    if (!form!.validate()) {
+      affichageSnack(context,
+          msg: "Certains champs sont obligatoires", duree: 1);
+      return false;
     }
 
+    if (recup!.latitude == null || recup!.longitude == null) {
+      affichageSnack(context, msg: "Localisation non capturée", duree: 1);
+      return false;
+    }
+
+    if (recup!.communeId == null) {
+      affichageSnack(context, msg: "Commune non selectionnée", duree: 1);
+      return false;
+    }
+    if (recup!.typeActivitiesId == null) {
+      affichageSnack(context, msg: "Type d'activité non selectionné", duree: 1);
+      return false;
+    }
+
+    if (recup!.offerId == null) {
+      affichageSnack(context, msg: "Offre non selectionnée", duree: 1);
+      return false;
+    }
+
+    return true;
   }
 
-  brouillon(ProsModel brou){
-    Map a = FormulaireProspectController().lecturestockageLocale(Parametres.keyProspect);
-    a[timestamp.toString()] = brou.toJson();
-    FormulaireProspectController().ecritureStockageLocale(Parametres.keyProspect, a);
+  sauvegarderLocale() async {
+    var formCtrl = context.read<FormulaireProspectController>();
+  //  DateTime.fromMillisecondsSinceEpoch(int.tryParse(DateTime.now().millisecondsSinceEpoch.toString())! * 1000);
+    recup = ProsModel.fromJson(formulaireValue);
+    recup!.agentId = stockage.read('user')['id'];
+    recup!.remoteId = DateTime.now().millisecondsSinceEpoch.toString();
+
+    debugPrint("formulaireValue ${recup!.toJson()}");
+
+    // création Copie locale si au moins la commune est selectionnée
+    if (recup!.communeId != null) {
+      formCtrl.creerCopieLocale(recup!);
+      affichageSnack(context,
+          msg: 'Brouillon sauvegardé', textColor: Colors.grey);
+      await Future.delayed(Duration(seconds: 1));
+      return true;
+    }
+    return false;
+  }
+
+  envoieFormulaire() async {
+    var formCtrl = context.read<FormulaireProspectController>();
+    ProsModel data = recup!;
+
+    debugPrint('DONNEE: ${data.toJson()}');
+    Chargement(context);
+    try {
+      int id = await formCtrl.submitProspect(data);
+      Navigator.pop(context);
+      data.id = id;
+      data.state = "1";
+      formCtrl.creerCopieLocale(data);
+
+      debugPrint('success data ${data.toJson()}');
+      affichageSnack(context,
+          msg: 'Enregistrement réussie !', textColor: Colors.deepOrange);
+      await Future.delayed(Duration(milliseconds: 3500));
+      // await succesPopUp(context);
+      debugPrint("Succès");
+      Navigator.pop(context, true);
+    } catch (e) {
+      debugPrint('failed data ${data.toJson()}');
+
+      affichageSnack(context, msg: e.toString());
+      Navigator.pop(context);
+      formCtrl.creerCopieLocale(data);
+      affichageSnack(context,
+          msg: 'Brouillon sauvegardé', textColor: Colors.grey);
+      await Future.delayed(Duration(milliseconds: 3500));
+    }
   }
 
 // User canceled the picker
-
+  affichageSnack(BuildContext context,
+      {required String msg,
+      int duree = 3,
+      Color bgColor = Colors.white,
+      Color textColor = Colors.red}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.info_outline,
+              color: Colors.grey,
+            ),
+            SizedBox(
+              width: 20,
+            ),
+            Text(msg, style: TextStyle(color: textColor)),
+          ],
+        ),
+        duration: Duration(seconds: duree),
+        backgroundColor: bgColor,
+      ),
+    );
+  }
 }

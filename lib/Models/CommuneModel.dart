@@ -1,6 +1,3 @@
-// To parse this JSON data, do
-//
-//     final communeModel = communeModelFromJson(jsonString);
 
 import 'dart:convert';
 

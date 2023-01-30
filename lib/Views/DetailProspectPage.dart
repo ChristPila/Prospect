@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:prospect/Controllers/FormulaireProspectController.dart';
 import 'package:prospect/Models/prosModel.dart';
 import 'package:provider/provider.dart';
 import 'package:prospect/Controllers/ProspectController.dart';
@@ -7,9 +9,11 @@ import '../Views/PiecesJointesPage.dart';
 import 'FormulaireProspectPage.dart';
 
 class DetailProspectPage extends StatefulWidget {
-  const DetailProspectPage({super.key, required this.data,});
-
   final ProsModel data;
+
+  const DetailProspectPage({super.key, required this.data});
+
+
 
   @override
   State<DetailProspectPage> createState() => _DetailProspectPageState();
@@ -22,6 +26,7 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
   void initState() {
     super.initState();
     clientrecup = widget.data;
+    print(clientrecup.toJson());
     WidgetsBinding.instance.addPersistentFrameCallback((timeStamp) {
       /*if(!mounted) return;
       var listProspect = context.read<ProspectController>().data;
@@ -53,31 +58,29 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
           actions: [
             clientrecup.state != "1"
                 ? IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      if(clientrecup.state == "4"){
+
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (_) {
+                              return FormulaireProspectPage(recup: clientrecup);
+                            }));
+                      };
+
+                    },
                     icon: Icon(
                       states[clientrecup.state]["icon"],
                       color: states[clientrecup.state]["color"],
                       size: 30,
                     ))
-                : clientrecup.state == "4"
-                    ? TextButton.icon(
-                        onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (_) {
-                            return FormulaireProspectPage(
-                              recup: clientrecup);
-                          }));
-                        },
-                        icon: Icon(Icons.edit_note,
-                            color: Colors.white, size: 30),
-                        label: Text(""))
-                    : TextButton.icon(
+                : TextButton.icon(
                         onPressed: () {
                           context
                               .read<ProspectController>()
-                              .verifierStatusDonneeAPI(clientrecup.remoteId!);
+                              .verifierStatusDonneeAPI(clientrecup.remoteId!,clientrecup.agentId!);
                         },
                         icon: Icon(Icons.rotate_right_sharp,
-                            color: Colors.white, size: 30),
+                            color: Colors.black, size: 30),
                         label: Text(""))
           ]),
       body: SingleChildScrollView(
@@ -140,6 +143,11 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
             SizedBox(
               height: 0.5,
             ),
+            time(),
+            Divider(thickness: 1),
+            SizedBox(
+              height: 0.5,
+            ),
             localisation1(),
             localisation2(),
             Divider(
@@ -170,231 +178,279 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
   }
 
   companyNomVue() {
+    var name = clientrecup.companyName == null ?"Nom rempli" : clientrecup.companyName;
     return Container(
       padding: const EdgeInsets.all(10),
       child: Row(
         children: [
-          Text("Nom:",
-              style: const TextStyle(
-                  color: Colors.black87,
-                  fontSize: 15,
-                  decoration: TextDecoration.none)),
-          Spacer(),
-          Text("${clientrecup.companyName}",
-              style: const TextStyle(
-                  color: Colors.black87,
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.none)),
+          Flexible(child: Row(children: [
+            Text("Nom: ",
+                style: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 15,
+                    decoration: TextDecoration.none)),],)),
+
+          //Spacer(),
+          Flexible(
+            child: Text("${name}",
+                style: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    decoration: TextDecoration.none)),
+          ),
         ],
       ),
     );
   }
 
   companytype() {
-   var activity = context.watch<ProspectController>().activity;
-    var activityId = clientrecup.typeActivitiesId;
-    Map activity_data = activity["$activityId"];
-    var activity_name = activity_data["name"];
+    var formCtrl = context.watch<FormulaireProspectController>();
+    Map typeEntrep = formCtrl.mapActivities;
+    var activitySelectionne = typeEntrep[clientrecup?.typeActivitiesId.toString()];
+    var activityText = activitySelectionne == null ? "Non selectionné" : activitySelectionne['name'];
 
     return Container(
       padding: const EdgeInsets.all(10),
       child: Row(
         children: [
-          //Icon(Icons.type_specimen_outlined),
-          Text("Type:",
-              style: const TextStyle(
-                  color: Colors.black87,
-                  fontSize: 15,
-                  decoration: TextDecoration.none)),
-          Spacer(),
-          Text("${activity_name}",
-              style: const TextStyle(
-                  color: Colors.black87,
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.none)),
+          Flexible(child: Row(children: [
+            Text("Type: ",
+                style: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 15,
+                    decoration: TextDecoration.none)),],)),
+
+          //Spacer(),
+          Flexible(
+            child: Text("${activityText}",
+                style: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    decoration: TextDecoration.none)),
+          ),
         ],
       ),
     );
   }
 
   companyadresse() {
+    var Adresse = clientrecup.companyAddress == null ?"Nom rempli" : clientrecup.companyAddress;
     return Container(
       padding: const EdgeInsets.all(10),
       child: Row(
         children: [
-          Icon(Icons.house),
-          Text("Adresse:",
-              style: const TextStyle(
-                  color: Colors.black87,
-                  fontSize: 15,
-                  decoration: TextDecoration.none)),
-          Spacer(),
-          Text("${clientrecup.companyAddress}",
-              style: const TextStyle(
-                  color: Colors.black87,
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.none)),
+          Flexible(child: Row(children: [Icon( Icons.add_reaction,
+            color: Colors.orange,
+            size: 25),
+            Text("Adresse: ",
+                style: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 15,
+                    decoration: TextDecoration.none)),],)),
+
+          //Spacer(),
+          Flexible(
+            child: Text("${Adresse}",
+                style: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    decoration: TextDecoration.none)),
+          ),
         ],
       ),
     );
   }
 
   companyphone() {
+    var Phone = clientrecup.companyPhone == null ?"Nom rempli" : clientrecup.companyPhone;
     return Container(
       padding: const EdgeInsets.all(10),
       child: Row(
         children: [
-          Icon(Icons.phone),
-          Text("Telephone:",
-              style: const TextStyle(
-                  color: Colors.black87,
-                  fontSize: 15,
-                  decoration: TextDecoration.none)),
-          Spacer(),
-          Text("${clientrecup.companyPhone}",
-              style: const TextStyle(
-                  color: Colors.black87,
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.none)),
+          Flexible(child: Row(children: [Icon( Icons.phone,
+              color: Colors.orangeAccent,
+              size: 25),
+            Text("Telephone: ",
+                style: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 15,
+                    decoration: TextDecoration.none)),],)),
+
+          //Spacer(),
+          Flexible(
+            child: Text("${Phone}",
+                style: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    decoration: TextDecoration.none)),
+          ),
         ],
       ),
     );
   }
 
   companyoffre() {
-    var offre = context.watch<ProspectController>().offres;
-    var offresId = clientrecup.offerId;
-    Map offres_data = offre["$offresId"];
-    var offres_name = offres_data["name"];
+    var formCtrl = context.watch<FormulaireProspectController>();
+    Map offres = formCtrl.mapOffres;
+    var offreSelectionne = offres[clientrecup?.offerId.toString()];
+    var offreText = offreSelectionne == null ? "Non selectionné" : offreSelectionne['name'];
     return Container(
       padding: const EdgeInsets.all(10),
       child: Row(
         children: [
-          Icon(Icons.offline_pin_outlined),
-          Text("Offres:",
-              style: const TextStyle(
-                  color: Colors.black87,
-                  fontSize: 15,
-                  decoration: TextDecoration.none)),
-          Spacer(),
-          Text("${offres_name}",
-              style: const TextStyle(
-                  color: Colors.black87,
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.none)),
+          Flexible(child: Row(children: [Icon( Icons.offline_pin_outlined,
+              color: Colors.green,
+              size: 25),
+            Text("Offre: ",
+                style: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 15,
+                    decoration: TextDecoration.none)),],)),
+
+          //Spacer(),
+          Flexible(
+            child: Text("${offreText}",
+                style: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    decoration: TextDecoration.none)),
+          ),
         ],
       ),
     );
   }
 
   companyprovince() {
-    var provinces = context.watch<ProspectController>().provinces;
-    var provinceId = clientrecup.provinceId;
-    Map province_data = provinces["$provinceId"];
-    var province_name = province_data["name"];
+    var formCtrl = context.watch<FormulaireProspectController>();
+    Map provinces = formCtrl.mapProvinces;
+    var provinceSelectionne = provinces[clientrecup?.provinceId.toString()];
+    var provinceText = provinceSelectionne == null ? "Non Selectionnée" : provinceSelectionne['name'];
     return Container(
       padding: const EdgeInsets.all(10),
       child: Row(
         children: [
-          Icon(Icons.location_on),
-          Text("Province :",
-              style: const TextStyle(
-                  color: Colors.black87,
-                  fontSize: 15,
-                  decoration: TextDecoration.none)),
-          Spacer(),
-          Text("${province_name}",
-              style: const TextStyle(
-                  color: Colors.black87,
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.none)),
+          Flexible(child: Row(children: [Icon( Icons.local_airport,
+              color: Colors.blueAccent,
+              size: 25),
+            Text("Province: ",
+                style: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 15,
+                    decoration: TextDecoration.none)),],)),
+
+          //Spacer(),
+          Flexible(
+            child: Text("${provinceText}",
+                style: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    decoration: TextDecoration.none)),
+          ),
         ],
       ),
     );
   }
 
   companyville() {
-    var villes = context.read<ProspectController>().villes;
-    var villeId = clientrecup.villeId;
-    Map ville_data = villes["$villeId"];
-    var ville_name = ville_data["name"];
+    var formCtrl = context.watch<FormulaireProspectController>();
+    Map villes = formCtrl.mapVilles;
+    var villeSelectionne = villes[clientrecup?.villeId.toString()];
+    var villeText = villeSelectionne == null ? "Non Selectionnée" : villeSelectionne['name'];
     return Container(
       padding: const EdgeInsets.all(10),
       child: Row(
         children: [
-          Icon(Icons.location_on),
-          Text("Ville :",
-              style: const TextStyle(
-                  color: Colors.black87,
-                  fontSize: 15,
-                  decoration: TextDecoration.none)),
-          Spacer(),
-          Text("${ville_name}",
-              style: const TextStyle(
-                  color: Colors.black87,
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.none)),
+          Flexible(child: Row(children: [
+           Icon ( Icons.location_city,
+                color: Colors.redAccent,
+                size: 25),
+            Text("Ville :",
+                style: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 15,
+                    decoration: TextDecoration.none)),
+          ],)),
+
+          //Spacer(),
+          Flexible(
+            child: Text("${villeText}",
+                style: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    decoration: TextDecoration.none)),
+          ),
         ],
       ),
     );
   }
 
   companycommune() {
-    var communes = context.watch<ProspectController>().communes;
-    var communeId = clientrecup.communeId;
-    Map commune_data = communes["$communeId"];
-    var ville_name = commune_data["name"];
+    var formCtrl = context.watch<FormulaireProspectController>();
+    Map communes = formCtrl.mapCommunes;
+    var communeSelectionne = communes[clientrecup?.communeId.toString()];
+    var communeText =    communeSelectionne == null ? "Non Selectionnée" : communeSelectionne['name'];
+
     return Container(
       padding: const EdgeInsets.all(10),
       child: Row(
         children: [
-          Icon(Icons.location_on),
-          Text("Commune: ",
-              style: const TextStyle(
-                  color: Colors.black87,
-                  fontSize: 15,
-                  decoration: TextDecoration.none)),
-          Spacer(),
-          Text("${ville_name}",
-              style: const TextStyle(
-                  color: Colors.black87,
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.none)),
+          Flexible(child: Row(children: [  Icon ( Icons.cabin_outlined,
+              color: Colors.green,
+              size: 25),
+            Text("Commune: ",
+                style: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 15,
+                    decoration: TextDecoration.none)),],)),
+
+          //Spacer(),
+          Flexible(
+            child: Text("${communeText}",
+                style: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    decoration: TextDecoration.none)),
+          ),
         ],
       ),
     );
   }
 
   companyzone() {
-    var zones = context.watch<ProspectController>().zones;
-    var zoneid = clientrecup.zoneId;
-    Map commune_data = zones["$zoneid"];
-    var zone_name = commune_data["name"];
+    var formCtrl = context.watch<FormulaireProspectController>();
+    Map zones = formCtrl.mapZones;
+    var communeSelectionne = zones[clientrecup?.zoneId.toString()];
+    var zoneText =    communeSelectionne == null ? "Non Selectionnée" : communeSelectionne['name'];
     return Container(
       padding: const EdgeInsets.all(10),
       child: Row(
         children: [
-          Icon(Icons.location_on),
-          Text("Zone :",
-              style: const TextStyle(
-                  color: Colors.black87,
-                  fontSize: 15,
-                  decoration: TextDecoration.none)),
-          Spacer(),
-          Text("${zone_name}",
-              style: const TextStyle(
-                  color: Colors.black87,
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.none)),
+          Flexible(child: Row(children: [  Icon ( Icons.location_on,
+              color: Colors.red,
+              size: 25),
+            Text("Zone: ",
+                style: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 15,
+                    decoration: TextDecoration.none)),],)),
+
+          //Spacer(),
+          Flexible(
+            child: Text("${zoneText}",
+                style: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    decoration: TextDecoration.none)),
+          ),
         ],
       ),
     );
@@ -410,23 +466,31 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
   }
 
   localisation2() {
+    var localisation= clientrecup?.longitude != null
+    ? "Capturé"
+        : "Non Capturé";
     return Container(
       padding: const EdgeInsets.all(10),
       child: Row(
         children: [
-          Icon(Icons.map),
-          Text("Latitude , Longitude:",
-              style: const TextStyle(
-                  color: Colors.black87,
-                  fontSize: 15,
-                  decoration: TextDecoration.none)),
-          Spacer(),
-          Text("${clientrecup.latitude};${clientrecup.longitude}",
-              style: const TextStyle(
-                  color: Colors.black87,
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.none)),
+          Flexible(child: Row(children: [   Icon ( Icons.map,
+              color: Colors.green,
+              size: 25),
+            Text("Latitude, Longitude: ",
+                style: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 15,
+                    decoration: TextDecoration.none)),],)),
+
+          //Spacer(),
+          Flexible(
+            child: Text("${localisation}",
+                style: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    decoration: TextDecoration.none)),
+          ),
         ],
       ),
     );
@@ -437,19 +501,51 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
       padding: const EdgeInsets.all(10),
       child: Row(
         children: [
-          Icon(Icons.person),
-          Text("Agent :",
-              style: const TextStyle(
-                  color: Colors.black87,
-                  fontSize: 15,
-                  decoration: TextDecoration.none)),
-          Spacer(),
-          Text("${clientrecup.agentId}",
-              style: const TextStyle(
-                  color: Colors.black87,
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.none)),
+          Flexible(child: Row(children: [   Icon ( Icons.person,
+              color: Colors.lightBlue,
+              size: 25),
+            Text("Agent: ",
+                style: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 15,
+                    decoration: TextDecoration.none)),],)),
+
+          //Spacer(),
+          Flexible(
+            child: Text("${clientrecup.agentId}",
+                style: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    decoration: TextDecoration.none)),
+          ),
+        ],
+      ),
+    );
+  }
+  time(){
+    return Container(
+      padding: const EdgeInsets.all(10),
+      child: Row(
+        children: [
+          Flexible(child: Row(children: [   Icon ( Icons.timer,
+              color: Colors.lightBlue,
+              size: 25),
+            Text("Date de création: ",
+                style: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 15,
+                    decoration: TextDecoration.none)),],)),
+
+          //Spacer(),
+          Flexible(
+            child: Text("${chronoDyn((clientrecup.remoteId).toString())}",
+                style: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    decoration: TextDecoration.none)),
+          ),
         ],
       ),
     );
@@ -480,5 +576,39 @@ class _DetailProspectPageState extends State<DetailProspectPage> {
         )
       ],
     );
+  }
+  String chronoDyn(String time){
+    var inputFormat = DateFormat('dd-MM-yyyy hh:mm a sss');
+    var msg="";
+    var now = DateTime.now();
+   // print('now $now');
+    var timeConvert=int.parse(time );
+  //  print('timeConvert $timeConvert');
+    final DateTime dateProspect = DateTime.fromMillisecondsSinceEpoch(timeConvert );
+  //  print ("dateProspect $dateProspect");
+    Duration diff = now.difference(dateProspect);
+    if (diff.inDays > 7) {
+      var outputDate = inputFormat.format(dateProspect);
+      msg= '${outputDate}';
+    } else if (diff.inDays >= 1) {
+      msg= '${diff.inDays} j';
+      var outputDate = inputFormat.format(dateProspect);
+      msg= '${outputDate}';
+    } else if (diff.inHours >= 1) {
+      msg= '${diff.inHours} h';
+      var outputDate = inputFormat.format(dateProspect);
+      msg= '${outputDate}';
+    } else if (diff.inMinutes >= 1) {
+      msg= '${diff.inMinutes} min';
+      var outputDate = inputFormat.format(dateProspect);
+      msg= '${outputDate}';
+    } else if (diff.inSeconds >= 1) {
+      msg= '${diff.inSeconds} sec';
+      var outputDate = inputFormat.format(dateProspect);
+      msg= '${outputDate}';
+    } else {
+      msg= 'maintenant';
+    }
+    return msg;
   }
 }

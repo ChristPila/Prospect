@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:prospect/Models/CommuneModel.dart';
-import 'package:prospect/Models/ProvinceModel.dart';
-import 'package:prospect/Models/VilleModel.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:intl/intl.dart';
+import 'package:prospect/Controllers/ProspectController.dart';
 import 'package:prospect/Models/prosModel.dart';
 import 'package:prospect/Tools/Parametres.dart';
 import 'package:provider/provider.dart';
-import 'package:prospect/Controllers/ProspectController.dart';
-import '../Controllers/FormulaireProspectController.dart';
+
 import 'DetailProspectPage.dart';
+import 'FormulaireProspectPage.dart';
 import 'ProgressPage.dart';
 
 class ListeProspectPage extends StatefulWidget {
@@ -20,6 +20,8 @@ class ListeProspectPage extends StatefulWidget {
 }
 
 class _ProspectState extends State<ListeProspectPage> {
+  GetStorage stockage = GetStorage(Parametres.STOCKAGE_VERSION);
+
   EdgeInsets paddingVal = EdgeInsets.symmetric(horizontal: 20, vertical: 5);
   List<String> listeTypesStatut_ = [
     "Tous",
@@ -49,9 +51,13 @@ class _ProspectState extends State<ListeProspectPage> {
 
   var dataProspectCopie = [];
   bool isapicallprocess = false;
+  DateTime? Temps;
+
 
   intdata() async {
-    await context.read<ProspectController>().recupererDonneesLocales();
+    var userData = stockage.read('user');
+    var currentId = userData['id'];
+    await context.read<ProspectController>().recupererDonneesLocales(currentId);
     var listOriginalProspect = context.read<ProspectController>().data;
     //dataProspectCopie = listOriginalProspect;
     if (typeStatutSelectionne_int == "0") {
@@ -61,108 +67,18 @@ class _ProspectState extends State<ListeProspectPage> {
           .where((e) => e.state == typeStatutSelectionne_int)
           .toList();
     }
-    print(dataProspectCopie.length);
+  //  print(dataProspectCopie.length);
     setState(() {});
   }
 
-
-  zoneRecup() async {
-    var formCtrl = context.read<FormulaireProspectController>();
-    List listZones = await formCtrl.lectureAPIstockage(
-        Parametres.keyZones, Parametres.endPointZones);
-
-    Map Zone = Map.fromIterable(listZones,
-        key: (v) => v['id'].toString(), value: (v) => v);
-    context.read<ProspectController>().zones = Zone;
-    print("Zone $Zone");
-    setState(() {});
-  }
-  communeRecup() async {
-    var formCtrl = context.read<FormulaireProspectController>();
-    List  listCommunes = await formCtrl.lectureAPIstockage(
-        Parametres.keyCommunes, Parametres.endPointCommunes);
-
-    Map Commune = Map.fromIterable(listCommunes,
-        key: (v) => v['id'].toString(), value: (v) => v);
-    context.read<ProspectController>().communes = Commune;
-    print("Commune $Commune");
-    setState(() {
-
-    });
-  }
-  provinceRecup() async{
-    var formCtrl = context.read<FormulaireProspectController>();
-    var listProvince = await formCtrl.lectureAPIstockage(
-        Parametres.keyProvince, Parametres.endPointProvinces);
-
-    Map Province = Map.fromIterable(listProvince,
-        key: (v) => v['id'].toString(), value: (v) => v);
-    context.read<ProspectController>().provinces = Province;
-    print("Province $Province");
-    setState(() {
-
-    });
-  }
-
-  villeReccup() async{
-    var formCtrl = context.read<FormulaireProspectController>();
-    var listVilles = await formCtrl.lectureAPIstockage(
-        Parametres.keyVilles, Parametres.endPointVilles);
-
-
-    Map Ville = Map.fromIterable(listVilles,
-        key: (v) => v['id'].toString(), value: (v) => v);
-    context.read<ProspectController>().villes = Ville;
-    print("Ville $Ville");
-
-    setState(() {
-
-    });
-  }
-
-  activityRecup() async {
-    var formCtrl = context.read<FormulaireProspectController>();
-    var listActivities = await formCtrl.lectureAPIstockage(
-        Parametres.keyActivities, Parametres.endPointAct);
-
-    Map activity = Map.fromIterable(listActivities,
-        key: (v) => v['id'].toString(), value: (v) => v);
-    context.read<ProspectController>().activity = activity;
-    print("activity $activity");
-    setState(() {
-
-    });
-  }
-
-  offreRecup() async {
-    var formCtrl = context.read<FormulaireProspectController>();
-    var listOffres = await formCtrl.lectureAPIstockage(
-        Parametres.keyOffres, Parametres.endPointOffres);
-
-    Map offre = Map.fromIterable(listOffres,
-        key: (v) => v['id'].toString(), value: (v) => v);
-    context.read<ProspectController>().offres = offre;
-    print("offre $offre");
-    setState(() {
-
-    });
-  }
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    print("widget.state ${widget.state}");
+   // print("widget.state ${widget.state}");
     typeStatutSelectionne_int = widget.state;
     typeStatutSelectionne = listeTypesStatut2[widget.state] ?? "Tous";
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      zoneRecup();
-      communeRecup();
-      provinceRecup();
-      villeReccup();
-      activityRecup();
-      offreRecup();
-      // await context.read<ProspectController>().recupererDonneesAPI();
-      //context.read<ProspectController>().verifierStatusDonneeAPI("remoteId");
       intdata();
     });
   }
@@ -176,11 +92,9 @@ class _ProspectState extends State<ListeProspectPage> {
     );
   }
 
-  @override
   Widget build2(BuildContext context) {
     // context.read<ProspectController>().statut();
     var listProspect = context.watch<ProspectController>().data;
-
 
     return SafeArea(
         child: Scaffold(
@@ -194,9 +108,11 @@ class _ProspectState extends State<ListeProspectPage> {
                 setState(() {
                   isapicallprocess = true;
                 });
+                var userData = stockage.read('user');
+                var currentId = userData['id'];
                 var value = await context
                     .read<ProspectController>()
-                    .recupererDonneesAPI();
+                    .recupererDonneesAPI(currentId);
                 print('value $value');
                 setState(() {
                   isapicallprocess = false;
@@ -207,46 +123,71 @@ class _ProspectState extends State<ListeProspectPage> {
                   SnackBar(content: Text('Echec de la connexion'));
                 }
               },
-              iconSize: 40,
-              icon: Icon(Icons.refresh_outlined)),
+              iconSize: 25,
+              icon:   Icon ( Icons.refresh_outlined,
+                  color: Colors.white,
+                  size: 25),),
+          IconButton(
+              onPressed: () async {
+                Navigator.push(context, MaterialPageRoute(builder: (_) {
+                  return FormulaireProspectPage();
+                }));
+              },
+              iconSize: 25,
+              icon:   Icon ( Icons.add,
+                  color: Colors.black,
+                  size: 25),),
         ],
       ),
-          body: Column(
+      body: Column(
         children: <Widget>[
           selectionTypeStatut(context),
           listProspectVue(context),
         ],
       ),
     ));
-
   }
 
   listProspectVue(BuildContext context) {
     return Expanded(
-      child: ListView.builder(
+      child: ListView.separated(
         itemCount: dataProspectCopie.length,
         shrinkWrap: true,
+        separatorBuilder: (ctx, i) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Divider(
+              thickness: 0.5,
+              color: Colors.grey,
+            ),
+          );
+        },
         itemBuilder: (BuildContext context, int index) {
-          ProsModel prospect = dataProspectCopie[index];
+         // print("la valeur de l'index est ${index}");
+          int taille= dataProspectCopie.length - index -1;
+          ProsModel prospect = dataProspectCopie[taille];
           var zones = context.watch<ProspectController>().zones;
           var zoneId = prospect.zoneId;
-          Map zone_data = zones["$zoneId"];
-          var zone_name = zone_data["name"];
+         // print("2222 ${prospect.companyName}");
+          // print(zones);
+          // print('$zoneId ====== ${prospect.id}');
+          Map? zone_data = zoneId != null ? zones[zoneId] : {};
+          var zone_name = zone_data?["name"];
 
           var villes = context.watch<ProspectController>().villes;
           var villeId = prospect.villeId;
-          Map ville_data = villes["$villeId"];
-          var ville_name = ville_data["name"];
+          Map? ville_data = villeId != null ? villes[villeId] : {};
+          var ville_name = ville_data?["name"];
 
           var provinces = context.watch<ProspectController>().provinces;
           var provinceId = prospect.provinceId;
-          Map province_data = provinces["$provinceId"];
-          var province_name = province_data["name"];
+          Map? province_data = provinceId != null ? provinces[provinceId] : {};
+          var province_name = province_data?["name"];
 
           var communes = context.watch<ProspectController>().communes;
           var communeId = prospect.communeId;
-          Map commune_data = communes["$communeId"];
-          var commune_name = commune_data["name"];
+          Map? commune_data = communeId != null ? communes[communeId] : {};
+          var commune_name = commune_data?["name"];
 
           var icon = Icons.remove_circle;
           var color = Colors.blue;
@@ -268,72 +209,37 @@ class _ProspectState extends State<ListeProspectPage> {
           }
 
           return ListTile(
-
             onTap: () => Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (context) => DetailProspectPage(
                           data: prospect,
                         ))),
-            leading: Icon(
-              icon,
-              color: color,
-              size: 35,
-            ),
+             leading:  Icon(
+               icon,
+               color: color,
+               size: 35,
+             ),
             title: Text(
-              'state : ${prospect.state}',
+              'Companie : ${prospect.companyName}',
               style: const TextStyle(
                 fontSize: 15,
-                color: Colors.black87,
-                fontWeight: FontWeight.bold,
+                color: Colors.black,
               ),
             ),
             subtitle: Text(
-              'Companie: ${prospect.companyName}\nZone: ${zone_name}\nCommune: ${commune_name}\nVille: ${ville_name}\nProvince: ${province_name}',
-              style: const TextStyle(fontSize: 15, color: Colors.black87),
+              'State :${prospect.state}',
+              style: const TextStyle(fontSize: 15, color: Colors.black),
             ),
+              trailing: Text(
+          "${chronoDyn((prospect.remoteId).toString())}",
+          style: TextStyle(color: Colors.black, fontSize: 15),
+              )
           );
         },
       ),
     );
   }
-
-
-  dataView(BuildContext context) {
-    var data = context.watch<ProspectController>().data;
-
-    return ListView.builder(
-        shrinkWrap: true,
-        itemCount: data.length,
-        itemBuilder: (context, index) {
-          var couleur = index % 2 == 0
-              ? Colors.transparent
-              : Colors.grey.withOpacity(0.3);
-          var prospect = data[index];
-          return Container(
-            color: couleur,
-            child: ListTile(
-              leading: Icon(
-                Icons.edit_note_rounded,
-                size: 30,
-              ),
-              title: Text(
-                'Companie: ${prospect.companyName}',
-                style: const TextStyle(fontSize: 15, color: Colors.black87),
-              ),
-              subtitle: Text(
-                'statut :${prospect.state}\nZone: zoneId',
-                style: const TextStyle(fontSize: 15, color: Colors.black87),
-              ),
-              trailing: IconButton(
-                onPressed: () {},
-                icon: Icon(Icons.edit),
-              ),
-            ),
-          );
-        });
-  }
-
 
   selectionTypeStatut(BuildContext context) {
     return Container(
@@ -349,8 +255,8 @@ class _ProspectState extends State<ListeProspectPage> {
         }).toList(),
         onChanged: (String? newValue) {
           typeStatutSelectionne = newValue!;
-          print('$typeStatutSelectionne');
-          print(listeTypesStatut[newValue]);
+         // print('$typeStatutSelectionne');
+         // print(listeTypesStatut[newValue]);
           typeStatutSelectionne_int = listeTypesStatut[newValue]!;
           var listOriginalProspect = context.read<ProspectController>().data;
           if (typeStatutSelectionne_int == "0") {
@@ -364,5 +270,32 @@ class _ProspectState extends State<ListeProspectPage> {
         },
       ),
     );
+  }
+
+  String chronoDyn(String time){
+    var inputFormat = DateFormat('dd-MM-yyyy');
+    var msg="";
+    var now = DateTime.now();
+   // print('now $now');
+    var timeConvert=int.parse(time );
+   // print('timeConvert $timeConvert');
+    final DateTime dateProspect = DateTime.fromMillisecondsSinceEpoch(timeConvert );
+  //  print ("dateProspect $dateProspect");
+    Duration diff = now.difference(dateProspect);
+    if (diff.inDays > 7) {
+      var outputDate = inputFormat.format(dateProspect);
+      msg= '${outputDate}';
+    } else if (diff.inDays >= 1) {
+      msg= '${diff.inDays} j';
+    } else if (diff.inHours >= 1) {
+      msg= '${diff.inHours} h';
+    } else if (diff.inMinutes >= 1) {
+      msg= '${diff.inMinutes} min';
+    } else if (diff.inSeconds >= 1) {
+      msg= '${diff.inSeconds} sec';
+    } else {
+      msg= 'maintenant';
+    }
+    return msg;
   }
 }
