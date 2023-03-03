@@ -155,6 +155,9 @@ class _LocalisationStepState extends State<LocalisationStep> {
                   .villes
                   .where((v) => v.provinceId == newValue)
                   .toList();
+              villeSelect = null;
+              communeSelect = null;
+              zoneSelect = null;
               widget.onChanged("province_id", newValue);
               setState(() {});
             },
@@ -190,6 +193,8 @@ class _LocalisationStepState extends State<LocalisationStep> {
               zones =
                   formCtrl.zones.where((z) => z.villeId == newValue).toList();
               widget.onChanged("ville_id", newValue);
+              communeSelect = null;
+              zoneSelect = null;
               setState(() {});
             },
           ))),
@@ -225,6 +230,7 @@ class _LocalisationStepState extends State<LocalisationStep> {
                   formCtrl.communes.where((c) => c.zoneId == newValue).toList();
               setState(() {});
               widget.onChanged("zone_id", newValue);
+              communeSelect = null;
               setState(() {});
             },
           ))),

@@ -111,18 +111,18 @@ class FormulaireProspectController with ChangeNotifier {
     stockage.write(key, json.encode(stockage_data));
   }
 
-  Future<Map<String, dynamic>> lectureAPIstockage(String key, endPoints) async {
+  Future<Map<String, dynamic>> lectureAPIstockage(String key, endPoints, [refresh=false]) async {
     var mapData = lecturestockageLocale(key);
     var data = mapData.entries.map((e) => e.value).toList();
-    if (data.length == 0) {
+    if (data.length == 0 || refresh) {
       data = await recupererDonneesAPI(key, endPoints);
     }
     return {"mapData": mapData, "listData": data};
   }
 
-  provinceRecup() async {
+  provinceRecup([refresh=false]) async {
     Map res = await lectureAPIstockage(
-        Parametres.keyProvince, Parametres.endPointProvinces);
+        Parametres.keyProvince, Parametres.endPointProvinces, refresh);
     provinces = res['listData']
         .map<ProvinceModel>((e) => ProvinceModel.fromJson(e))
         .toList();

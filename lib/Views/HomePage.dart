@@ -34,9 +34,9 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  recuperationDataForm() async {
+  recuperationDataForm([refresh=false]) async {
     var prosFormCtrl = context.read<FormulaireProspectController>();
-    prosFormCtrl.provinceRecup();
+    prosFormCtrl.provinceRecup(refresh);
 
     prosFormCtrl.villeRecup();
 
@@ -49,8 +49,8 @@ class _HomePageState extends State<HomePage> {
     prosFormCtrl.offreRecup();
   }
 
-  refreshAllData() async {
-    recuperationDataForm();
+  refreshAllData([refresh=false]) async {
+    recuperationDataForm(refresh);
     context.read<SevenLastDaysController>().getReportData();
     context.read<DayToDateController>().getReportData();
     context.read<GetAllProspectsController>().getReportData();
@@ -112,7 +112,7 @@ class _HomePageState extends State<HomePage> {
           actions: [
             IconButton(
                 onPressed: () {
-                  refreshAllData();
+                  refreshAllData(true);
                 },
                 iconSize: 40,
                 icon: Icon(

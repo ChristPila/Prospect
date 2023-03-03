@@ -38,7 +38,7 @@ class _MenuLateralState extends State<MenuLateral> {
           leading: Icon(
             Icons.people,
           ),
-          title: const Text('Créer Une visite'),
+          title: const Text('Nouveau'),
           onTap: () {
             naviguerVersVisite(context);
           },
