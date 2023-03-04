@@ -150,7 +150,7 @@ class _ResumeStepState extends State<ResumeStep> {
                   SizedBox(
                     width: 5,
                   ),
-                  Text(title),
+                  Flexible(child: Text(title)),
                   SizedBox(
                     width: 10,
                   ),
@@ -196,14 +196,14 @@ class _ResumeStepState extends State<ResumeStep> {
       onTap: () {},
       child: Card(
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10),
+          padding: const EdgeInsets.symmetric(vertical: 5),
           child: Column(
             children: [
               Text(title),
               SizedBox(
                 height: 5,
               ),
-              icon,
+               icon,
               SizedBox(
                 height: 10,
               ),
